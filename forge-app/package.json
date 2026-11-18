@@ -1,0 +1,16 @@
+{
+  "name": "specweft-bitbucket",
+  "version": "1.0.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": { "lint": "forge lint", "test": "node --test test/*.test.mjs" },
+  "dependencies": {
+    "@forge/api": "^8.5.0",
+    "@forge/bridge": "^7.3.0",
+    "@forge/react": "^12.5.0",
+    "@forge/resolver": "^2.0.2",
+    "react": "^18.2.0"
+  }
+}

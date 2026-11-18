@@ -1,0 +1,39 @@
+# SpecWeft for Bitbucket — Forge app.
+# Run `forge register` once: it replaces app.id below with your own app id.
+modules:
+  bitbucket:repoPullRequestOverviewPanel:
+    - key: specweft-pr-panel
+      title: SpecWeft — files this PR may break
+      resource: main
+      render: native
+      resolver:
+        function: resolver
+  bitbucket:mergeCheck:
+    - key: specweft-merge-check
+      name: SpecWeft contract check
+      description: Fails only when both SpecWeft signals (code agreements + agent navigation) say an unchanged file must be updated.
+      function: merge-check
+      triggers:
+        - on-code-pushed
+  function:
+    - key: resolver
+      handler: index.handler
+    - key: merge-check
+      handler: index.mergeCheck
+resources:
+  - key: main
+    path: src/frontend/index.jsx
+remotes:
+  - key: specweft-backend
+    # Public HTTPS URL of the SpecWeft Python server (python -m specweft.cli serve, behind TLS).
+    baseUrl: https://YOUR-SPECWEFT-BACKEND.example.com
+    operations:
+      - compute
+permissions:
+  scopes:
+    - read:repository:bitbucket
+    - read:pullrequest:bitbucket
+app:
+  id: ari:cloud:ecosystem::app/REPLACE-WITH-forge-register
+  runtime:
+    name: nodejs22.x
