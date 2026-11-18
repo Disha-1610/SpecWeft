@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SpecWeft</title>
+<style>
+  :root { --bg:#f7f7f5; --fg:#1d1d1b; --muted:#6b6b66; --card:#fff; --line:#e3e3df; --accent:#2f5d8a;
+          --high:#1f7a4d; --medium:#a86b00; --low:#8a8a85; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#161615; --fg:#ececea; --muted:#a1a19b; --card:#20201e;
+          --line:#33332f; --accent:#7fb0e0; --high:#5cc28e; --medium:#e0a83c; --low:#8a8a85; } }
+  * { box-sizing:border-box; } body { margin:0; font:14px/1.5 system-ui, sans-serif; background:var(--bg); color:var(--fg); }
+  header { padding:16px 24px; border-bottom:1px solid var(--line); display:flex; gap:16px; align-items:baseline; flex-wrap:wrap; }
+  header h1 { font-size:18px; margin:0; } header span { color:var(--muted); }
+  main { max-width:1100px; margin:0 auto; padding:16px; }
+  nav button { background:none; border:none; padding:8px 12px; color:var(--muted); cursor:pointer; font:inherit; border-bottom:2px solid transparent; }
+  nav button.on { color:var(--fg); border-color:var(--accent); }
+  .panel { display:none; } .panel.on { display:block; }
+  label { display:block; margin:12px 0 4px; color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.04em; }
+  select, input, textarea { width:100%; padding:8px; border:1px solid var(--line); border-radius:6px; background:var(--card); color:var(--fg); font:13px ui-monospace, monospace; }
+  textarea { min-height:160px; }
+  .row { display:grid; grid-template-columns: 1fr 1fr; gap:12px; } @media (max-width:700px){ .row{grid-template-columns:1fr;} }
+  button.go { margin-top:12px; padding:8px 16px; background:var(--accent); color:#fff; border:0; border-radius:6px; cursor:pointer; font:inherit; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:12px 14px; margin:10px 0; }
+  .card h3 { margin:0 0 4px; font:600 14px ui-monospace, monospace; word-break:break-all; }
+  .pill { display:inline-block; padding:1px 8px; border-radius:10px; font-size:12px; color:#fff; margin-right:6px; }
+  .high{background:var(--high)} .medium{background:var(--medium)} .low{background:var(--low)}
+  .muted { color:var(--muted); } code { font:12px ui-monospace, monospace; }
+  table { border-collapse:collapse; width:100%; } td, th { text-align:left; padding:4px 8px; border-bottom:1px solid var(--line); font-size:13px; }
+  .err { color:#c0392b; white-space:pre-wrap; } details summary { cursor:pointer; color:var(--accent); }
+  .ev { font-size:12px; margin:4px 0 0 0; padding-left:16px; }
+</style>
+</head>
+<body>
+<header><h1>SpecWeft</h1><span id="stats">loading…</span></header>
+<main>
+  <nav><button data-p="analyze" class="on">Analyze change</button><button data-p="rank">Rank by files</button>
+       <button data-p="tokens">Agreements</button><button data-p="reports">Evaluation</button></nav>
+  <section id="analyze" class="panel on">
+    <div class="row"><div><label>Repository</label><select id="repo"></select></div>
+      <div><label>Commit (or paste a diff below)</label><input id="commit" placeholder="e.g. HEAD or a SHA"></div></div>
+    <label>Unified diff</label><textarea id="diff" placeholder="diff --git a/... b/..."></textarea>
+    <button class="go" id="run-analyze">Analyze</button>
+    <div id="analyze-out"></div>
+  </section>
+  <section id="rank" class="panel">
+    <label>Repository</label><select id="repo2"></select>
+    <label>Changed files (one per line, repo-relative)</label><textarea id="files" style="min-height:90px"></textarea>
+    <button class="go" id="run-rank">Rank</button><div id="rank-out"></div>
+  </section>
+  <section id="tokens" class="panel"><div id="tok-out"></div></section>
+  <section id="reports" class="panel"><div id="rep-out"></div></section>
+</main>
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+async function api(path, body) {
+  const r = await fetch(path, body ? {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)} : {});
+  const j = await r.json(); if (!r.ok) throw new Error(typeof j.detail === "string" ? j.detail : JSON.stringify(j.detail)); return j;
+}
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("nav button, .panel").forEach(x => x.classList.remove("on"));
+  b.classList.add("on"); $("#" + b.dataset.p).classList.add("on");
+});
+function loc(l) { return `${esc(l.repo)}:${esc(l.path)}${l.line ? ":" + l.line : ""}`; }
+function renderRecs(recs) {
+  if (!recs.length) return `<p class="muted">No affected files found.</p>`;
+  return recs.map(r => `<div class="card">
+    <h3>${esc(r.related_file.path)} ${r.cross_repo ? `<span class="muted">(${esc(r.related_file.repo)})</span>` : ""}</h3>
+    <span class="pill ${r.confidence}">${r.confidence}</span><span class="muted">score ${r.ranking_score.toFixed(3)} · ${esc(r.confidence_basis)} · from ${esc(r.changed_file.path)}</span>
+    <p>${esc(r.reason)}</p>
+    <details><summary>Evidence</summary>
+      ${r.agreement_evidence.map(e => `<div class="ev"><code>${esc(e.token)}</code> ${esc(e.change_type)}${e.renamed_to ? " → <code>" + esc(e.renamed_to) + "</code>" : ""}${e.new_value ? ` (${esc(e.old_value)} → ${esc(e.new_value)})` : ""} · token score ${e.token_score}<br>
+        changed: <code>${loc(e.changed_site)}</code> <span class="muted">${esc(e.changed_site.text)}</span><br>
+        holder: <code>${loc(e.holder_site)}</code> <span class="muted">${esc(e.holder_site.text)}</span></div>`).join("")}
+      ${r.navigation_evidence ? `<div class="ev">navigation: ${r.navigation_evidence.sessions_with_edge}/${r.navigation_evidence.sessions_editing_source} sessions, lift ${r.navigation_evidence.lift}×, baseline ${(r.navigation_evidence.baseline_rate*100).toFixed(1)}%, detours ${r.navigation_evidence.detours}
+        ${r.navigation_evidence.excerpts.map(x => `<br><span class="muted">“${esc(x)}”</span>`).join("")}</div>` : ""}
+      <div class="ev muted">${esc(r.explanation)}</div>
+      <div class="ev muted">features: ${esc(JSON.stringify(r.features))}</div>
+    </details></div>`).join("");
+}
+$("#run-analyze").onclick = async () => {
+  const out = $("#analyze-out"); out.innerHTML = "<p class='muted'>Analyzing…</p>";
+  try {
+    const body = {repo: $("#repo").value}; const d = $("#diff").value.trim(), c = $("#commit").value.trim();
+    if (d) body.diff = d; else body.commit = c || "HEAD";
+    const j = await api("/api/analyze", body);
+    const tc = j.token_changes.slice(0, 15).map(t => `<code>${esc(t.norm)}</code> ${esc(t.change_type)}`).join(" · ");
+    out.innerHTML = `<p class="muted">Changed: ${j.changed_files.map(esc).join(", ")}</p><p class="muted">Token changes: ${tc || "none"}</p>` + renderRecs(j.recommendations);
+  } catch (e) { out.innerHTML = `<p class="err">${esc(e.message)}</p>`; }
+};
+$("#run-rank").onclick = async () => {
+  const out = $("#rank-out"); out.innerHTML = "<p class='muted'>Ranking…</p>";
+  try {
+    const files = $("#files").value.split("\n").map(s => s.trim()).filter(Boolean);
+    const j = await api("/api/rank", {repo: $("#repo2").value, changed_files: files});
+    out.innerHTML = renderRecs(j.recommendations);
+  } catch (e) { out.innerHTML = `<p class="err">${esc(e.message)}</p>`; }
+};
+(async () => {
+  try {
+    const h = await api("/api/health");
+    $("#stats").textContent = `${h.repos} repos · ${h.files} files · ${h.agreement_tokens} agreements · ${h.sessions} sessions · ${h.nav_edges} navigation edges`;
+    const repos = await api("/api/repos");
+    for (const sel of ["#repo", "#repo2"]) $(sel).innerHTML = repos.map(r => `<option>${esc(r.name)}</option>`).join("");
+    const toks = await api("/api/agreements/top?limit=60");
+    $("#tok-out").innerHTML = `<table><tr><th>token</th><th>files</th><th>repos</th><th>rarity</th><th>specificity</th><th>score</th></tr>` +
+      toks.map(t => `<tr><td><code>${esc(t.token_norm)}</code></td><td>${t.n_files}</td><td>${t.n_repos}</td><td>${t.rarity.toFixed(2)}</td><td>${t.specificity.toFixed(2)}</td><td>${t.score.toFixed(3)}</td></tr>`).join("") + "</table>";
+    const reps = await api("/api/reports");
+    $("#rep-out").innerHTML = Object.entries(reps).map(([name, r]) => `<div class="card"><h3>${esc(name)}</h3>
+      ${r.methods ? `<table><tr><th>method</th><th>n</th><th>P@5</th><th>R@10</th><th>cross-repo share</th><th>coverage</th></tr>` +
+        Object.entries(r.methods).map(([m, v]) => `<tr><td>${esc(m)}</td><td>${v.n}</td><td>${v["P@5"] ?? ""}</td><td>${v["R@10"] ?? ""}</td><td>${v.cross_repo_share ?? ""}</td><td>${v.coverage ?? ""}</td></tr>`).join("") + "</table>" : ""}
+      <details><summary>raw</summary><pre>${esc(JSON.stringify(r, null, 1)).slice(0, 4000)}</pre></details></div>`).join("") || "<p class='muted'>No reports yet. Run <code>python -m specweft.cli pipeline</code>.</p>";
+  } catch (e) { $("#stats").textContent = "API error: " + e.message; }
+})();
+</script>
+</body>
+</html>
