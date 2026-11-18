@@ -1,0 +1,391 @@
+{
+  "scan": [
+    {
+      "repo": "full-stack-fastapi-template",
+      "group": "fastapi-stack",
+      "files": 205,
+      "occurrences": 13504,
+      "failures": 0,
+      "by_extractor": {
+        "json": 14,
+        "markdown": 10,
+        "env": 2,
+        "yaml": 5,
+        "ci": 15,
+        "dockerfile": 2,
+        "python": 43,
+        "toml": 2,
+        "compose": 3,
+        "typescript": 39,
+        "tsx": 70
+      }
+    },
+    {
+      "repo": "sqlmodel",
+      "group": "fastapi-stack",
+      "files": 376,
+      "occurrences": 21504,
+      "failures": 0,
+      "by_extractor": {
+        "yaml": 8,
+        "ci": 15,
+        "markdown": 16,
+        "compose": 1,
+        "python": 335,
+        "toml": 1
+      }
+    },
+    {
+      "repo": "microservices-demo",
+      "group": "microservices-demo",
+      "files": 200,
+      "occurrences": 7103,
+      "failures": 0,
+      "by_extractor": {
+        "yaml": 8,
+        "markdown": 43,
+        "k8s": 86,
+        "terraform": 9,
+        "ci": 9,
+        "python": 13,
+        "proto": 8,
+        "dockerfile": 13,
+        "json": 5,
+        "tsx": 6
+      }
+    },
+    {
+      "repo": "cognitive_complexity",
+      "rev": "aa428ca731bc0461cc9f95956ff4816154495729",
+      "files": 10,
+      "occurrences": 201
+    },
+    {
+      "repo": "SpecWeft",
+      "files": 49,
+      "occurrences": 6551
+    }
+  ],
+  "index": {
+    "files": 840,
+    "tokens": 2594
+  },
+  "ingest": {
+    "swe_agent": {
+      "sessions": 100,
+      "events": 2255,
+      "skipped": 0
+    },
+    "openhands": {
+      "sessions": 60,
+      "events": 2671,
+      "skipped": 0
+    },
+    "claude_code": {
+      "sessions": 59,
+      "events": 1982
+    }
+  },
+  "navigation": {
+    "sessions": 213,
+    "edges": 6378,
+    "files": 1398,
+    "sessions_with_edit": 196
+  },
+  "replay": {
+    "full-stack-fastapi-template": {
+      "agreement": {
+        "n": 67,
+        "P@5": 0.0896,
+        "R@10": 0.1702,
+        "cross_repo_share": 0.3221,
+        "coverage": 1.0
+      },
+      "agreement_in_repo_only": {
+        "n": 67,
+        "P@5": 0.1343,
+        "R@10": 0.1817,
+        "cross_repo_share": 0.0,
+        "coverage": 0.9851
+      },
+      "fused_weighted": {
+        "n": 67,
+        "P@5": 0.0866,
+        "R@10": 0.1665,
+        "cross_repo_share": 0.3251,
+        "coverage": 1.0
+      },
+      "cochange_baseline": {
+        "n": 67,
+        "P@5": 0.2627,
+        "R@10": 0.6642,
+        "cross_repo_share": 0.0,
+        "coverage": 0.9701
+      },
+      "lr_holdout": {
+        "evaluated": true,
+        "train_labels": 439,
+        "test_labels": 532,
+        "auc_lr": 0.8086,
+        "auc_weighted": 0.7577,
+        "P@5_lr_rerank": 0.1282,
+        "P@5_weighted_rerank": 0.0718,
+        "coef": {
+          "agreement": -2.169,
+          "navigation": 0.0,
+          "cross_repo": -3.28,
+          "detours": 0.0,
+          "recency": 2.746
+        },
+        "note": "P@5 here re-ranks only the candidates the ranker produced (labels table), not all files"
+      }
+    },
+    "microservices-demo": {
+      "agreement": {
+        "n": 105,
+        "P@5": 0.2419,
+        "R@10": 0.4749,
+        "cross_repo_share": 0.0,
+        "coverage": 0.9905
+      },
+      "agreement_in_repo_only": {
+        "n": 105,
+        "P@5": 0.2419,
+        "R@10": 0.4749,
+        "cross_repo_share": 0.0,
+        "coverage": 0.9905
+      },
+      "fused_weighted": {
+        "n": 105,
+        "P@5": 0.2438,
+        "R@10": 0.473,
+        "cross_repo_share": 0.0,
+        "coverage": 0.9905
+      },
+      "cochange_baseline": {
+        "n": 105,
+        "P@5": 0.4076,
+        "R@10": 0.826,
+        "cross_repo_share": 0.0,
+        "coverage": 0.9905
+      },
+      "lr_holdout": {
+        "evaluated": true,
+        "train_labels": 577,
+        "test_labels": 561,
+        "auc_lr": 0.7933,
+        "auc_weighted": 0.7757,
+        "P@5_lr_rerank": 0.2196,
+        "P@5_weighted_rerank": 0.2471,
+        "coef": {
+          "agreement": 2.012,
+          "navigation": 0.0,
+          "cross_repo": 0.0,
+          "detours": 0.0,
+          "recency": 5.357
+        },
+        "note": "P@5 here re-ranks only the candidates the ranker produced (labels table), not all files"
+      }
+    }
+  },
+  "gold": {
+    "resolved_patch": {
+      "navigation": {
+        "n": 8,
+        "P@5": 0.15,
+        "R@10": 0.75,
+        "cross_repo_share": 0.0,
+        "coverage": 0.875
+      },
+      "agreement": {
+        "n": 8,
+        "P@5": 0.0,
+        "R@10": 0.0,
+        "cross_repo_share": 0.0,
+        "coverage": 0.875
+      },
+      "fused_weighted": {
+        "n": 8,
+        "P@5": 0.15,
+        "R@10": 0.75,
+        "cross_repo_share": 0.0,
+        "coverage": 0.875
+      },
+      "cochange_baseline": {
+        "n": 8,
+        "P@5": 0.025,
+        "R@10": 0.25,
+        "cross_repo_share": 0.0,
+        "coverage": 1.0
+      }
+    },
+    "upstream_pr": {
+      "navigation": {
+        "n": 17,
+        "P@5": 0.2,
+        "R@10": 1.0,
+        "cross_repo_share": 0.0,
+        "coverage": 1.0
+      },
+      "agreement": {
+        "n": 17,
+        "P@5": 0.0,
+        "R@10": 0.0,
+        "cross_repo_share": 0.0,
+        "coverage": 1.0
+      },
+      "fused_weighted": {
+        "n": 17,
+        "P@5": 0.2,
+        "R@10": 1.0,
+        "cross_repo_share": 0.0,
+        "coverage": 1.0
+      },
+      "cochange_baseline": {
+        "n": 17,
+        "P@5": 0.0118,
+        "R@10": 0.0588,
+        "cross_repo_share": 0.0,
+        "coverage": 1.0
+      }
+    },
+    "mode": [
+      "leave-one-trajectory-out (same instance; optimistic)"
+    ]
+  },
+  "train": {
+    "trained": true,
+    "params": {
+      "intercept": -3.0202884121886706,
+      "coef": {
+        "agreement": 2.21338034899281,
+        "navigation": 0.9850179547192143,
+        "cross_repo": -4.4875939842016415,
+        "detours": 3.4026108815543865,
+        "recency": 3.7562101051496937
+      },
+      "observed_features": [
+        "agreement",
+        "navigation",
+        "cross_repo",
+        "detours",
+        "recency"
+      ]
+    },
+    "metrics": {
+      "train_auc": 0.8167700842805226,
+      "n_pos": 270,
+      "n": 2186,
+      "note": "in-sample AUC; activation decided by held-out comparison",
+      "holdout": {
+        "auc_lr": 0.80095,
+        "auc_weighted": 0.7666999999999999,
+        "runs": 2
+      },
+      "active": true
+    }
+  },
+  "demo_pr": {
+    "commit": "32ab6dd",
+    "subject": "\u267b\ufe0f Migrate to `DATABASE_URL` instead of separate variables (#2184)",
+    "seed": "backend/app/core/config.py",
+    "files_actually_changed_by_pr": [
+      ".env",
+      "backend/app/alembic/env.py",
+      "backend/app/core/db.py",
+      "compose.yml",
+      "deployment.md"
+    ],
+    "removed_or_renamed_tokens": [
+      "5432",
+      "computed_field",
+      "postgres_db",
+      "postgres_dsn.build",
+      "postgres_password",
+      "postgres_port",
+      "postgres_server",
+      "postgres_user",
+      "prop_decorator",
+      "self.postgres_db",
+      "self.postgres_password",
+      "self.postgres_port",
+      "self.postgres_server",
+      "self.postgres_user",
+      "sqlalchemy_database_uri"
+    ],
+    "top10": [
+      {
+        "path": "compose.yml",
+        "hit": true,
+        "confidence": "medium",
+        "score": 0.4737,
+        "reason": "change removes `postgres_password` which is still held here"
+      },
+      {
+        "path": ".env",
+        "hit": true,
+        "confidence": "medium",
+        "score": 0.4701,
+        "reason": "change removes `postgres_password` which is still held here"
+      },
+      {
+        "path": "deployment.md",
+        "hit": true,
+        "confidence": "medium",
+        "score": 0.4261,
+        "reason": "change removes `postgres_password` which is still held here"
+      },
+      {
+        "path": "README.md",
+        "hit": false,
+        "confidence": "medium",
+        "score": 0.2579,
+        "reason": "change removes `postgres_password` which is still held here"
+      },
+      {
+        "path": ".github/workflows/deploy-production.yml",
+        "hit": false,
+        "confidence": "medium",
+        "score": 0.2563,
+        "reason": "change removes `postgres_password` which is still held here"
+      },
+      {
+        "path": ".github/workflows/deploy-staging.yml",
+        "hit": false,
+        "confidence": "medium",
+        "score": 0.2563,
+        "reason": "change removes `postgres_password` which is still held here"
+      },
+      {
+        "path": "backend/app/core/db.py",
+        "hit": true,
+        "confidence": "medium",
+        "score": 0.2139,
+        "reason": "change removes `sqlalchemy_database_uri` which is still held here"
+      },
+      {
+        "path": "backend/app/alembic/env.py",
+        "hit": true,
+        "confidence": "medium",
+        "score": 0.2111,
+        "reason": "change removes `sqlalchemy_database_uri` which is still held here"
+      },
+      {
+        "path": "release-notes.md",
+        "hit": false,
+        "confidence": "medium",
+        "score": 0.1956,
+        "reason": "change removes `postgres_port` which is still held here"
+      },
+      {
+        "path": "sqlmodel/main.py",
+        "hit": false,
+        "confidence": "low",
+        "score": 0.1692,
+        "reason": "change touches `pydantic` which is still held here"
+      }
+    ],
+    "P@10": 0.5,
+    "recall@10": 1.0
+  }
+}

@@ -1,0 +1,234 @@
+{
+  "repo": "Melevir/cognitive_complexity",
+  "evaluation_mode": [
+    "leave-one-trajectory-out (same instance; optimistic)"
+  ],
+  "methods": {
+    "navigation": {
+      "n": 17,
+      "P@5": 0.2,
+      "R@10": 1.0,
+      "cross_repo_share": 0.0,
+      "coverage": 1.0
+    },
+    "agreement": {
+      "n": 17,
+      "P@5": 0.0,
+      "R@10": 0.0,
+      "cross_repo_share": 0.0,
+      "coverage": 1.0
+    },
+    "fused_weighted": {
+      "n": 17,
+      "P@5": 0.2,
+      "R@10": 1.0,
+      "cross_repo_share": 0.0,
+      "coverage": 1.0
+    },
+    "cochange_baseline": {
+      "n": 17,
+      "P@5": 0.0118,
+      "R@10": 0.0588,
+      "cross_repo_share": 0.0,
+      "coverage": 1.0
+    }
+  },
+  "gold_definition": "files changed by the upstream PR",
+  "details": [
+    {
+      "session": 27,
+      "seed": "cognitive_complexity/utils/ast.py",
+      "truth": [
+        "tests/test_cognitive_complexity.py"
+      ],
+      "nav_top5": [
+        "tests/conftest.py",
+        "tests/test_cognitive_complexity.py",
+        "dummy.py",
+        "proxy.py",
+        "test_boolops.py"
+      ],
+      "agreement_top5": [
+        "cognitive_complexity/api.py",
+        "tests/conftest.py",
+        "setup.py",
+        "cognitive_complexity/common_types.py"
+      ]
+    },
+    {
+      "session": 32,
+      "seed": "cognitive_complexity/utils/ast.py",
+      "truth": [
+        "tests/test_cognitive_complexity.py"
+      ],
+      "nav_top5": [
+        "tests/conftest.py",
+        "tests/test_cognitive_complexity.py",
+        "dummy.py",
+        "proxy.py",
+        "test_boolops.py"
+      ],
+      "agreement_top5": [
+        "cognitive_complexity/api.py",
+        "tests/conftest.py",
+        "setup.py",
+        "cognitive_complexity/common_types.py"
+      ]
+    },
+    {
+      "session": 33,
+      "seed": "cognitive_complexity/utils/ast.py",
+      "truth": [
+        "tests/test_cognitive_complexity.py"
+      ],
+      "nav_top5": [
+        "tests/conftest.py",
+        "tests/test_cognitive_complexity.py",
+        "dummy.py",
+        "proxy.py",
+        "test_boolops.py"
+      ],
+      "agreement_top5": [
+        "cognitive_complexity/api.py",
+        "tests/conftest.py",
+        "setup.py",
+        "cognitive_complexity/common_types.py"
+      ]
+    },
+    {
+      "session": 35,
+      "seed": "cognitive_complexity/utils/ast.py",
+      "truth": [
+        "tests/test_cognitive_complexity.py"
+      ],
+      "nav_top5": [
+        "tests/conftest.py",
+        "tests/test_cognitive_complexity.py",
+        "dummy.py",
+        "proxy.py",
+        "test_boolops.py"
+      ],
+      "agreement_top5": [
+        "cognitive_complexity/api.py",
+        "tests/conftest.py",
+        "setup.py",
+        "cognitive_complexity/common_types.py"
+      ]
+    },
+    {
+      "session": 36,
+      "seed": "cognitive_complexity/utils/ast.py",
+      "truth": [
+        "tests/test_cognitive_complexity.py"
+      ],
+      "nav_top5": [
+        "tests/conftest.py",
+        "tests/test_cognitive_complexity.py",
+        "dummy.py",
+        "proxy.py",
+        "test_boolops.py"
+      ],
+      "agreement_top5": [
+        "cognitive_complexity/api.py",
+        "tests/conftest.py",
+        "setup.py",
+        "cognitive_complexity/common_types.py"
+      ]
+    },
+    {
+      "session": 37,
+      "seed": "tests/test_cognitive_complexity.py",
+      "truth": [
+        "cognitive_complexity/utils/ast.py"
+      ],
+      "nav_top5": [
+        "cognitive_complexity/api.py",
+        "cognitive_complexity/utils/ast.py",
+        "tests/conftest.py"
+      ],
+      "agreement_top5": [
+        "tests/conftest.py"
+      ]
+    },
+    {
+      "session": 38,
+      "seed": "cognitive_complexity/utils/ast.py",
+      "truth": [
+        "tests/test_cognitive_complexity.py"
+      ],
+      "nav_top5": [
+        "tests/conftest.py",
+        "tests/test_cognitive_complexity.py",
+        "dummy.py",
+        "proxy.py",
+        "test_boolops.py"
+      ],
+      "agreement_top5": [
+        "cognitive_complexity/api.py",
+        "tests/conftest.py",
+        "setup.py",
+        "cognitive_complexity/common_types.py"
+      ]
+    },
+    {
+      "session": 41,
+      "seed": "cognitive_complexity/utils/ast.py",
+      "truth": [
+        "tests/test_cognitive_complexity.py"
+      ],
+      "nav_top5": [
+        "tests/conftest.py",
+        "tests/test_cognitive_complexity.py",
+        "dummy.py",
+        "proxy.py",
+        "test_boolops.py"
+      ],
+      "agreement_top5": [
+        "cognitive_complexity/api.py",
+        "tests/conftest.py",
+        "setup.py",
+        "cognitive_complexity/common_types.py"
+      ]
+    },
+    {
+      "session": 48,
+      "seed": "cognitive_complexity/utils/ast.py",
+      "truth": [
+        "tests/test_cognitive_complexity.py"
+      ],
+      "nav_top5": [
+        "tests/conftest.py",
+        "tests/test_cognitive_complexity.py",
+        "dummy.py",
+        "proxy.py",
+        "test_boolops.py"
+      ],
+      "agreement_top5": [
+        "cognitive_complexity/api.py",
+        "tests/conftest.py",
+        "setup.py",
+        "cognitive_complexity/common_types.py"
+      ]
+    },
+    {
+      "session": 49,
+      "seed": "cognitive_complexity/utils/ast.py",
+      "truth": [
+        "tests/test_cognitive_complexity.py"
+      ],
+      "nav_top5": [
+        "tests/conftest.py",
+        "tests/test_cognitive_complexity.py",
+        "dummy.py",
+        "proxy.py",
+        "test_boolops.py"
+      ],
+      "agreement_top5": [
+        "cognitive_complexity/api.py",
+        "tests/conftest.py",
+        "setup.py",
+        "cognitive_complexity/common_types.py"
+      ]
+    }
+  ]
+}

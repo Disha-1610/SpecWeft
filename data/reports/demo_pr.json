@@ -1,0 +1,815 @@
+{
+  "commit": "32ab6dd",
+  "subject": "\u267b\ufe0f Migrate to `DATABASE_URL` instead of separate variables (#2184)",
+  "seed": "backend/app/core/config.py",
+  "files_actually_changed_by_pr": [
+    ".env",
+    "backend/app/alembic/env.py",
+    "backend/app/core/db.py",
+    "compose.yml",
+    "deployment.md"
+  ],
+  "removed_or_renamed_tokens": [
+    "5432",
+    "computed_field",
+    "postgres_db",
+    "postgres_dsn.build",
+    "postgres_password",
+    "postgres_port",
+    "postgres_server",
+    "postgres_user",
+    "prop_decorator",
+    "self.postgres_db",
+    "self.postgres_password",
+    "self.postgres_port",
+    "self.postgres_server",
+    "self.postgres_user",
+    "sqlalchemy_database_uri"
+  ],
+  "top10": [
+    {
+      "path": "compose.yml",
+      "hit": true,
+      "confidence": "medium",
+      "score": 0.4737,
+      "reason": "change removes `postgres_password` which is still held here"
+    },
+    {
+      "path": ".env",
+      "hit": true,
+      "confidence": "medium",
+      "score": 0.4701,
+      "reason": "change removes `postgres_password` which is still held here"
+    },
+    {
+      "path": "deployment.md",
+      "hit": true,
+      "confidence": "medium",
+      "score": 0.4261,
+      "reason": "change removes `postgres_password` which is still held here"
+    },
+    {
+      "path": "README.md",
+      "hit": false,
+      "confidence": "medium",
+      "score": 0.2579,
+      "reason": "change removes `postgres_password` which is still held here"
+    },
+    {
+      "path": ".github/workflows/deploy-production.yml",
+      "hit": false,
+      "confidence": "medium",
+      "score": 0.2563,
+      "reason": "change removes `postgres_password` which is still held here"
+    },
+    {
+      "path": ".github/workflows/deploy-staging.yml",
+      "hit": false,
+      "confidence": "medium",
+      "score": 0.2563,
+      "reason": "change removes `postgres_password` which is still held here"
+    },
+    {
+      "path": "backend/app/core/db.py",
+      "hit": true,
+      "confidence": "medium",
+      "score": 0.2139,
+      "reason": "change removes `sqlalchemy_database_uri` which is still held here"
+    },
+    {
+      "path": "backend/app/alembic/env.py",
+      "hit": true,
+      "confidence": "medium",
+      "score": 0.2111,
+      "reason": "change removes `sqlalchemy_database_uri` which is still held here"
+    },
+    {
+      "path": "release-notes.md",
+      "hit": false,
+      "confidence": "medium",
+      "score": 0.1956,
+      "reason": "change removes `postgres_port` which is still held here"
+    },
+    {
+      "path": "sqlmodel/main.py",
+      "hit": false,
+      "confidence": "low",
+      "score": 0.1692,
+      "reason": "change touches `pydantic` which is still held here"
+    }
+  ],
+  "P@10": 0.5,
+  "recall@10": 1.0,
+  "recommendations": [
+    {
+      "changed_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "backend/app/core/config.py",
+        "line": null,
+        "text": null
+      },
+      "related_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "compose.yml",
+        "line": 31,
+        "text": null
+      },
+      "reason": "change removes `postgres_password` which is still held here",
+      "agreement_evidence": [
+        {
+          "token": "postgres_password",
+          "change_type": "removed",
+          "token_score": 0.4136,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "backend/app/core/config.py",
+            "line": 33,
+            "text": "POSTGRES_PASSWORD"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "compose.yml",
+            "line": 31,
+            "text": "- POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?Variable not set}"
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        },
+        {
+          "token": "postgres_user",
+          "change_type": "removed",
+          "token_score": 0.3168,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "backend/app/core/config.py",
+            "line": 32,
+            "text": "POSTGRES_USER"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "compose.yml",
+            "line": 23,
+            "text": "test: [\"CMD-SHELL\", \"pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}\"]"
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        },
+        {
+          "token": "postgres_db",
+          "change_type": "removed",
+          "token_score": 0.3067,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "backend/app/core/config.py",
+            "line": 34,
+            "text": "POSTGRES_DB"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "compose.yml",
+            "line": 23,
+            "text": "test: [\"CMD-SHELL\", \"pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}\"]"
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        },
+        {
+          "token": "postgres_server",
+          "change_type": "removed",
+          "token_score": 0.288,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "backend/app/core/config.py",
+            "line": 30,
+            "text": "POSTGRES_SERVER"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "compose.yml",
+            "line": 65,
+            "text": "POSTGRES_SERVER: db"
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        }
+      ],
+      "navigation_evidence": null,
+      "cross_repo": false,
+      "features": {
+        "agreement": 0.8022,
+        "navigation": 0.0,
+        "cross_repo": 0.0,
+        "detours": 0.0,
+        "recency": 0.6484
+      },
+      "ranking_score": 0.4737,
+      "confidence": "medium",
+      "confidence_score": 0.4737,
+      "confidence_basis": "uncalibrated_weighted",
+      "explanation": "compose.yml may need updating after changes to backend/app/core/config.py. Agreement 0.80: shared tokens `postgres_password` (removed, score 0.41), `postgres_user` (removed, score 0.32), `postgres_db` (removed, score 0.31). Single system: strong signal or a definite contract break. Score is an uncalibrated weighted sum (no trained model)."
+    },
+    {
+      "changed_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "backend/app/core/config.py",
+        "line": null,
+        "text": null
+      },
+      "related_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": ".env",
+        "line": 20,
+        "text": null
+      },
+      "reason": "change removes `postgres_password` which is still held here",
+      "agreement_evidence": [
+        {
+          "token": "postgres_password",
+          "change_type": "removed",
+          "token_score": 0.4136,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "backend/app/core/config.py",
+            "line": 33,
+            "text": "POSTGRES_PASSWORD"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": ".env",
+            "line": 20,
+            "text": "POSTGRES_PASSWORD=changethis"
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        },
+        {
+          "token": "postgres_user",
+          "change_type": "removed",
+          "token_score": 0.3168,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "backend/app/core/config.py",
+            "line": 32,
+            "text": "POSTGRES_USER"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": ".env",
+            "line": 19,
+            "text": "POSTGRES_USER=postgres"
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        },
+        {
+          "token": "postgres_db",
+          "change_type": "removed",
+          "token_score": 0.3067,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "backend/app/core/config.py",
+            "line": 34,
+            "text": "POSTGRES_DB"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": ".env",
+            "line": 18,
+            "text": "POSTGRES_DB=app"
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        },
+        {
+          "token": "postgres_server",
+          "change_type": "removed",
+          "token_score": 0.288,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "backend/app/core/config.py",
+            "line": 30,
+            "text": "POSTGRES_SERVER"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": ".env",
+            "line": 17,
+            "text": "POSTGRES_SERVER=localhost"
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        }
+      ],
+      "navigation_evidence": null,
+      "cross_repo": false,
+      "features": {
+        "agreement": 0.8022,
+        "navigation": 0.0,
+        "cross_repo": 0.0,
+        "detours": 0.0,
+        "recency": 0.5768
+      },
+      "ranking_score": 0.4701,
+      "confidence": "medium",
+      "confidence_score": 0.4701,
+      "confidence_basis": "uncalibrated_weighted",
+      "explanation": ".env may need updating after changes to backend/app/core/config.py. Agreement 0.80: shared tokens `postgres_password` (removed, score 0.41), `postgres_user` (removed, score 0.32), `postgres_db` (removed, score 0.31). Single system: strong signal or a definite contract break. Score is an uncalibrated weighted sum (no trained model)."
+    },
+    {
+      "changed_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "backend/app/core/config.py",
+        "line": null,
+        "text": null
+      },
+      "related_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "deployment.md",
+        "line": 57,
+        "text": null
+      },
+      "reason": "change removes `postgres_password` which is still held here",
+      "agreement_evidence": [
+        {
+          "token": "postgres_password",
+          "change_type": "removed",
+          "token_score": 0.4136,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "backend/app/core/config.py",
+            "line": 33,
+            "text": "POSTGRES_PASSWORD"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "deployment.md",
+            "line": 57,
+            "text": "Set the `POSTGRES_PASSWORD` to a secure value:"
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        },
+        {
+          "token": "postgres_user",
+          "change_type": "removed",
+          "token_score": 0.3168,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "backend/app/core/config.py",
+            "line": 32,
+            "text": "POSTGRES_USER"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "deployment.md",
+            "line": 83,
+            "text": "* `POSTGRES_USER`: The Postgres user, you can leave the default."
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        },
+        {
+          "token": "postgres_db",
+          "change_type": "removed",
+          "token_score": 0.3067,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "backend/app/core/config.py",
+            "line": 34,
+            "text": "POSTGRES_DB"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "deployment.md",
+            "line": 84,
+            "text": "* `POSTGRES_DB`: The database name to use for this application. You can leave the default of `app`."
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        }
+      ],
+      "navigation_evidence": null,
+      "cross_repo": false,
+      "features": {
+        "agreement": 0.7223,
+        "navigation": 0.0,
+        "cross_repo": 0.0,
+        "detours": 0.0,
+        "recency": 0.5773
+      },
+      "ranking_score": 0.4261,
+      "confidence": "medium",
+      "confidence_score": 0.4261,
+      "confidence_basis": "uncalibrated_weighted",
+      "explanation": "deployment.md may need updating after changes to backend/app/core/config.py. Agreement 0.72: shared tokens `postgres_password` (removed, score 0.41), `postgres_user` (removed, score 0.32), `postgres_db` (removed, score 0.31). Single system: strong signal or a definite contract break. Score is an uncalibrated weighted sum (no trained model)."
+    },
+    {
+      "changed_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "backend/app/core/config.py",
+        "line": null,
+        "text": null
+      },
+      "related_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "README.md",
+        "line": 132,
+        "text": null
+      },
+      "reason": "change removes `postgres_password` which is still held here",
+      "agreement_evidence": [
+        {
+          "token": "postgres_password",
+          "change_type": "removed",
+          "token_score": 0.4136,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "backend/app/core/config.py",
+            "line": 33,
+            "text": "POSTGRES_PASSWORD"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "README.md",
+            "line": 132,
+            "text": "- `POSTGRES_PASSWORD`"
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        }
+      ],
+      "navigation_evidence": null,
+      "cross_repo": false,
+      "features": {
+        "agreement": 0.4136,
+        "navigation": 0.0,
+        "cross_repo": 0.0,
+        "detours": 0.0,
+        "recency": 0.6089
+      },
+      "ranking_score": 0.2579,
+      "confidence": "medium",
+      "confidence_score": 0.2579,
+      "confidence_basis": "uncalibrated_weighted",
+      "explanation": "README.md may need updating after changes to backend/app/core/config.py. Agreement 0.41: shared tokens `postgres_password` (removed, score 0.41). Single system: strong signal or a definite contract break. Score is an uncalibrated weighted sum (no trained model)."
+    },
+    {
+      "changed_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "backend/app/core/config.py",
+        "line": null,
+        "text": null
+      },
+      "related_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": ".github/workflows/deploy-production.yml",
+        "line": 28,
+        "text": null
+      },
+      "reason": "change removes `postgres_password` which is still held here",
+      "agreement_evidence": [
+        {
+          "token": "postgres_password",
+          "change_type": "removed",
+          "token_score": 0.4136,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "backend/app/core/config.py",
+            "line": 33,
+            "text": "POSTGRES_PASSWORD"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": ".github/workflows/deploy-production.yml",
+            "line": 28,
+            "text": "POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}"
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        }
+      ],
+      "navigation_evidence": null,
+      "cross_repo": false,
+      "features": {
+        "agreement": 0.4136,
+        "navigation": 0.0,
+        "cross_repo": 0.0,
+        "detours": 0.0,
+        "recency": 0.5771
+      },
+      "ranking_score": 0.2563,
+      "confidence": "medium",
+      "confidence_score": 0.2563,
+      "confidence_basis": "uncalibrated_weighted",
+      "explanation": ".github/workflows/deploy-production.yml may need updating after changes to backend/app/core/config.py. Agreement 0.41: shared tokens `postgres_password` (removed, score 0.41). Single system: strong signal or a definite contract break. Score is an uncalibrated weighted sum (no trained model)."
+    },
+    {
+      "changed_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "backend/app/core/config.py",
+        "line": null,
+        "text": null
+      },
+      "related_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": ".github/workflows/deploy-staging.yml",
+        "line": 28,
+        "text": null
+      },
+      "reason": "change removes `postgres_password` which is still held here",
+      "agreement_evidence": [
+        {
+          "token": "postgres_password",
+          "change_type": "removed",
+          "token_score": 0.4136,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "backend/app/core/config.py",
+            "line": 33,
+            "text": "POSTGRES_PASSWORD"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": ".github/workflows/deploy-staging.yml",
+            "line": 28,
+            "text": "POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}"
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        }
+      ],
+      "navigation_evidence": null,
+      "cross_repo": false,
+      "features": {
+        "agreement": 0.4136,
+        "navigation": 0.0,
+        "cross_repo": 0.0,
+        "detours": 0.0,
+        "recency": 0.5771
+      },
+      "ranking_score": 0.2563,
+      "confidence": "medium",
+      "confidence_score": 0.2563,
+      "confidence_basis": "uncalibrated_weighted",
+      "explanation": ".github/workflows/deploy-staging.yml may need updating after changes to backend/app/core/config.py. Agreement 0.41: shared tokens `postgres_password` (removed, score 0.41). Single system: strong signal or a definite contract break. Score is an uncalibrated weighted sum (no trained model)."
+    },
+    {
+      "changed_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "backend/app/core/config.py",
+        "line": null,
+        "text": null
+      },
+      "related_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "backend/app/core/db.py",
+        "line": 7,
+        "text": null
+      },
+      "reason": "change removes `sqlalchemy_database_uri` which is still held here",
+      "agreement_evidence": [
+        {
+          "token": "sqlalchemy_database_uri",
+          "change_type": "removed",
+          "token_score": 0.3314,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "backend/app/core/config.py",
+            "line": 38,
+            "text": "SQLALCHEMY_DATABASE_URI"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "backend/app/core/db.py",
+            "line": 7,
+            "text": "engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI))"
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        }
+      ],
+      "navigation_evidence": null,
+      "cross_repo": false,
+      "features": {
+        "agreement": 0.3314,
+        "navigation": 0.0,
+        "cross_repo": 0.0,
+        "detours": 0.0,
+        "recency": 0.6331
+      },
+      "ranking_score": 0.2139,
+      "confidence": "medium",
+      "confidence_score": 0.2139,
+      "confidence_basis": "uncalibrated_weighted",
+      "explanation": "backend/app/core/db.py may need updating after changes to backend/app/core/config.py. Agreement 0.33: shared tokens `sqlalchemy_database_uri` (removed, score 0.33). Single system: strong signal or a definite contract break. Score is an uncalibrated weighted sum (no trained model)."
+    },
+    {
+      "changed_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "backend/app/core/config.py",
+        "line": null,
+        "text": null
+      },
+      "related_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "backend/app/alembic/env.py",
+        "line": 34,
+        "text": null
+      },
+      "reason": "change removes `sqlalchemy_database_uri` which is still held here",
+      "agreement_evidence": [
+        {
+          "token": "sqlalchemy_database_uri",
+          "change_type": "removed",
+          "token_score": 0.3314,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "backend/app/core/config.py",
+            "line": 38,
+            "text": "SQLALCHEMY_DATABASE_URI"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "backend/app/alembic/env.py",
+            "line": 34,
+            "text": "return str(settings.SQLALCHEMY_DATABASE_URI)"
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        }
+      ],
+      "navigation_evidence": null,
+      "cross_repo": false,
+      "features": {
+        "agreement": 0.3314,
+        "navigation": 0.0,
+        "cross_repo": 0.0,
+        "detours": 0.0,
+        "recency": 0.5768
+      },
+      "ranking_score": 0.2111,
+      "confidence": "medium",
+      "confidence_score": 0.2111,
+      "confidence_basis": "uncalibrated_weighted",
+      "explanation": "backend/app/alembic/env.py may need updating after changes to backend/app/core/config.py. Agreement 0.33: shared tokens `sqlalchemy_database_uri` (removed, score 0.33). Single system: strong signal or a definite contract break. Score is an uncalibrated weighted sum (no trained model)."
+    },
+    {
+      "changed_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "backend/app/core/config.py",
+        "line": null,
+        "text": null
+      },
+      "related_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "release-notes.md",
+        "line": 689,
+        "text": null
+      },
+      "reason": "change removes `postgres_port` which is still held here",
+      "agreement_evidence": [
+        {
+          "token": "postgres_port",
+          "change_type": "removed",
+          "token_score": 0.2274,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "backend/app/core/config.py",
+            "line": 31,
+            "text": "POSTGRES_PORT"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "release-notes.md",
+            "line": 689,
+            "text": "* \u2728 Add support for setting `POSTGRES_PORT`. PR [#333](https://github.com/tiangolo/full-stack-fastapi-template/pull/333) by [@uepoch](https://github.com/uepoch)."
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        },
+        {
+          "token": "base_settings",
+          "change_type": "touched",
+          "token_score": 0.0997,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "backend/app/core/config.py",
+            "line": 27,
+            "text": "BaseSettings"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "release-notes.md",
+            "line": 871,
+            "text": "* Use Pydantic's `BaseSettings` for settings/configs and env vars. PR [#87](https://github.com/tiangolo/full-stack-fastapi-template/pull/87) by [@StephenBrown2](https://github.com/StephenBrown2)."
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        }
+      ],
+      "navigation_evidence": null,
+      "cross_repo": false,
+      "features": {
+        "agreement": 0.2659,
+        "navigation": 0.0,
+        "cross_repo": 0.0,
+        "detours": 0.0,
+        "recency": 0.9878
+      },
+      "ranking_score": 0.1956,
+      "confidence": "medium",
+      "confidence_score": 0.1956,
+      "confidence_basis": "uncalibrated_weighted",
+      "explanation": "release-notes.md may need updating after changes to backend/app/core/config.py. Agreement 0.27: shared tokens `postgres_port` (removed, score 0.23), `base_settings` (touched, score 0.10). Single system: strong signal or a definite contract break. Score is an uncalibrated weighted sum (no trained model)."
+    },
+    {
+      "changed_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "backend/app/core/config.py",
+        "line": null,
+        "text": null
+      },
+      "related_file": {
+        "repo": "sqlmodel",
+        "path": "sqlmodel/main.py",
+        "line": 25,
+        "text": null
+      },
+      "reason": "change touches `pydantic` which is still held here",
+      "agreement_evidence": [
+        {
+          "token": "pydantic",
+          "change_type": "touched",
+          "token_score": 0.2781,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "backend/app/core/config.py",
+            "line": 6,
+            "text": "pydantic"
+          },
+          "holder_site": {
+            "repo": "sqlmodel",
+            "path": "sqlmodel/main.py",
+            "line": 25,
+            "text": "from pydantic import BaseModel, EmailStr"
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        },
+        {
+          "token": "mode",
+          "change_type": "touched",
+          "token_score": 0.1863,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "backend/app/core/config.py",
+            "line": 33,
+            "text": "mode"
+          },
+          "holder_site": {
+            "repo": "sqlmodel",
+            "path": "sqlmodel/main.py",
+            "line": 893,
+            "text": "mode: Literal[\"json\", \"python\"] | str = \"python\","
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        }
+      ],
+      "navigation_evidence": null,
+      "cross_repo": true,
+      "features": {
+        "agreement": 0.2192,
+        "navigation": 0.0,
+        "cross_repo": 1.0,
+        "detours": 0.0,
+        "recency": 0.9722
+      },
+      "ranking_score": 0.1692,
+      "confidence": "low",
+      "confidence_score": 0.1692,
+      "confidence_basis": "uncalibrated_weighted",
+      "explanation": "sqlmodel/main.py in sqlmodel may need updating after changes to backend/app/core/config.py. Agreement 0.22: shared tokens `pydantic` (touched, score 0.28), `mode` (touched, score 0.19). Single weak signal. Score is an uncalibrated weighted sum (no trained model)."
+    }
+  ]
+}

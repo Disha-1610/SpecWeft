@@ -1,0 +1,58 @@
+{
+  "repo": "microservices-demo",
+  "cutoff": "7ac4a1e0af2e432cb6621497ee6e39c392af5d8b",
+  "index": {
+    "files": 196,
+    "tokens": 579
+  },
+  "commits_replayed": 120,
+  "methods": {
+    "agreement": {
+      "n": 105,
+      "P@5": 0.2419,
+      "R@10": 0.4749,
+      "cross_repo_share": 0.0,
+      "coverage": 0.9905
+    },
+    "agreement_in_repo_only": {
+      "n": 105,
+      "P@5": 0.2419,
+      "R@10": 0.4749,
+      "cross_repo_share": 0.0,
+      "coverage": 0.9905
+    },
+    "fused_weighted": {
+      "n": 105,
+      "P@5": 0.2438,
+      "R@10": 0.473,
+      "cross_repo_share": 0.0,
+      "coverage": 0.9905
+    },
+    "cochange_baseline": {
+      "n": 105,
+      "P@5": 0.4076,
+      "R@10": 0.826,
+      "cross_repo_share": 0.0,
+      "coverage": 0.9905
+    }
+  },
+  "labels_written": 1138,
+  "note": "truth = other files changed in the same commit that existed at the cutoff; index snapshot at cutoff",
+  "lr_holdout": {
+    "evaluated": true,
+    "train_labels": 577,
+    "test_labels": 561,
+    "auc_lr": 0.7933,
+    "auc_weighted": 0.7757,
+    "P@5_lr_rerank": 0.2196,
+    "P@5_weighted_rerank": 0.2471,
+    "coef": {
+      "agreement": 2.012,
+      "navigation": 0.0,
+      "cross_repo": 0.0,
+      "detours": 0.0,
+      "recency": 5.357
+    },
+    "note": "P@5 here re-ranks only the candidates the ranker produced (labels table), not all files"
+  }
+}

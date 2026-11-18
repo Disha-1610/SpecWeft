@@ -1,0 +1,3004 @@
+{
+  "repo": "full-stack-fastapi-template",
+  "changed_files": [
+    "bun.lock",
+    "frontend/README.md",
+    "frontend/biome.json",
+    "frontend/package.json",
+    "packages/react-email/package.json"
+  ],
+  "token_changes": [
+    {
+      "norm": "lucide_react",
+      "change_type": "value_changed",
+      "path": "bun.lock",
+      "line": 35,
+      "raw": "lucide-react",
+      "renamed_to": null,
+      "old_value": "^1.48.0",
+      "new_value": "^1.62.0"
+    },
+    {
+      "norm": "react",
+      "change_type": "value_changed",
+      "path": "bun.lock",
+      "line": 36,
+      "raw": "react",
+      "renamed_to": null,
+      "old_value": "^19.3.0",
+      "new_value": "^19.3.1"
+    },
+    {
+      "norm": "react_dom",
+      "change_type": "value_changed",
+      "path": "bun.lock",
+      "line": 37,
+      "raw": "react-dom",
+      "renamed_to": null,
+      "old_value": "^19.3.0",
+      "new_value": "^19.3.1"
+    },
+    {
+      "norm": "react_hook_form",
+      "change_type": "value_changed",
+      "path": "bun.lock",
+      "line": 39,
+      "raw": "react-hook-form",
+      "renamed_to": null,
+      "old_value": "^7.89.0",
+      "new_value": "^7.91.0"
+    },
+    {
+      "norm": "dotenv",
+      "change_type": "value_changed",
+      "path": "bun.lock",
+      "line": 56,
+      "raw": "dotenv",
+      "renamed_to": null,
+      "old_value": "^18.0.4",
+      "new_value": "^18.0.9"
+    },
+    {
+      "norm": "vite",
+      "change_type": "value_changed",
+      "path": "bun.lock",
+      "line": 59,
+      "raw": "vite",
+      "renamed_to": null,
+      "old_value": "^8.3.1",
+      "new_value": "^8.3.5"
+    },
+    {
+      "norm": "react_email",
+      "change_type": "value_changed",
+      "path": "bun.lock",
+      "line": 69,
+      "raw": "react-email",
+      "renamed_to": null,
+      "old_value": "6.11.0",
+      "new_value": "6.11.3"
+    },
+    {
+      "norm": "fab_l_ijd4_m",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 112,
+      "raw": "FabLIjd4M",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "dm8_vfi86_r_ma_l_ldgepzbdfi_al2_r8cr7_v81_oy_yr_p1w7_z73_kf_aw_pk5h9_sr_ebx_tz_ng2y",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 112,
+      "raw": "dm8VFI86RMaLLdgepzbdfiAL2R8cr7V81OYYrP1w7Z73KfAwPK5h9SrEBXTzNG2y",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "m_bw_po9x_rnw",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 112,
+      "raw": "mBwPo9xRnw",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_unza_xo65_l4ts_zim_fitfp2_m121_gyh_dc_w_fr_t3p_l5_zj5_u4_xc_s",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 114,
+      "raw": "sha512-UnzaXO65L4tsZimFITFP2M121GyhDcWFrT3pL5ZJ5U4XcS",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "unza_xo65_l4ts_zim_fitfp2_m121_gyh_dc_w_fr_t3p_l5_zj5_u4_xc_s",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 114,
+      "raw": "UnzaXO65L4tsZimFITFP2M121GyhDcWFrT3pL5ZJ5U4XcS",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "/0l5vhyytvohdcf/gndufhgl2i9xnt5bv/j1kxhq",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 114,
+      "raw": "/0L5VHYytVohdCf/gnDUFHgl2I9xnt5bV/J1kxHQ",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_kiy8q_a16_k93_j7uv_ff_wi4_lgjq_dpn_r_kye_p_ana6_a0_y4jxy_uga35_s_yp_iz2c_n_wlhy0lsfgq_ren_cpfymn_jwez6mgp_rg_a",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 116,
+      "raw": "sha512-kiy8qA16K93J7uvFfWi4LgjqDpnRKyePAna6A0Y4jxyUga35SYpIZ2cNWlhy0lsfgqRenCpfymnJWEZ6mgpRgA",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "kiy8q_a16_k93_j7uv_ff_wi4_lgjq_dpn_r_kye_p_ana6_a0_y4jxy_uga35_s_yp_iz2c_n_wlhy0lsfgq_ren_cpfymn_jwez6mgp_rg_a",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 116,
+      "raw": "kiy8qA16K93J7uvFfWi4LgjqDpnRKyePAna6A0Y4jxyUga35SYpIZ2cNWlhy0lsfgqRenCpfymnJWEZ6mgpRgA",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_v_o",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 118,
+      "raw": "sha512-vO",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "/9bau1n30cifnlx49gmtmtbcaaqlo/eqfog0bu3deqintbjrmxsmtq9e3fodzikqnvsldvnl4lx1ci7y1t1q",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 118,
+      "raw": "/9BaU1n30CiFNLx49gMTMtbCAAqlo/EqFoG0BU3deQInTbJrmXSmTQ9e3FoDZIKQnvSLDVNL4lx1ci7y1T1Q",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_sj9_pr_zk_bnn_h9d_hj_dnxk34v_ks0_gb2dbsioaft6",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 120,
+      "raw": "sha512-SJ9PrZkBnnH9dHJDnxk34vKs0GB2dbsioaft6",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sj9_pr_zk_bnn_h9d_hj_dnxk34v_ks0_gb2dbsioaft6",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 120,
+      "raw": "SJ9PrZkBnnH9dHJDnxk34vKs0GB2dbsioaft6",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "h_ph_wj7_a_hpw_yh83_isnhj0_fs_rp_fk_ggp_vf_j1lds23_ap_b2cz_udlq",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 120,
+      "raw": "hPhWJ7AHpwYH83Isnhj0FSRpFkGgpVfJ1lds23ApB2czUDLQ",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_vhz_ra7_ccqbuw_kx_nw_uv_h_jeu_w03_wf_rg_n5_nwo",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 122,
+      "raw": "sha512-VHZRa7CCQBUWKxNwUvHJeuW03WFRgN5NWO",
+      "renamed_to": "arm64",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_vhz_ra7_ccqbuw_kx_nw_uv_h_jeu_w03_wf_rg_n5_nwo",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 122,
+      "raw": "sha512-VHZRa7CCQBUWKxNwUvHJeuW03WFRgN5NWO",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "vhz_ra7_ccqbuw_kx_nw_uv_h_jeu_w03_wf_rg_n5_nwo",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 122,
+      "raw": "VHZRa7CCQBUWKxNwUvHJeuW03WFRgN5NWO",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sdg_oitc9_q_ie_nyf_a42_v9zl_km",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 122,
+      "raw": "SDGOitc9QIeNyfA42V9zlKm",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "x82x_fsg9_bzi5fi",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 122,
+      "raw": "x82xFSG9Bzi5fi",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "hbhm9an_o8y_a",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 122,
+      "raw": "hbhm9anO8yA",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "k_i5_pr_mg_w5dc_ez_yrst_l_pm_um_cwk_uw_zy39r_p4_bn93_vxbwcs2_o57_ldq_okt_uzzy_pvvsp_n5i0mh_gr3_t_jt_f5s_u26_nu_wg",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 124,
+      "raw": "kI5PrMgW5dcEZYrstLPmUmCwkUwZY39rP4BN93Vxbwcs2O57LDQOktUZZYPvvspN5i0mhGr3TJtF5sU26NUWg",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_p_hg_a_fffm_zta_yoxav_es_wey_nvc_a7_nw_o_ij_lyqw2_h_xy_lbt16x_yry_x0_l4f_mv2u0_g9ag6_lnyp_ioq_wa_wqz_ucnc6r_lgg_xg",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 126,
+      "raw": "sha512-pHgAFffmZtaYoxavEsWEYNvcA7NwOIjLyqw2HXyLbt16xYryX0L4fMV2u0G9ag6LNYPIoqWaWqzUcnc6rLGGXg",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "p_hg_a_fffm_zta_yoxav_es_wey_nvc_a7_nw_o_ij_lyqw2_h_xy_lbt16x_yry_x0_l4f_mv2u0_g9ag6_lnyp_ioq_wa_wqz_ucnc6r_lgg_xg",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 126,
+      "raw": "pHgAFffmZtaYoxavEsWEYNvcA7NwOIjLyqw2HXyLbt16xYryX0L4fMV2u0G9ag6LNYPIoqWaWqzUcnc6rLGGXg",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_o_j_wm_bho_hsnh_uk_ike",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 128,
+      "raw": "sha512-oJWmBhoHsnhUKIke",
+      "renamed_to": "sha512-GhtOPphBWlnCepqpNk",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_o_j_wm_bho_hsnh_uk_ike",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 128,
+      "raw": "sha512-oJWmBhoHsnhUKIke",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "o_j_wm_bho_hsnh_uk_ike",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 128,
+      "raw": "oJWmBhoHsnhUKIke",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "g_xdx0mlt_jr_wha1_uy_hsr_tl_xw_x0_tl64il_vz_ao",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 128,
+      "raw": "gXDX0mltJrWHA1UyHsrTlXwX0TL64ilVZAo",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "ty_zm97baec_v0es_bdpzy3k96q",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 128,
+      "raw": "TYZm97baecV0esBdpzy3k96q",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "ja_zuq",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 128,
+      "raw": "JaZUQ",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_svl7tq8k",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 134,
+      "raw": "sha512-Svl7tq8k",
+      "renamed_to": "sha512-XExcO",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_svl7tq8k",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 134,
+      "raw": "sha512-Svl7tq8k",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "svl7tq8k",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 134,
+      "raw": "Svl7tq8k",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "p6_cx_pp_rj_q1f_kx",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 134,
+      "raw": "p6CXPpRjQ1fKX",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "od_h",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 134,
+      "raw": "odH",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "b_qbb48f_v6fj3_cw_hhso_i_oo_y87w1o_h_xm0q_epk_ik3_zf_vgp0hed3_xb_xz_xmq",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 134,
+      "raw": "BQbb48fV6fj3CWHhsoIOoY87w1oHXm0qEpkIK3ZfVgp0hed3XBXzXMQ",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "k2_f129_xdio1_td_jfz_j8sy1_q47v_ud2_nnwdhi_af7dr_un1_eb_tf_pf4hs_f_ctm_mgu",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 136,
+      "raw": "k2F129Xdio1TdJfzJ8sy1Q47vUD2NnwdhiAf7drUN1EBTfPf4hsFCtmMgu",
+      "renamed_to": "kXXoiPVVGQcnIYGOeaovwOURpniDBpSq4A03qkQ",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "m8_j_szs_brlm_vjud_mb_qq_of_g8us_q",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 136,
+      "raw": "m8JSzsBrlmVjudMBQqOfG8usQ",
+      "renamed_to": "BMQqtGG6HYap3xne9C1O1yo4TR3qxlCX5IqqmX6fFo2Lqg",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "k2_f129_xdio1_td_jfz_j8sy1_q47v_ud2_nnwdhi_af7dr_un1_eb_tf_pf4hs_f_ctm_mgu",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 136,
+      "raw": "k2F129Xdio1TdJfzJ8sy1Q47vUD2NnwdhiAf7drUN1EBTfPf4hsFCtmMgu",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "m8_j_szs_brlm_vjud_mb_qq_of_g8us_q",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 136,
+      "raw": "m8JSzsBrlmVjudMBQqOfG8usQ",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "eg_eb_ci_agos_yz6go_lcop_x6_mo7_ny_gv9tfw_em2",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 138,
+      "raw": "EGEbCIAgosYz6goLcopX6Mo7NyGv9tfwEM2",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "ce2_vc_v_rk568i_svni_g_wc_ux_iy7w_edr1wzolcxcri_f_vr_w_ycw_bg",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 138,
+      "raw": "Ce2VcVRk568iSvniGWcUXIy7wEDR1wzolcxcriFVrWYcwBg",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_dbw_y7lt_smd_ws_ratc_rp_cn_es4_f",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 140,
+      "raw": "sha512-dbwY7ltSMDWsRatcRpCnES4F",
+      "renamed_to": "sha512-O387ite7SzUyCcy3JQX4P4bLtEA7bLLkx",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_dbw_y7lt_smd_ws_ratc_rp_cn_es4_f",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 140,
+      "raw": "sha512-dbwY7ltSMDWsRatcRpCnES4F",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "dbw_y7lt_smd_ws_ratc_rp_cn_es4_f",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 140,
+      "raw": "dbwY7ltSMDWsRatcRpCnES4F",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "im88_oc_ug_g_zjy52sh_c7_gq_hre",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 140,
+      "raw": "im88OCUgGZjy52shC7GqHRE",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "/cylxnbb4z4upjswpcc4qxd2oe/ufm0p61ikng",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 140,
+      "raw": "/cYlxNbB4Z4UpJswpcc4Qxd2oE/ufM0p61IKng",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_t_zb_wk_qy7kv_ta_xb_xut7u_vacr5c_m_hs_di_sz9z7_zkax",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 142,
+      "raw": "sha512-TZbWkQY7kvTAXbXUT7uVACR5cMHsDiSz9z7ZKAX",
+      "renamed_to": "sha512-n4KqkOQrraxHJcgjM1RvwbigfQKIKJVpM7xp",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_t_zb_wk_qy7kv_ta_xb_xut7u_vacr5c_m_hs_di_sz9z7_zkax",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 142,
+      "raw": "sha512-TZbWkQY7kvTAXbXUT7uVACR5cMHsDiSz9z7ZKAX",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "t_zb_wk_qy7kv_ta_xb_xut7u_vacr5c_m_hs_di_sz9z7_zkax",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 142,
+      "raw": "TZbWkQY7kvTAXbXUT7uVACR5cMHsDiSz9z7ZKAX",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "/rtq/wjek3qyrr0wzpnhbdx",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 142,
+      "raw": "/RTq/WJEk3QyRr0wZpNhBDX",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "ctdq_ui_jl_oiod_qcta6t_y3_q",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 142,
+      "raw": "CtdqUIJlOiodQcta6tY3Q",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_zfdzg_k9_acbnzli",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 144,
+      "raw": "sha512-zfdzgK9ACBNZLI",
+      "renamed_to": "sha512-uq6suIWYP37qzGddBKPw5QEQPi6HiLGsO7UmkpfyaYNQ3D",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_zfdzg_k9_acbnzli",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 144,
+      "raw": "sha512-zfdzgK9ACBNZLI",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "zfdzg_k9_acbnzli",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 144,
+      "raw": "zfdzgK9ACBNZLI",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "cy_ht_ox81_sy_nb_m6_y_xn7rx_sg_x97_vjyi_pl9_w1i4_ka4fg_kec_eo_fck_gpv_bj5q_ar_wi_gg_qj_owkgsk_q",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 144,
+      "raw": "CyHTOx81SyNbM6YXn7rxSgX97VjyiPl9W1i4Ka4fgKECEoFCKGpvBj5qArWIGgQjOwkgskQ",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_w_g2_ea8_e_nd_ei0qhk_sz_mjfqrd_y",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 146,
+      "raw": "sha512-wG2EA8ENdEI0qhkSZMjfqrdY",
+      "renamed_to": "sha512-n",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_w_g2_ea8_e_nd_ei0qhk_sz_mjfqrd_y",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 146,
+      "raw": "sha512-wG2EA8ENdEI0qhkSZMjfqrdY",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "w_g2_ea8_e_nd_ei0qhk_sz_mjfqrd_y",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 146,
+      "raw": "wG2EA8ENdEI0qhkSZMjfqrdY",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "zi_cycp_mmt_zjj_iw_om_x_fjmyz_e_hn",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 146,
+      "raw": "ziCYCPMmtZjjIwOmXFjmyzEHn",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "u_uxk5of",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 146,
+      "raw": "UUxk5of",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "s_ysjtfs3_vpnl_c7_q_lz_si5h_y",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 146,
+      "raw": "SYsjtfs3VpnlC7QLzSI5hY",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "r_o_aw",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 146,
+      "raw": "rOAw",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "i7d_z9v_qgnv_s_czi",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 148,
+      "raw": "i7dZ9vQgnvSCzi",
+      "renamed_to": "XJTJkvPs0kz2w61301PJjXl4g7q3JqiYMZ",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "/rycxngtf/u",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 148,
+      "raw": "/rYCXNgtF/U",
+      "renamed_to": "/M/yVI73EHBrCRTgkhu9oqG7vPqq",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "e_kznj_bzu3e_t_qb_rg_hn_m7t_n_siz_l_ok_rf_al3qz_vc",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 148,
+      "raw": "eKZNJBzu3eTQbRgHnM7tNSizLOkRFAl3qzVc",
+      "renamed_to": "yadEW8aD",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "/op/u5ykhha4pf/3doyhthlq",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 148,
+      "raw": "/Op/u5YkHHa4pf/3DOYHthLQ",
+      "renamed_to": "agKlk5xrmg",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_i7d_z9v_qgnv_s_czi",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 148,
+      "raw": "sha512-i7dZ9vQgnvSCzi",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "i7d_z9v_qgnv_s_czi",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 148,
+      "raw": "i7dZ9vQgnvSCzi",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "/rycxngtf/u",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 148,
+      "raw": "/rYCXNgtF/U",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "e_kznj_bzu3e_t_qb_rg_hn_m7t_n_siz_l_ok_rf_al3qz_vc",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 148,
+      "raw": "eKZNJBzu3eTQbRgHnM7tNSizLOkRFAl3qzVc",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "/op/u5ykhha4pf/3doyhthlq",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 148,
+      "raw": "/Op/u5YkHHa4pf/3DOYHthLQ",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_q_vxbohqs",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 150,
+      "raw": "sha512-qVXBOHQS",
+      "renamed_to": "sha512-XlDnu2q5yoqems",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "q_vxbohqs",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 150,
+      "raw": "qVXBOHQS",
+      "renamed_to": "XlDnu2q5yoqems",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "d5_y722_gw_jz_j_ut_o_ll_x7km3_cra_oa_gorm_f1p_dt_pd2_c",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 150,
+      "raw": "d5Y722GwJzJUtOLlX7km3CraOaGormF1pDtPd2C",
+      "renamed_to": "xay6wSAcg9DDD7K9RLKZEBOMZm3ckNpJBvOX20tSfby8KfrrhINDyv9V2YVZKY",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "l1_shr_pgj_lun_l_ge51_sh5_yywkmf_dy_v4_sxg_mqytq",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 150,
+      "raw": "l1SHRPgjLunLGe51Sh5YYWKMFDyV4SxgMQYTQ",
+      "renamed_to": "SpoGJI8w",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_q_vxbohqs",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 150,
+      "raw": "sha512-qVXBOHQS",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "q_vxbohqs",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 150,
+      "raw": "qVXBOHQS",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "d5_y722_gw_jz_j_ut_o_ll_x7km3_cra_oa_gorm_f1p_dt_pd2_c",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 150,
+      "raw": "d5Y722GwJzJUtOLlX7km3CraOaGormF1pDtPd2C",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "l1_shr_pgj_lun_l_ge51_sh5_yywkmf_dy_v4_sxg_mqytq",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 150,
+      "raw": "l1SHRPgjLunLGe51Sh5YYWKMFDyV4SxgMQYTQ",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_y_hs",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 152,
+      "raw": "sha512-yHs",
+      "renamed_to": "sha512-pW4AC0P3it8c7do9MVM4p51FzHzdM",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "y_hs",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 152,
+      "raw": "yHs",
+      "renamed_to": "pW4AC0P3it8c7do9MVM4p51FzHzdM",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "nv_e_af_afxr_wqkk5pe_s_nz_bc4_pegc_mo0_ej2h_t71u_a7v_b8_ihg2e77_r2_p7_sg5u_yj_pb_hl_l_lmve4_lllr_cf0g",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 152,
+      "raw": "nvEAfAfxrWQKK5peSNzBc4PegcMO0EJ2hT71uA7vB8Ihg2e77R2P7SG5uYjPbHlLLmve4LLLRCf0g",
+      "renamed_to": "TZrerurgRcHJ2WTa1VQ1CIq18xncfpBJw4ojkiZZrKW2yIBWBP92j6Ug",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_y_hs",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 152,
+      "raw": "sha512-yHs",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "y_hs",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 152,
+      "raw": "yHs",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "nv_e_af_afxr_wqkk5pe_s_nz_bc4_pegc_mo0_ej2h_t71u_a7v_b8_ihg2e77_r2_p7_sg5u_yj_pb_hl_l_lmve4_lllr_cf0g",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 152,
+      "raw": "nvEAfAfxrWQKK5peSNzBc4PegcMO0EJ2hT71uA7vB8Ihg2e77R2P7SG5uYjPbHlLLmve4LLLRCf0g",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_d1z4_zu_p0ajrfz",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 154,
+      "raw": "sha512-d1z4ZuP0ajrfz",
+      "renamed_to": "sha512-CYbnj78HsIeA",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_d1z4_zu_p0ajrfz",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 154,
+      "raw": "sha512-d1z4ZuP0ajrfz",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "d1z4_zu_p0ajrfz",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 154,
+      "raw": "d1z4ZuP0ajrfz",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "fh_gt4vv278r_x8_kn_pp_jx8i5",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 154,
+      "raw": "FhGT4vv278rX8KnPPJx8i5",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "at_k7_t_ybx9_le9_f1hyzur_zpk_eyjk_ga9d_u_gh_qow4_c1_nme_gvqx_n2w",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 154,
+      "raw": "AtK7TYbx9Le9F1hyzurZpkEyjkGa9dUGhQow4C1NmeGvqxN2w",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_m5s_rj_uv_zrkm1_oapr3dl_o_yz_nm_n",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 156,
+      "raw": "sha512-M5sRjUVZrkm1OAPR3dlOYzNmN",
+      "renamed_to": "sha512-buwkd8nsph4R",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_m5s_rj_uv_zrkm1_oapr3dl_o_yz_nm_n",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 156,
+      "raw": "sha512-M5sRjUVZrkm1OAPR3dlOYzNmN",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "m5s_rj_uv_zrkm1_oapr3dl_o_yz_nm_n",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 156,
+      "raw": "M5sRjUVZrkm1OAPR3dlOYzNmN",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "lo_zkg_vi1_vuq_grwuq_lcb_r6qe_az",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 156,
+      "raw": "loZKGVi1VUQGrwuqLcbR6qeAz",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "fam_mhj_a_se_h3_yv_kv_zz",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 156,
+      "raw": "famMhjASeH3YVKvZz",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "z_t1jlh",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 156,
+      "raw": "zT1jlh",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "/kec3rj/lg",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 156,
+      "raw": "/keC3Rj/lg",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_m_r_ob_b_ze_hh2_oxc_bfpwe",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 158,
+      "raw": "sha512-mRObBZeHh2OxcBFPWE",
+      "renamed_to": "sha512-ZVykbDyk7519VwiNb9Lcj9m8XM6v5V9uKPvrEMkkEedVewf",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_m_r_ob_b_ze_hh2_oxc_bfpwe",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 158,
+      "raw": "sha512-mRObBZeHh2OxcBFPWE",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "m_r_ob_b_ze_hh2_oxc_bfpwe",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 158,
+      "raw": "mRObBZeHh2OxcBFPWE",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "fjylk_rg_zd_yui_tr3va_tozqu_cgoh14i_p9o_n4x4_ge81_co_idy_qr_xm_ixp_fum_j_bu5_mt_zpn_qjq",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 158,
+      "raw": "FjylkRgZdYuiTR3vaTozquCGOH14iP9oN4x4Ge81CoIDYQrXmIxpFumJBu5MtZpnQJQ",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_sl_sc_bs_m_ab3_gf_dcdr_cg_lw_zt_py_ro_h2_h",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 160,
+      "raw": "sha512-slScBsMAb3GFDcdrCgLwZtPYRoH2H",
+      "renamed_to": "sha512-CAXl",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_sl_sc_bs_m_ab3_gf_dcdr_cg_lw_zt_py_ro_h2_h",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 160,
+      "raw": "sha512-slScBsMAb3GFDcdrCgLwZtPYRoH2H",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sl_sc_bs_m_ab3_gf_dcdr_cg_lw_zt_py_ro_h2_h",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 160,
+      "raw": "slScBsMAb3GFDcdrCgLwZtPYRoH2H",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "/youv10qizyrjmsp48fznovewytsgci/r0zcugpc0zhiuex6lhts8yrfq",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 160,
+      "raw": "/youv10QiZyRjmsP48fznoveWytSgCI/R0ZcUgpc0ZhIUEx6LHts8yrfQ",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_kw0owk1o0_gfetu_jy_w0jc0_g4_yzs0_bh_zn0_jdz8_jrt088vj_jyx777_b_as1f_d_gx_ac",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 162,
+      "raw": "sha512-kw0owk1o0GFETUJyW0jc0G4Yzs0BHZn0JDZ8JRT088vjJYX777BAs1fDGxAC",
+      "renamed_to": "sha512-GeXCej4IQtU1B",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_kw0owk1o0_gfetu_jy_w0jc0_g4_yzs0_bh_zn0_jdz8_jrt088vj_jyx777_b_as1f_d_gx_ac",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 162,
+      "raw": "sha512-kw0owk1o0GFETUJyW0jc0G4Yzs0BHZn0JDZ8JRT088vjJYX777BAs1fDGxAC",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "kw0owk1o0_gfetu_jy_w0jc0_g4_yzs0_bh_zn0_jdz8_jrt088vj_jyx777_b_as1f_d_gx_ac",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 162,
+      "raw": "kw0owk1o0GFETUJyW0jc0G4Yzs0BHZn0JDZ8JRT088vjJYX777BAs1fDGxAC",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "q831q_os2_dtc96m_ns_g2opdfyy_q",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 162,
+      "raw": "q831qOs2DTC96mNsG2opdfyyQ",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "/laijx8ayfrbyhh6l5rytpedrqa9de/4v/juoxcta5frjvzxo4/sqetyytse0g3zzfuwu5cdn0mklz2qrdd2ag",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 164,
+      "raw": "/lAIjX8aYFRByhh6L5rYtPEDRqa9de/4V/juOXcta5frjvzXO4/sqEtyytse0g3zZFuWu5cDN0MkLz2qRDD2Ag",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_u",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 166,
+      "raw": "sha512-u",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "an_nyf2mm_voe_dw_ltn_q1w_or3_ez9s_tngl_wrs_yg_yw_h_wz_ga3_si84_i_ok_h_xlb_wtd1_nb",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 166,
+      "raw": "anNYF2mmVOEDwLtnQ1wOr3EZ9sTNGLWrsYGYwHWzGA3Si84IOkHXlbWTD1NB",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "lcnwe_yko54uhx_zyd_nzf_a",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 166,
+      "raw": "lcnweYKO54uhxZydNzfA",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_oks0_d_yb_lw_w_mmaak_ts_cb",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 168,
+      "raw": "sha512-oks0DYbLwWMmaakTsCb",
+      "renamed_to": "sha512-sSATRjPeDBg3pdgHoQfoYBob11Kk1FGa9lui5RIHZCoCkJa9QKlvl3",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_oks0_d_yb_lw_w_mmaak_ts_cb",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 168,
+      "raw": "sha512-oks0DYbLwWMmaakTsCb",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "oks0_d_yb_lw_w_mmaak_ts_cb",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 168,
+      "raw": "oks0DYbLwWMmaakTsCb",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "z_l4_e",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 168,
+      "raw": "zL4E",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "a_hrv_lom9_ijzo_ath_mqe_pi_qmyd_x_hkzi_y_es_gy_rx0u_nv",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 168,
+      "raw": "aHRVLom9IJZOAthMQEPiQmydXHkziYEsGYRx0uNV",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "ij_ekgav941_jz_h02pflqw",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 168,
+      "raw": "IjEKGAV941JzH02pflqw",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_ae_l6l_an_n89_hz43_mlh1_g8_a_rasbuo_yv_sitd_ex0t_hh5b7j_jn_hcssqgjy9_yx430_g_dpm_ca6_oyr_ko_s0a_n_rj_kund_riz_gg",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 170,
+      "raw": "sha512-aeL6lAnN89Hz43Mlh1G8ARasbuoYvSITDEx0tHh5b7jJnHcssqgjy9Yx430GDpmCa6OyrKoS0aNRjKundRizGg",
+      "renamed_to": "sha512-lqnzCV",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_ae_l6l_an_n89_hz43_mlh1_g8_a_rasbuo_yv_sitd_ex0t_hh5b7j_jn_hcssqgjy9_yx430_g_dpm_ca6_oyr_ko_s0a_n_rj_kund_riz_gg",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 170,
+      "raw": "sha512-aeL6lAnN89Hz43Mlh1G8ARasbuoYvSITDEx0tHh5b7jJnHcssqgjy9Yx430GDpmCa6OyrKoS0aNRjKundRizGg",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "ae_l6l_an_n89_hz43_mlh1_g8_a_rasbuo_yv_sitd_ex0t_hh5b7j_jn_hcssqgjy9_yx430_g_dpm_ca6_oyr_ko_s0a_n_rj_kund_riz_gg",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 170,
+      "raw": "aeL6lAnN89Hz43Mlh1G8ARasbuoYvSITDEx0tHh5b7jJnHcssqgjy9Yx430GDpmCa6OyrKoS0aNRjKundRizGg",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_mef_je5_c3_r8pw_xd_z5_y21oo6m7e_pi_s0d9p_wucn99_o",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 172,
+      "raw": "sha512-MEFJe5C3R8pwXdZ5Y21oo6m7ePiS0d9pWucn99O",
+      "renamed_to": "sha512-AL2qJILH7lNjrDmCQDvdxMfAUIv8KMNZOvrwAQ8i8",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_mef_je5_c3_r8pw_xd_z5_y21oo6m7e_pi_s0d9p_wucn99_o",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 172,
+      "raw": "sha512-MEFJe5C3R8pwXdZ5Y21oo6m7ePiS0d9pWucn99O",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "mef_je5_c3_r8pw_xd_z5_y21oo6m7e_pi_s0d9p_wucn99_o",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 172,
+      "raw": "MEFJe5C3R8pwXdZ5Y21oo6m7ePiS0d9pWucn99O",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "wvy_jz_cho_iq_kr_q_dx_kr_ge_w8_f5",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 172,
+      "raw": "wvyJZChoIQKrQDxKrGeW8F5",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "t0ok_t_hes_am_dei_hdt_iq0_v",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 172,
+      "raw": "T0okTHesAmDeiHDTIq0V",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_i",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 174,
+      "raw": "sha512-i",
+      "renamed_to": "sha512-QtiuPytchRyC4rwUKhexJdQKvDuZ6hWloi3igqPQNUJCS1",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_i",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 174,
+      "raw": "sha512-i",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "/zlioafe0z8ci/xanjaixojl/uraos2xoa3rb0xn",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 174,
+      "raw": "/ZLIOafE0Z8cI/XANJAixoJL/uRAoS2xOA3rb0xN",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "kk0_k177c_m_as_q_ykz_ht_brt_mxa_ku_ac7_h_ggc_wi_z",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 174,
+      "raw": "KK0K177cMAsQYkzHtBrtMXAKuAc7HGgcWiZ",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "s_rc1_nxgw",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 174,
+      "raw": "sRC1Nxgw",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_ge",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 176,
+      "raw": "sha512-ge",
+      "renamed_to": "sha512-WkhYDmpTjLvGlScA1rwjRUmhl4k8oXR3cIbtqWmELgU",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_ge",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 176,
+      "raw": "sha512-ge",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "z7_exf_nt2_bo1o_a_ms_vpi_q8_ewnd_v9i1x_xer_ae_tik7_at_ps3b_kfxqm7nl_rx_dsiui_meue_r1_cn_xxqzt_lzd_ne_re_kb_jg",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 176,
+      "raw": "Z7EXFNt2BO1oAMsVpiQ8EwndV9i1xXerAeTIK7AtPs3bKFXQM7nlRxDSIUIMeueR1CNXxqztLzdNeReKBJg",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_b_ejgt_e_ck_l3v_y",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 178,
+      "raw": "sha512-BEjgtECkL3vY",
+      "renamed_to": "sha512-GPMSkTOtMnv2U2F8gxe4Io6qmVs",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_b_ejgt_e_ck_l3v_y",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 178,
+      "raw": "sha512-BEjgtECkL3vY",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "b_ejgt_e_ck_l3v_y",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 178,
+      "raw": "BEjgtECkL3vY",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sa_sq6nz_vfi_al_ue_fxpawyp8_jmf5_pt_yhf1_ug40_n1h",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 178,
+      "raw": "SaSQ6nzVfiALUeFxpawyp8Jmf5PtYhf1Ug40N1h",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "hxlhts",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 178,
+      "raw": "hxlhts",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "f1_fv_svar_eigdx_s3_bl_smi2_pj_lc_q",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 178,
+      "raw": "f1FvSvarEigdxS3BlSMI2PJLcQ",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_l_cv9e_k",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 180,
+      "raw": "sha512-lCv9eK",
+      "renamed_to": "sha512-PIhhEkE9uPBleRBrQEJpUn7MBnibZzbGzYWPmY3x",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_l_cv9e_k",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 180,
+      "raw": "sha512-lCv9eK",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "l_cv9e_k",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 180,
+      "raw": "lCv9eK",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "/h6zjwbe7bh2nw54cz9m2nupbxjctsdk/qqnwkdsjkguxmmh8/gwrlt1emmzfn4dgccjrte397wqfqxa",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 180,
+      "raw": "/H6ZJWbE7bh2nw54CZ9M2nupBxJcTsdk/QQnWkdSjKGuxmmH8/GWrlT1eMmZfn4dGcCjRte397WqfQXA",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_zvb",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 182,
+      "raw": "sha512-zvb",
+      "renamed_to": "sha512-YmJbfTlvU7Sdn9BB",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_zvb",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 182,
+      "raw": "sha512-zvb",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "/mb2bscojopocbgykkpx6ym6mjblbuvutvj41dlzjveb6/0cklryxp5wwl1c1ilicoau5wzz4q1p3qes6eg",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 182,
+      "raw": "/mB2bSCoJOpoCBgYKKpX6YM6mJBlBUVUtVj41DlZJVEB6/0CKlRYxP5wWl1C1ILiCoAU5wZZ4q1P3qeS6Eg",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_bm4_mowrv",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 184,
+      "raw": "sha512-bm4Mowrv",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "bm4_mowrv",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 184,
+      "raw": "bm4Mowrv",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "gx_mlp_wx",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 184,
+      "raw": "GXMlpWX",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "ec_xw",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 184,
+      "raw": "EcXw",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "i_lyd1o3",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 184,
+      "raw": "iLyd1o3",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "b_jk_c2_dk_wxy_vvg_z_cq_d",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 184,
+      "raw": "bJkC2DkWXYVvgZCqD",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "b_sj9ct_ze_amc3c_ixgj_rvr2_dufaiu4_y_pxr5g_w1_a",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 184,
+      "raw": "bSj9ctZeAMC3cIxgjRVR2Dufaiu4YPxr5gW1A",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "typeschema",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 206,
+      "raw": "typeschema",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "b7vsbra_jx_kgj_vsa1_nur9t_lwj539_wgjubla7_q_nv_xn_fo_t2p_m5_z7_g",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 206,
+      "raw": "b7vsbraJxKgjVSA1Nur9tLwj539WGJUBLA7QNvXnFoT2pM5Z7G",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "rlukk4_b2",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 206,
+      "raw": "rlukk4B2",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "qr_t_zy6hu_rt_h6w_ke_esp_ku_ir6w",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 206,
+      "raw": "QrTZy6huRtH6wKeESPKuIr6w",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_u2e_yq_rw_xj",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 282,
+      "raw": "sha512-U2eYQRwXj",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "u2e_yq_rw_xj",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 282,
+      "raw": "U2eYQRwXj",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "dsqx_v79z_fq_ex_ddatn_ny",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 282,
+      "raw": "dsqxV79zFqExDdatnNY",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "/zwc2nsju1p/ogt7fd3dxwlf6ojyafqcfmoeta19pwq",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 282,
+      "raw": "/ZWc2nsJU1p/OgT7fd3dXwlF6OjYaFQCfMoeTA19PWq",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "w_vm_ygim_va",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 282,
+      "raw": "wVmYgimVA",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "hiv32_qj_pwd_v6_kyj8me_r9_sba061t_qqn_iktj_docv_o_xl_e_qqib0x_m_fpz_arosuff_fu_uc0sslbh7_qq8a3_yey1_qv8_e_iw",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 284,
+      "raw": "Hiv32QJPwdV6KYJ8meR9SBA061tQqnIKTJDocvOXlEQqib0xMFpzArosuffFUUc0sslbh7QQ8a3Yey1QV8EIw",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_a1lg_kgw_vch_r_ym_se467zdwhx_t9040dd8l_h",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 286,
+      "raw": "sha512-A1lgKgwVchRYmSe467zdwhxT9040dd8lH",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "a1lg_kgw_vch_r_ym_se467zdwhx_t9040dd8l_h",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 286,
+      "raw": "A1lgKgwVchRYmSe467zdwhxT9040dd8lH",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "o65s_l5_jet8fj_b4kegw",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 286,
+      "raw": "o65sL5Jet8fjB4kegw",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "r_dy_p_ip_yv_rb6j_aqw_xfo_jpj_ixj_lx_qk_li_e3_a",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 286,
+      "raw": "rDyPIpYVRb6jAqwXFOJpjIXJLxQKLiE3A",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_bf0_f_iss_m_fue_u2dm7v_qew_wxk0c8_uj_k_td_w0yzuh0s_qs_d8pf1",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 288,
+      "raw": "sha512-bf0FIssMFueU2dm7vQEWWxk0c8UjKTdW0yzuh0sQsD8pf1",
+      "renamed_to": "sha512-GHzncHbcaS9g95kcvTNtKQW3aCLoR",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_bf0_f_iss_m_fue_u2dm7v_qew_wxk0c8_uj_k_td_w0yzuh0s_qs_d8pf1",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 288,
+      "raw": "sha512-bf0FIssMFueU2dm7vQEWWxk0c8UjKTdW0yzuh0sQsD8pf1",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "bf0_f_iss_m_fue_u2dm7v_qew_wxk0c8_uj_k_td_w0yzuh0s_qs_d8pf1",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 288,
+      "raw": "bf0FIssMFueU2dm7vQEWWxk0c8UjKTdW0yzuh0sQsD8pf1",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "kcl_ddaqh_yznmy_gm_xw_e_oi_ha_uzg_b_kudov_ilcvv_bjg",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 288,
+      "raw": "KCLDdaqhYZNMYGmXwEOiHAUzgBKudovIlcvvBjg",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "w7viw_ck9_jy",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 290,
+      "raw": "W7viwCk9JY",
+      "renamed_to": "SuJyDxW",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "/cakdz/a273rd5bb3rgt/ihwr7upv90tunjbwntaahghoechh",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 290,
+      "raw": "/cAkdz/A273rd5bb3RgT/IHwR7Upv90tunjBWNtAAhGhoecHh",
+      "renamed_to": "/PR9dHJat/ZRgcYLhuSZ",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "te_rnr_sinu_a_fm_e",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 290,
+      "raw": "teRNRSinuAFmE",
+      "renamed_to": "psP4DlKb2tKIuXbjygqpLrJWRSq",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "l7fw_z4_y_kkr_xg",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 290,
+      "raw": "l7fwZ4YKkrXg",
+      "renamed_to": "onZQBv8LcmU67EIrmb6c3XTaJLjw",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_w7viw_ck9_jy",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 290,
+      "raw": "sha512-W7viwCk9JY",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "w7viw_ck9_jy",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 290,
+      "raw": "W7viwCk9JY",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "/cakdz/a273rd5bb3rgt/ihwr7upv90tunjbwntaahghoechh",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 290,
+      "raw": "/cAkdz/A273rd5bb3RgT/IHwR7Upv90tunjBWNtAAhGhoecHh",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "te_rnr_sinu_a_fm_e",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 290,
+      "raw": "teRNRSinuAFmE",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "l7fw_z4_y_kkr_xg",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 290,
+      "raw": "l7fwZ4YKkrXg",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "w46zw1_n3_o_dp_i6n0_geiv_hvvob1pooozg_z_vqy65k0mh4",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 292,
+      "raw": "W46zw1N3ODpI6n0GeivHvvob1pooozgZVqy65k0mh4",
+      "renamed_to": "Istng1hMGp9TGO4lUqeKLd70MPN",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "fb_y9",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 292,
+      "raw": "FbY9",
+      "renamed_to": "OOkucVTP2Nmj",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "wp_hz_nv_xj_hip_jf",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 292,
+      "raw": "WpHzNVXjHipJf",
+      "renamed_to": "gLkwBgmPqUw8CJYBCC7nbl",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "a3_f_dhe_bg19_h1s5_a25r_a",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 292,
+      "raw": "A3FDheBG19H1s5A25rA",
+      "renamed_to": "/B/23bBCcjCI5Hsh6hazC1A",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "w46zw1_n3_o_dp_i6n0_geiv_hvvob1pooozg_z_vqy65k0mh4",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 292,
+      "raw": "W46zw1N3ODpI6n0GeivHvvob1pooozgZVqy65k0mh4",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "fb_y9",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 292,
+      "raw": "FbY9",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "wp_hz_nv_xj_hip_jf",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 292,
+      "raw": "WpHzNVXjHipJf",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "a3_f_dhe_bg19_h1s5_a25r_a",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 292,
+      "raw": "A3FDheBG19H1s5A25rA",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_h4m_bso8_ztmb_ptd_t0_pn0p_bx2ay_tv_qu_tuv_s6q_t13d77y_vfjxap_cxky_ih_l_tmd_ma_gt_js0kr_qyi",
+      "change_type": "renamed",
+      "path": "bun.lock",
+      "line": 294,
+      "raw": "sha512-H4mBso8ZTMBPtdT0PN0pBx2ayTvQuTuvS6qT13d77yVFJXAPCxkyIhLTmdMaGTJs0krQYI",
+      "renamed_to": "sha512-aSC9wMNiZRRFVpPkPWBzRwLQxIGm",
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "sha512_h4m_bso8_ztmb_ptd_t0_pn0p_bx2ay_tv_qu_tuv_s6q_t13d77y_vfjxap_cxky_ih_l_tmd_ma_gt_js0kr_qyi",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 294,
+      "raw": "sha512-H4mBso8ZTMBPtdT0PN0pBx2ayTvQuTuvS6qT13d77yVFJXAPCxkyIhLTmdMaGTJs0krQYI",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "h4m_bso8_ztmb_ptd_t0_pn0p_bx2ay_tv_qu_tuv_s6q_t13d77y_vfjxap_cxky_ih_l_tmd_ma_gt_js0kr_qyi",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 294,
+      "raw": "H4mBso8ZTMBPtdT0PN0pBx2ayTvQuTuvS6qT13d77yVFJXAPCxkyIhLTmdMaGTJs0krQYI",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    },
+    {
+      "norm": "qpzd_hij_ceih_xhbg",
+      "change_type": "removed",
+      "path": "bun.lock",
+      "line": 294,
+      "raw": "qpzdHijCeihXhbg",
+      "renamed_to": null,
+      "old_value": null,
+      "new_value": null
+    }
+  ],
+  "recommendations": [
+    {
+      "changed_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "frontend/README.md",
+        "line": null,
+        "text": null
+      },
+      "related_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "frontend/Dockerfile.playwright",
+        "line": 19,
+        "text": null
+      },
+      "reason": "change touches `/./frontend` which is still held here",
+      "agreement_evidence": [
+        {
+          "token": "/./frontend",
+          "change_type": "touched",
+          "token_score": 0.4284,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/README.md",
+            "line": 30,
+            "text": "./frontend"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/Dockerfile.playwright",
+            "line": 19,
+            "text": "COPY ./frontend /app/frontend"
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        },
+        {
+          "token": "/frontend/package.json",
+          "change_type": "touched",
+          "token_score": 0.4264,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/README.md",
+            "line": 27,
+            "text": "frontend/package.json"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/Dockerfile.playwright",
+            "line": 13,
+            "text": "COPY frontend/package.json /app/frontend/"
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        }
+      ],
+      "navigation_evidence": null,
+      "cross_repo": false,
+      "features": {
+        "agreement": 0.3818,
+        "navigation": 0.0,
+        "cross_repo": 0.0,
+        "detours": 0.0,
+        "recency": 0.9186
+      },
+      "ranking_score": 0.7986,
+      "confidence": "low",
+      "confidence_score": 0.7986,
+      "confidence_basis": "logistic_regression",
+      "explanation": "frontend/Dockerfile.playwright may need updating after changes to frontend/README.md. Agreement 0.38: shared tokens `/./frontend` (touched, score 0.43), `/frontend/package.json` (touched, score 0.43). Single weak signal."
+    },
+    {
+      "changed_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "frontend/README.md",
+        "line": null,
+        "text": null
+      },
+      "related_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": ".github/workflows/playwright.yml",
+        "line": 19,
+        "text": null
+      },
+      "reason": "change touches `changes` which is still held here",
+      "agreement_evidence": [
+        {
+          "token": "changes",
+          "change_type": "touched",
+          "token_score": 0.2578,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/README.md",
+            "line": 54,
+            "text": "changes"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": ".github/workflows/playwright.yml",
+            "line": 19,
+            "text": "changes:"
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        },
+        {
+          "token": "frontend",
+          "change_type": "touched",
+          "token_score": 0.2515,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/README.md",
+            "line": 34,
+            "text": "frontend"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": ".github/workflows/playwright.yml",
+            "line": 75,
+            "text": "working-directory: frontend"
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        },
+        {
+          "token": "backend",
+          "change_type": "touched",
+          "token_score": 0.2382,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/README.md",
+            "line": 58,
+            "text": "backend"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": ".github/workflows/playwright.yml",
+            "line": 73,
+            "text": "working-directory: backend"
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        }
+      ],
+      "navigation_evidence": null,
+      "cross_repo": false,
+      "features": {
+        "agreement": 0.3291,
+        "navigation": 0.0,
+        "cross_repo": 0.0,
+        "detours": 0.0,
+        "recency": 0.9186
+      },
+      "ranking_score": 0.7776,
+      "confidence": "low",
+      "confidence_score": 0.7776,
+      "confidence_basis": "logistic_regression",
+      "explanation": ".github/workflows/playwright.yml may need updating after changes to frontend/README.md. Agreement 0.33: shared tokens `changes` (touched, score 0.26), `frontend` (touched, score 0.25), `backend` (touched, score 0.24). Single weak signal."
+    },
+    {
+      "changed_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "bun.lock",
+        "line": null,
+        "text": null
+      },
+      "related_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "frontend/src/components/Common/DataTable.tsx",
+        "line": 15,
+        "text": null
+      },
+      "reason": "change changes the value of `lucide_react` which is still held here",
+      "agreement_evidence": [
+        {
+          "token": "lucide_react",
+          "change_type": "value_changed",
+          "token_score": 0.4207,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "bun.lock",
+            "line": 35,
+            "text": "lucide-react"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/src/components/Common/DataTable.tsx",
+            "line": 15,
+            "text": "} from \"lucide-react\""
+          },
+          "renamed_to": null,
+          "old_value": "^1.48.0",
+          "new_value": "^1.62.0"
+        },
+        {
+          "token": "table",
+          "change_type": "touched",
+          "token_score": 0.227,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "bun.lock",
+            "line": 570,
+            "text": "table"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/src/components/Common/DataTable.tsx",
+            "line": 26,
+            "text": "Table,"
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        },
+        {
+          "token": "state",
+          "change_type": "touched",
+          "token_score": 0.2201,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "bun.lock",
+            "line": 312,
+            "text": "state"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/src/components/Common/DataTable.tsx",
+            "line": 106,
+            "text": "{table.state.pagination.pageIndex *"
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        }
+      ],
+      "navigation_evidence": null,
+      "cross_repo": false,
+      "features": {
+        "agreement": 0.4766,
+        "navigation": 0.0,
+        "cross_repo": 0.0,
+        "detours": 0.0,
+        "recency": 0.7959
+      },
+      "ranking_score": 0.7538,
+      "confidence": "low",
+      "confidence_score": 0.7538,
+      "confidence_basis": "logistic_regression",
+      "explanation": "frontend/src/components/Common/DataTable.tsx may need updating after changes to bun.lock. Agreement 0.48: shared tokens `lucide_react` (value_changed, score 0.42), `table` (touched, score 0.23), `state` (touched, score 0.22). Single weak signal."
+    },
+    {
+      "changed_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "bun.lock",
+        "line": null,
+        "text": null
+      },
+      "related_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "backend/pyproject.toml",
+        "line": 6,
+        "text": null
+      },
+      "reason": "change touches `dependencies` which is still held here",
+      "agreement_evidence": [
+        {
+          "token": "dependencies",
+          "change_type": "touched",
+          "token_score": 0.3897,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "bun.lock",
+            "line": 206,
+            "text": "dependencies"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "backend/pyproject.toml",
+            "line": 6,
+            "text": "dependencies = ["
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        },
+        {
+          "token": "project",
+          "change_type": "touched",
+          "token_score": 0.2811,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "bun.lock",
+            "line": 966,
+            "text": "project"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "backend/pyproject.toml",
+            "line": 1,
+            "text": "[project]"
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        },
+        {
+          "token": "source",
+          "change_type": "touched",
+          "token_score": 0.2388,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "bun.lock",
+            "line": 926,
+            "text": "source"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "backend/pyproject.toml",
+            "line": 68,
+            "text": "source = [\"app\"]"
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        }
+      ],
+      "navigation_evidence": null,
+      "cross_repo": false,
+      "features": {
+        "agreement": 0.3906,
+        "navigation": 0.0,
+        "cross_repo": 0.0,
+        "detours": 0.0,
+        "recency": 0.8275
+      },
+      "ranking_score": 0.7386,
+      "confidence": "low",
+      "confidence_score": 0.7386,
+      "confidence_basis": "logistic_regression",
+      "explanation": "backend/pyproject.toml may need updating after changes to bun.lock. Agreement 0.39: shared tokens `dependencies` (touched, score 0.39), `project` (touched, score 0.28), `source` (touched, score 0.24). Single weak signal."
+    },
+    {
+      "changed_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "bun.lock",
+        "line": null,
+        "text": null
+      },
+      "related_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "release-notes.md",
+        "line": 944,
+        "text": null
+      },
+      "reason": "change touches `source` which is still held here",
+      "agreement_evidence": [
+        {
+          "token": "source",
+          "change_type": "touched",
+          "token_score": 0.2388,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "bun.lock",
+            "line": 926,
+            "text": "source"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "release-notes.md",
+            "line": 944,
+            "text": "* Use `.` instead of `source` for interoperability. PR [#98](https://github.com/tiangolo/full-stack-fastapi-template/pull/98) by [@gucharbon](https://github.com/gucharbon)."
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        }
+      ],
+      "navigation_evidence": null,
+      "cross_repo": false,
+      "features": {
+        "agreement": 0.1194,
+        "navigation": 0.0,
+        "cross_repo": 0.0,
+        "detours": 0.0,
+        "recency": 0.9878
+      },
+      "ranking_score": 0.736,
+      "confidence": "low",
+      "confidence_score": 0.736,
+      "confidence_basis": "logistic_regression",
+      "explanation": "release-notes.md may need updating after changes to bun.lock. Agreement 0.12: shared tokens `source` (touched, score 0.24). Single weak signal."
+    },
+    {
+      "changed_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "bun.lock",
+        "line": null,
+        "text": null
+      },
+      "related_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "frontend/src/components/Admin/AddUser.tsx",
+        "line": 5,
+        "text": null
+      },
+      "reason": "change changes the value of `react_hook_form` which is still held here",
+      "agreement_evidence": [
+        {
+          "token": "react_hook_form",
+          "change_type": "value_changed",
+          "token_score": 0.5912,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "bun.lock",
+            "line": 39,
+            "text": "react-hook-form"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/src/components/Admin/AddUser.tsx",
+            "line": 5,
+            "text": "import { useForm } from \"react-hook-form\""
+          },
+          "renamed_to": null,
+          "old_value": "^7.89.0",
+          "new_value": "^7.91.0"
+        },
+        {
+          "token": "lucide_react",
+          "change_type": "value_changed",
+          "token_score": 0.4207,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "bun.lock",
+            "line": 35,
+            "text": "lucide-react"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/src/components/Admin/AddUser.tsx",
+            "line": 3,
+            "text": "import { Plus } from \"lucide-react\""
+          },
+          "renamed_to": null,
+          "old_value": "^1.48.0",
+          "new_value": "^1.62.0"
+        },
+        {
+          "token": "react",
+          "change_type": "value_changed",
+          "token_score": 0.1649,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "bun.lock",
+            "line": 36,
+            "text": "react"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/src/components/Admin/AddUser.tsx",
+            "line": 4,
+            "text": "import { useState } from \"react\""
+          },
+          "renamed_to": null,
+          "old_value": "^19.3.0",
+          "new_value": "^19.3.1"
+        },
+        {
+          "token": "render",
+          "change_type": "touched",
+          "token_score": 0.2336,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "bun.lock",
+            "line": 944,
+            "text": "render"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/src/components/Admin/AddUser.tsx",
+            "line": 112,
+            "text": "render={({ field }) => ("
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        },
+        {
+          "token": "form",
+          "change_type": "touched",
+          "token_score": 0.1742,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "bun.lock",
+            "line": 206,
+            "text": "form"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/src/components/Admin/AddUser.tsx",
+            "line": 22,
+            "text": "Form,"
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        }
+      ],
+      "navigation_evidence": null,
+      "cross_repo": false,
+      "features": {
+        "agreement": 0.7553,
+        "navigation": 0.0,
+        "cross_repo": 0.0,
+        "detours": 0.0,
+        "recency": 0.5641
+      },
+      "ranking_score": 0.7043,
+      "confidence": "medium",
+      "confidence_score": 0.7043,
+      "confidence_basis": "logistic_regression",
+      "explanation": "frontend/src/components/Admin/AddUser.tsx may need updating after changes to bun.lock. Agreement 0.76: shared tokens `react_hook_form` (value_changed, score 0.59), `lucide_react` (value_changed, score 0.42), `react` (value_changed, score 0.16). Single strong signal."
+    },
+    {
+      "changed_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "bun.lock",
+        "line": null,
+        "text": null
+      },
+      "related_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "frontend/src/components/Admin/EditUser.tsx",
+        "line": 5,
+        "text": null
+      },
+      "reason": "change changes the value of `react_hook_form` which is still held here",
+      "agreement_evidence": [
+        {
+          "token": "react_hook_form",
+          "change_type": "value_changed",
+          "token_score": 0.5912,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "bun.lock",
+            "line": 39,
+            "text": "react-hook-form"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/src/components/Admin/EditUser.tsx",
+            "line": 5,
+            "text": "import { useForm } from \"react-hook-form\""
+          },
+          "renamed_to": null,
+          "old_value": "^7.89.0",
+          "new_value": "^7.91.0"
+        },
+        {
+          "token": "lucide_react",
+          "change_type": "value_changed",
+          "token_score": 0.4207,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "bun.lock",
+            "line": 35,
+            "text": "lucide-react"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/src/components/Admin/EditUser.tsx",
+            "line": 3,
+            "text": "import { Pencil } from \"lucide-react\""
+          },
+          "renamed_to": null,
+          "old_value": "^1.48.0",
+          "new_value": "^1.62.0"
+        },
+        {
+          "token": "react",
+          "change_type": "value_changed",
+          "token_score": 0.1649,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "bun.lock",
+            "line": 36,
+            "text": "react"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/src/components/Admin/EditUser.tsx",
+            "line": 4,
+            "text": "import { useState } from \"react\""
+          },
+          "renamed_to": null,
+          "old_value": "^19.3.0",
+          "new_value": "^19.3.1"
+        },
+        {
+          "token": "render",
+          "change_type": "touched",
+          "token_score": 0.2336,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "bun.lock",
+            "line": 944,
+            "text": "render"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/src/components/Admin/EditUser.tsx",
+            "line": 121,
+            "text": "render={({ field }) => ("
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        },
+        {
+          "token": "form",
+          "change_type": "touched",
+          "token_score": 0.1742,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "bun.lock",
+            "line": 206,
+            "text": "form"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/src/components/Admin/EditUser.tsx",
+            "line": 22,
+            "text": "Form,"
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        }
+      ],
+      "navigation_evidence": null,
+      "cross_repo": false,
+      "features": {
+        "agreement": 0.7553,
+        "navigation": 0.0,
+        "cross_repo": 0.0,
+        "detours": 0.0,
+        "recency": 0.5641
+      },
+      "ranking_score": 0.7043,
+      "confidence": "medium",
+      "confidence_score": 0.7043,
+      "confidence_basis": "logistic_regression",
+      "explanation": "frontend/src/components/Admin/EditUser.tsx may need updating after changes to bun.lock. Agreement 0.76: shared tokens `react_hook_form` (value_changed, score 0.59), `lucide_react` (value_changed, score 0.42), `react` (value_changed, score 0.16). Single strong signal."
+    },
+    {
+      "changed_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "bun.lock",
+        "line": null,
+        "text": null
+      },
+      "related_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "frontend/src/components/Items/AddItem.tsx",
+        "line": 5,
+        "text": null
+      },
+      "reason": "change changes the value of `react_hook_form` which is still held here",
+      "agreement_evidence": [
+        {
+          "token": "react_hook_form",
+          "change_type": "value_changed",
+          "token_score": 0.5912,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "bun.lock",
+            "line": 39,
+            "text": "react-hook-form"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/src/components/Items/AddItem.tsx",
+            "line": 5,
+            "text": "import { useForm } from \"react-hook-form\""
+          },
+          "renamed_to": null,
+          "old_value": "^7.89.0",
+          "new_value": "^7.91.0"
+        },
+        {
+          "token": "lucide_react",
+          "change_type": "value_changed",
+          "token_score": 0.4207,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "bun.lock",
+            "line": 35,
+            "text": "lucide-react"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/src/components/Items/AddItem.tsx",
+            "line": 3,
+            "text": "import { Plus } from \"lucide-react\""
+          },
+          "renamed_to": null,
+          "old_value": "^1.48.0",
+          "new_value": "^1.62.0"
+        },
+        {
+          "token": "react",
+          "change_type": "value_changed",
+          "token_score": 0.1649,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "bun.lock",
+            "line": 36,
+            "text": "react"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/src/components/Items/AddItem.tsx",
+            "line": 4,
+            "text": "import { useState } from \"react\""
+          },
+          "renamed_to": null,
+          "old_value": "^19.3.0",
+          "new_value": "^19.3.1"
+        },
+        {
+          "token": "render",
+          "change_type": "touched",
+          "token_score": 0.2336,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "bun.lock",
+            "line": 944,
+            "text": "render"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/src/components/Items/AddItem.tsx",
+            "line": 93,
+            "text": "render={({ field }) => ("
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        },
+        {
+          "token": "form",
+          "change_type": "touched",
+          "token_score": 0.1742,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "bun.lock",
+            "line": 206,
+            "text": "form"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/src/components/Items/AddItem.tsx",
+            "line": 21,
+            "text": "Form,"
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        }
+      ],
+      "navigation_evidence": null,
+      "cross_repo": false,
+      "features": {
+        "agreement": 0.7553,
+        "navigation": 0.0,
+        "cross_repo": 0.0,
+        "detours": 0.0,
+        "recency": 0.5641
+      },
+      "ranking_score": 0.7043,
+      "confidence": "medium",
+      "confidence_score": 0.7043,
+      "confidence_basis": "logistic_regression",
+      "explanation": "frontend/src/components/Items/AddItem.tsx may need updating after changes to bun.lock. Agreement 0.76: shared tokens `react_hook_form` (value_changed, score 0.59), `lucide_react` (value_changed, score 0.42), `react` (value_changed, score 0.16). Single strong signal."
+    },
+    {
+      "changed_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "bun.lock",
+        "line": null,
+        "text": null
+      },
+      "related_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "frontend/src/components/Items/EditItem.tsx",
+        "line": 5,
+        "text": null
+      },
+      "reason": "change changes the value of `react_hook_form` which is still held here",
+      "agreement_evidence": [
+        {
+          "token": "react_hook_form",
+          "change_type": "value_changed",
+          "token_score": 0.5912,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "bun.lock",
+            "line": 39,
+            "text": "react-hook-form"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/src/components/Items/EditItem.tsx",
+            "line": 5,
+            "text": "import { useForm } from \"react-hook-form\""
+          },
+          "renamed_to": null,
+          "old_value": "^7.89.0",
+          "new_value": "^7.91.0"
+        },
+        {
+          "token": "lucide_react",
+          "change_type": "value_changed",
+          "token_score": 0.4207,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "bun.lock",
+            "line": 35,
+            "text": "lucide-react"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/src/components/Items/EditItem.tsx",
+            "line": 3,
+            "text": "import { Pencil } from \"lucide-react\""
+          },
+          "renamed_to": null,
+          "old_value": "^1.48.0",
+          "new_value": "^1.62.0"
+        },
+        {
+          "token": "react",
+          "change_type": "value_changed",
+          "token_score": 0.1649,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "bun.lock",
+            "line": 36,
+            "text": "react"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/src/components/Items/EditItem.tsx",
+            "line": 4,
+            "text": "import { useState } from \"react\""
+          },
+          "renamed_to": null,
+          "old_value": "^19.3.0",
+          "new_value": "^19.3.1"
+        },
+        {
+          "token": "render",
+          "change_type": "touched",
+          "token_score": 0.2336,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "bun.lock",
+            "line": 944,
+            "text": "render"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/src/components/Items/EditItem.tsx",
+            "line": 100,
+            "text": "render={({ field }) => ("
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        },
+        {
+          "token": "form",
+          "change_type": "touched",
+          "token_score": 0.1742,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "bun.lock",
+            "line": 206,
+            "text": "form"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/src/components/Items/EditItem.tsx",
+            "line": 21,
+            "text": "Form,"
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        }
+      ],
+      "navigation_evidence": null,
+      "cross_repo": false,
+      "features": {
+        "agreement": 0.7553,
+        "navigation": 0.0,
+        "cross_repo": 0.0,
+        "detours": 0.0,
+        "recency": 0.5641
+      },
+      "ranking_score": 0.7043,
+      "confidence": "medium",
+      "confidence_score": 0.7043,
+      "confidence_basis": "logistic_regression",
+      "explanation": "frontend/src/components/Items/EditItem.tsx may need updating after changes to bun.lock. Agreement 0.76: shared tokens `react_hook_form` (value_changed, score 0.59), `lucide_react` (value_changed, score 0.42), `react` (value_changed, score 0.16). Single strong signal."
+    },
+    {
+      "changed_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": "frontend/README.md",
+        "line": null,
+        "text": null
+      },
+      "related_file": {
+        "repo": "full-stack-fastapi-template",
+        "path": ".pre-commit-config.yaml",
+        "line": 29,
+        "text": null
+      },
+      "reason": "change touches `entry` which is still held here",
+      "agreement_evidence": [
+        {
+          "token": "entry",
+          "change_type": "touched",
+          "token_score": 0.2241,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/README.md",
+            "line": 40,
+            "text": "entry"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": ".pre-commit-config.yaml",
+            "line": 29,
+            "text": "entry: npm run lint"
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        },
+        {
+          "token": "hooks",
+          "change_type": "touched",
+          "token_score": 0.0987,
+          "changed_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": "frontend/README.md",
+            "line": 90,
+            "text": "hooks"
+          },
+          "holder_site": {
+            "repo": "full-stack-fastapi-template",
+            "path": ".pre-commit-config.yaml",
+            "line": 6,
+            "text": "hooks:"
+          },
+          "renamed_to": null,
+          "old_value": null,
+          "new_value": null
+        }
+      ],
+      "navigation_evidence": null,
+      "cross_repo": false,
+      "features": {
+        "agreement": 0.1559,
+        "navigation": 0.0,
+        "cross_repo": 0.0,
+        "detours": 0.0,
+        "recency": 0.9185
+      },
+      "ranking_score": 0.6981,
+      "confidence": "low",
+      "confidence_score": 0.6981,
+      "confidence_basis": "logistic_regression",
+      "explanation": ".pre-commit-config.yaml may need updating after changes to frontend/README.md. Agreement 0.16: shared tokens `entry` (touched, score 0.22), `hooks` (touched, score 0.10). Single weak signal."
+    }
+  ]
+}
