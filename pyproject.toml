@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "specweft"
+version = "1.0.0"
+description = "Broken Agreements + Waze for Code: evidence-backed change-impact recommendations"
+requires-python = ">=3.11"
+dependencies = [
+  "tree-sitter>=0.23",
+  "tree-sitter-python>=0.23",
+  "tree-sitter-typescript>=0.23",
+  "sqlglot>=25",
+  "PyYAML>=6",
+  "fastapi>=0.110",
+  "uvicorn>=0.29",
+  "scikit-learn>=1.4",
+  "pyjwt[crypto]>=2.8",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "httpx>=0.27"]
+
+[project.scripts]
+specweft = "specweft.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["specweft*"]
+
+[tool.setuptools.package-data]
+specweft = ["web/*.html"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+norecursedirs = ["data", ".git"]
