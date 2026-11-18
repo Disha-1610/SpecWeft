@@ -1,0 +1,5 @@
+data/
+forge-app/
+tests/
+**/__pycache__
+.claude/
