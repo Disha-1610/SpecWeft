@@ -11,7 +11,8 @@ modules:
   bitbucket:mergeCheck:
     - key: specweft-merge-check
       name: SpecWeft contract check
-      description: Fails only when both SpecWeft signals (code agreements + agent navigation) say an unchanged file must be updated.
+      description: Fails only when both SpecWeft signals (code agreements + agent
+        navigation) say an unchanged file must be updated.
       function: merge-check
       triggers:
         - on-code-pushed
@@ -26,7 +27,7 @@ resources:
 remotes:
   - key: specweft-backend
     # Public HTTPS URL of the SpecWeft Python server (python -m specweft.cli serve, behind TLS).
-    baseUrl: https://YOUR-SPECWEFT-BACKEND.example.com
+    baseUrl: https://specweft.onrender.com
     operations:
       - compute
 permissions:
@@ -34,6 +35,6 @@ permissions:
     - read:repository:bitbucket
     - read:pullrequest:bitbucket
 app:
-  id: ari:cloud:ecosystem::app/REPLACE-WITH-forge-register
+  id: ari:cloud:ecosystem::app/b1604e45-5a67-42e7-978f-ac64eb1edba9
   runtime:
     name: nodejs22.x

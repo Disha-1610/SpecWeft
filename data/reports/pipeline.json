@@ -62,13 +62,13 @@
     },
     {
       "repo": "SpecWeft",
-      "files": 49,
-      "occurrences": 6551
+      "files": 61,
+      "occurrences": 7766
     }
   ],
   "index": {
-    "files": 840,
-    "tokens": 2594
+    "files": 852,
+    "tokens": 2692
   },
   "ingest": {
     "swe_agent": {
@@ -82,15 +82,15 @@
       "skipped": 0
     },
     "claude_code": {
-      "sessions": 59,
-      "events": 1982
+      "sessions": 62,
+      "events": 2013
     }
   },
   "navigation": {
-    "sessions": 213,
-    "edges": 6378,
-    "files": 1398,
-    "sessions_with_edit": 196
+    "sessions": 215,
+    "edges": 6488,
+    "files": 1410,
+    "sessions_with_edit": 198
   },
   "replay": {
     "full-stack-fastapi-template": {
@@ -256,13 +256,13 @@
   "train": {
     "trained": true,
     "params": {
-      "intercept": -3.0202884121886706,
+      "intercept": -3.0165630911699126,
       "coef": {
-        "agreement": 2.21338034899281,
-        "navigation": 0.9850179547192143,
-        "cross_repo": -4.4875939842016415,
-        "detours": 3.4026108815543865,
-        "recency": 3.7562101051496937
+        "agreement": 2.1999470636047853,
+        "navigation": 0.9817191275399567,
+        "cross_repo": -4.486992428780673,
+        "detours": 3.391835614891121,
+        "recency": 3.755733546868405
       },
       "observed_features": [
         "agreement",
@@ -273,7 +273,7 @@
       ]
     },
     "metrics": {
-      "train_auc": 0.8167700842805226,
+      "train_auc": 0.8163680120621666,
       "n_pos": 270,
       "n": 2186,
       "note": "in-sample AUC; activation decided by held-out comparison",
@@ -318,70 +318,70 @@
         "path": "compose.yml",
         "hit": true,
         "confidence": "medium",
-        "score": 0.4737,
+        "score": 0.4735,
         "reason": "change removes `postgres_password` which is still held here"
       },
       {
         "path": ".env",
         "hit": true,
         "confidence": "medium",
-        "score": 0.4701,
+        "score": 0.4699,
         "reason": "change removes `postgres_password` which is still held here"
       },
       {
         "path": "deployment.md",
         "hit": true,
         "confidence": "medium",
-        "score": 0.4261,
+        "score": 0.426,
         "reason": "change removes `postgres_password` which is still held here"
       },
       {
         "path": "README.md",
         "hit": false,
         "confidence": "medium",
-        "score": 0.2579,
+        "score": 0.2578,
         "reason": "change removes `postgres_password` which is still held here"
       },
       {
         "path": ".github/workflows/deploy-production.yml",
         "hit": false,
         "confidence": "medium",
-        "score": 0.2563,
+        "score": 0.2562,
         "reason": "change removes `postgres_password` which is still held here"
       },
       {
         "path": ".github/workflows/deploy-staging.yml",
         "hit": false,
         "confidence": "medium",
-        "score": 0.2563,
+        "score": 0.2562,
         "reason": "change removes `postgres_password` which is still held here"
       },
       {
         "path": "backend/app/core/db.py",
         "hit": true,
         "confidence": "medium",
-        "score": 0.2139,
+        "score": 0.2138,
         "reason": "change removes `sqlalchemy_database_uri` which is still held here"
       },
       {
         "path": "backend/app/alembic/env.py",
         "hit": true,
         "confidence": "medium",
-        "score": 0.2111,
+        "score": 0.211,
         "reason": "change removes `sqlalchemy_database_uri` which is still held here"
       },
       {
         "path": "release-notes.md",
         "hit": false,
         "confidence": "medium",
-        "score": 0.1956,
+        "score": 0.1954,
         "reason": "change removes `postgres_port` which is still held here"
       },
       {
         "path": "sqlmodel/main.py",
         "hit": false,
         "confidence": "low",
-        "score": 0.1692,
+        "score": 0.1689,
         "reason": "change touches `pydantic` which is still held here"
       }
     ],

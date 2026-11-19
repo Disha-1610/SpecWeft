@@ -31,70 +31,70 @@
       "path": "compose.yml",
       "hit": true,
       "confidence": "medium",
-      "score": 0.4737,
+      "score": 0.4735,
       "reason": "change removes `postgres_password` which is still held here"
     },
     {
       "path": ".env",
       "hit": true,
       "confidence": "medium",
-      "score": 0.4701,
+      "score": 0.4699,
       "reason": "change removes `postgres_password` which is still held here"
     },
     {
       "path": "deployment.md",
       "hit": true,
       "confidence": "medium",
-      "score": 0.4261,
+      "score": 0.426,
       "reason": "change removes `postgres_password` which is still held here"
     },
     {
       "path": "README.md",
       "hit": false,
       "confidence": "medium",
-      "score": 0.2579,
+      "score": 0.2578,
       "reason": "change removes `postgres_password` which is still held here"
     },
     {
       "path": ".github/workflows/deploy-production.yml",
       "hit": false,
       "confidence": "medium",
-      "score": 0.2563,
+      "score": 0.2562,
       "reason": "change removes `postgres_password` which is still held here"
     },
     {
       "path": ".github/workflows/deploy-staging.yml",
       "hit": false,
       "confidence": "medium",
-      "score": 0.2563,
+      "score": 0.2562,
       "reason": "change removes `postgres_password` which is still held here"
     },
     {
       "path": "backend/app/core/db.py",
       "hit": true,
       "confidence": "medium",
-      "score": 0.2139,
+      "score": 0.2138,
       "reason": "change removes `sqlalchemy_database_uri` which is still held here"
     },
     {
       "path": "backend/app/alembic/env.py",
       "hit": true,
       "confidence": "medium",
-      "score": 0.2111,
+      "score": 0.211,
       "reason": "change removes `sqlalchemy_database_uri` which is still held here"
     },
     {
       "path": "release-notes.md",
       "hit": false,
       "confidence": "medium",
-      "score": 0.1956,
+      "score": 0.1954,
       "reason": "change removes `postgres_port` which is still held here"
     },
     {
       "path": "sqlmodel/main.py",
       "hit": false,
       "confidence": "low",
-      "score": 0.1692,
+      "score": 0.1689,
       "reason": "change touches `pydantic` which is still held here"
     }
   ],
@@ -204,11 +204,11 @@
         "navigation": 0.0,
         "cross_repo": 0.0,
         "detours": 0.0,
-        "recency": 0.6484
+        "recency": 0.6452
       },
-      "ranking_score": 0.4737,
+      "ranking_score": 0.4735,
       "confidence": "medium",
-      "confidence_score": 0.4737,
+      "confidence_score": 0.4735,
       "confidence_basis": "uncalibrated_weighted",
       "explanation": "compose.yml may need updating after changes to backend/app/core/config.py. Agreement 0.80: shared tokens `postgres_password` (removed, score 0.41), `postgres_user` (removed, score 0.32), `postgres_db` (removed, score 0.31). Single system: strong signal or a definite contract break. Score is an uncalibrated weighted sum (no trained model)."
     },
@@ -315,11 +315,11 @@
         "navigation": 0.0,
         "cross_repo": 0.0,
         "detours": 0.0,
-        "recency": 0.5768
+        "recency": 0.574
       },
-      "ranking_score": 0.4701,
+      "ranking_score": 0.4699,
       "confidence": "medium",
-      "confidence_score": 0.4701,
+      "confidence_score": 0.4699,
       "confidence_basis": "uncalibrated_weighted",
       "explanation": ".env may need updating after changes to backend/app/core/config.py. Agreement 0.80: shared tokens `postgres_password` (removed, score 0.41), `postgres_user` (removed, score 0.32), `postgres_db` (removed, score 0.31). Single system: strong signal or a definite contract break. Score is an uncalibrated weighted sum (no trained model)."
     },
@@ -406,11 +406,11 @@
         "navigation": 0.0,
         "cross_repo": 0.0,
         "detours": 0.0,
-        "recency": 0.5773
+        "recency": 0.5745
       },
-      "ranking_score": 0.4261,
+      "ranking_score": 0.426,
       "confidence": "medium",
-      "confidence_score": 0.4261,
+      "confidence_score": 0.426,
       "confidence_basis": "uncalibrated_weighted",
       "explanation": "deployment.md may need updating after changes to backend/app/core/config.py. Agreement 0.72: shared tokens `postgres_password` (removed, score 0.41), `postgres_user` (removed, score 0.32), `postgres_db` (removed, score 0.31). Single system: strong signal or a definite contract break. Score is an uncalibrated weighted sum (no trained model)."
     },
@@ -457,11 +457,11 @@
         "navigation": 0.0,
         "cross_repo": 0.0,
         "detours": 0.0,
-        "recency": 0.6089
+        "recency": 0.6059
       },
-      "ranking_score": 0.2579,
+      "ranking_score": 0.2578,
       "confidence": "medium",
-      "confidence_score": 0.2579,
+      "confidence_score": 0.2578,
       "confidence_basis": "uncalibrated_weighted",
       "explanation": "README.md may need updating after changes to backend/app/core/config.py. Agreement 0.41: shared tokens `postgres_password` (removed, score 0.41). Single system: strong signal or a definite contract break. Score is an uncalibrated weighted sum (no trained model)."
     },
@@ -508,11 +508,11 @@
         "navigation": 0.0,
         "cross_repo": 0.0,
         "detours": 0.0,
-        "recency": 0.5771
+        "recency": 0.5743
       },
-      "ranking_score": 0.2563,
+      "ranking_score": 0.2562,
       "confidence": "medium",
-      "confidence_score": 0.2563,
+      "confidence_score": 0.2562,
       "confidence_basis": "uncalibrated_weighted",
       "explanation": ".github/workflows/deploy-production.yml may need updating after changes to backend/app/core/config.py. Agreement 0.41: shared tokens `postgres_password` (removed, score 0.41). Single system: strong signal or a definite contract break. Score is an uncalibrated weighted sum (no trained model)."
     },
@@ -559,11 +559,11 @@
         "navigation": 0.0,
         "cross_repo": 0.0,
         "detours": 0.0,
-        "recency": 0.5771
+        "recency": 0.5743
       },
-      "ranking_score": 0.2563,
+      "ranking_score": 0.2562,
       "confidence": "medium",
-      "confidence_score": 0.2563,
+      "confidence_score": 0.2562,
       "confidence_basis": "uncalibrated_weighted",
       "explanation": ".github/workflows/deploy-staging.yml may need updating after changes to backend/app/core/config.py. Agreement 0.41: shared tokens `postgres_password` (removed, score 0.41). Single system: strong signal or a definite contract break. Score is an uncalibrated weighted sum (no trained model)."
     },
@@ -610,11 +610,11 @@
         "navigation": 0.0,
         "cross_repo": 0.0,
         "detours": 0.0,
-        "recency": 0.6331
+        "recency": 0.63
       },
-      "ranking_score": 0.2139,
+      "ranking_score": 0.2138,
       "confidence": "medium",
-      "confidence_score": 0.2139,
+      "confidence_score": 0.2138,
       "confidence_basis": "uncalibrated_weighted",
       "explanation": "backend/app/core/db.py may need updating after changes to backend/app/core/config.py. Agreement 0.33: shared tokens `sqlalchemy_database_uri` (removed, score 0.33). Single system: strong signal or a definite contract break. Score is an uncalibrated weighted sum (no trained model)."
     },
@@ -661,11 +661,11 @@
         "navigation": 0.0,
         "cross_repo": 0.0,
         "detours": 0.0,
-        "recency": 0.5768
+        "recency": 0.574
       },
-      "ranking_score": 0.2111,
+      "ranking_score": 0.211,
       "confidence": "medium",
-      "confidence_score": 0.2111,
+      "confidence_score": 0.211,
       "confidence_basis": "uncalibrated_weighted",
       "explanation": "backend/app/alembic/env.py may need updating after changes to backend/app/core/config.py. Agreement 0.33: shared tokens `sqlalchemy_database_uri` (removed, score 0.33). Single system: strong signal or a definite contract break. Score is an uncalibrated weighted sum (no trained model)."
     },
@@ -732,11 +732,11 @@
         "navigation": 0.0,
         "cross_repo": 0.0,
         "detours": 0.0,
-        "recency": 0.9878
+        "recency": 0.9829
       },
-      "ranking_score": 0.1956,
+      "ranking_score": 0.1954,
       "confidence": "medium",
-      "confidence_score": 0.1956,
+      "confidence_score": 0.1954,
       "confidence_basis": "uncalibrated_weighted",
       "explanation": "release-notes.md may need updating after changes to backend/app/core/config.py. Agreement 0.27: shared tokens `postgres_port` (removed, score 0.23), `base_settings` (touched, score 0.10). Single system: strong signal or a definite contract break. Score is an uncalibrated weighted sum (no trained model)."
     },
@@ -803,11 +803,11 @@
         "navigation": 0.0,
         "cross_repo": 1.0,
         "detours": 0.0,
-        "recency": 0.9722
+        "recency": 0.9674
       },
-      "ranking_score": 0.1692,
+      "ranking_score": 0.1689,
       "confidence": "low",
-      "confidence_score": 0.1692,
+      "confidence_score": 0.1689,
       "confidence_basis": "uncalibrated_weighted",
       "explanation": "sqlmodel/main.py in sqlmodel may need updating after changes to backend/app/core/config.py. Agreement 0.22: shared tokens `pydantic` (touched, score 0.28), `mode` (touched, score 0.19). Single weak signal. Score is an uncalibrated weighted sum (no trained model)."
     }

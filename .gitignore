@@ -1,3 +1,4 @@
+
 # Python
 __pycache__/
 *.py[cod]
@@ -20,11 +21,19 @@ node_modules/
 .env.*
 !.env.example
 
-# Generated data (databases, logs, cloned repos)
-data/*.db
-data/*.log
-data/*.jsonl
-data/repos/
+# Generated data and datasets
+data/
+!data/.gitkeep
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
 
 # OS / editor
 .DS_Store
@@ -32,5 +41,5 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Demo repo (its own git repo; pushed to Bitbucket separately)
+# Demo repository (pushed separately to Bitbucket)
 demo/specweft-demo/
