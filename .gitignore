@@ -31,3 +31,6 @@ data/repos/
 Thumbs.db
 .vscode/
 .idea/
+
+# Demo repo (its own git repo; pushed to Bitbucket separately)
+demo/specweft-demo/

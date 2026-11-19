@@ -65,10 +65,8 @@ def test_rejects_wrong_claims(client, over):
     assert r.status_code == 401
 
 
-def test_unknown_repo_and_repo_map(client, monkeypatch):
+def test_repo_map(client, monkeypatch):
     h = {"Authorization": f"Bearer {token()}"}
-    assert client.post("/forge/analyze-pr", json=BODY | {"repo_slug": "nope", "repo_full_name": "ws/nope"},
-                       headers=h).status_code == 404
     monkeypatch.setenv("SPECWEFT_REPO_MAP", '{"ws/orders-api": "backend"}')
     r = client.post("/forge/analyze-pr", json=BODY | {"repo_slug": "orders-api", "repo_full_name": "ws/orders-api"},
                     headers=h)
@@ -87,11 +85,74 @@ def test_merge_check(client):
     _nav(db.connect(api.app.state.db_path), "backend", "app/settings.py", "deploy/k8s.yaml")
     r = client.post("/forge/merge-check", json=BODY, headers=h).json()
     assert r["success"] is False and "deploy/k8s.yaml" in r["message"]
-    r = client.post("/forge/merge-check", json=BODY | {"repo_slug": "nope", "repo_full_name": "x/nope"}, headers=h).json()
-    assert r["success"] is True and "not indexed" in r["message"]
+    r = client.post("/forge/merge-check", json=BODY | {"repo_slug": "nope", "repo_full_name": "x/nope",
+                                                        "is_private": True}, headers=h).json()
+    assert r["success"] is True and "skipped" in r["message"]
 
 
 def test_misconfigured_server_fails_closed(client, monkeypatch):
     monkeypatch.delenv("SPECWEFT_FORGE_APP_ID")
     r = client.post("/forge/analyze-pr", json=BODY, headers={"Authorization": f"Bearer {token()}"})
     assert r.status_code == 500
+
+
+# ---------------------------------------------------------------- on-demand indexing
+
+class _SyncPool:
+    def submit(self, fn, *a):
+        fn(*a)
+
+
+@pytest.fixture()
+def mirror(tmp_path, repos, monkeypatch):
+    """A local bare mirror standing in for bitbucket.org: <base>/acme/orders.git is the fixture backend repo."""
+    from tests.conftest import git
+    from specweft import indexer
+    base = tmp_path / "mirror"
+    (base / "acme").mkdir(parents=True)
+    git(tmp_path, "clone", "-q", "--bare", str(repos["backend"]), str(base / "acme" / "orders.git"))
+    monkeypatch.setenv("SPECWEFT_GIT_BASE", base.as_uri())
+    monkeypatch.setenv("SPECWEFT_REPOS_DIR", str(tmp_path / "clones"))
+    monkeypatch.setattr(indexer, "_pool", _SyncPool())
+    return base
+
+
+ORDERS = {"repo_slug": "orders", "repo_full_name": "acme/orders", "pr_id": 1, "diff": DIFF_RENAME}
+
+
+def test_unknown_public_repo_is_indexed_on_demand(client, mirror):
+    h = {"Authorization": f"Bearer {token()}"}
+    first = client.post("/forge/analyze-pr", json=ORDERS, headers=h).json()
+    # synchronous pool: the job ran during the request, so it reports indexing then completes
+    assert first["status"] == "indexing" and first["job"]["status"] in ("queued", "done")
+    st = client.get("/forge/index-status", params={"repo_full_name": "acme/orders"}, headers=h).json()
+    assert st["job"]["status"] == "done" and st["job"]["files"] > 5
+    second = client.post("/forge/analyze-pr", json=ORDERS, headers=h).json()
+    assert second["status"] == "ready" and second["repo"] == "acme/orders"
+    assert any(r["related_file"]["path"] == "deploy/k8s.yaml" for r in second["recommendations"])
+
+
+def test_failed_clone_is_reported_not_retried_forever(client, mirror):
+    h = {"Authorization": f"Bearer {token()}"}
+    body = ORDERS | {"repo_slug": "ghost", "repo_full_name": "acme/ghost"}
+    r = client.post("/forge/analyze-pr", json=body, headers=h).json()
+    assert r["status"] in ("indexing", "failed")
+    r = client.post("/forge/analyze-pr", json=body, headers=h).json()
+    assert r["status"] == "failed" and r["error"]
+    m = client.post("/forge/merge-check", json=body, headers=h).json()
+    assert m["success"] is True and "skipped" in m["message"]
+
+
+def test_private_repo_not_cloned(client, mirror):
+    h = {"Authorization": f"Bearer {token()}"}
+    r = client.post("/forge/analyze-pr", json=ORDERS | {"is_private": True}, headers=h).json()
+    assert r["status"] == "failed" and "private" in r["error"]
+    st = client.get("/forge/index-status", params={"repo_full_name": "acme/orders"}, headers=h).json()
+    assert st["job"] is None
+
+
+@pytest.mark.parametrize("name", ["../etc", "acme/../../x", "acme", "a b/c", "acme/orders;rm -rf"])
+def test_clone_url_rejects_unsafe_names(name):
+    from specweft import indexer
+    with pytest.raises(indexer.IndexError_):
+        indexer.clone_url(name)

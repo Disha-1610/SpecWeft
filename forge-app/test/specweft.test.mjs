@@ -13,7 +13,7 @@ const fake = (over = {}) => ({
 test('analyze sends repo identity + diff to backend', async () => {
   const d = fake();
   await analyzePullRequest({ workspaceId: '{ws}', repoUuid: '{r}', prId: 7 }, d);
-  assert.deepEqual(d.calls.at(-1), ['/forge/analyze-pr', { repo_slug: 'orders', repo_full_name: 'acme/orders', pr_id: 7, diff: 'diff --git a/x b/x\n' }]);
+  assert.deepEqual(d.calls.at(-1), ['/forge/analyze-pr', { repo_slug: 'orders', repo_full_name: 'acme/orders', is_private: false, pr_id: 7, diff: 'diff --git a/x b/x\n' }]);
 });
 
 test('analyze rejects missing context and huge diffs', async () => {

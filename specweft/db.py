@@ -69,6 +69,12 @@ MIGRATIONS: list[str] = [
     UPDATE repos SET group_name = name WHERE group_name IS NULL;
     CREATE INDEX ix_repos_group ON repos(group_name);
     """,
+    # v3: on-demand indexing jobs (Forge app: repos are cloned + scanned the first time a PR is opened)
+    """
+    CREATE TABLE index_jobs(
+        repo_name TEXT PRIMARY KEY, status TEXT NOT NULL, error TEXT, requested_at TEXT NOT NULL,
+        started_at TEXT, finished_at TEXT, files INTEGER, head_sha TEXT);
+    """,
 ]
 
 

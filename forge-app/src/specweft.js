@@ -1,6 +1,6 @@
 // Core logic shared by the PR panel resolver and the merge check.
 // Dependencies are injected so the logic is unit-testable without the Forge runtime:
-//   deps.getRepo(workspaceId, repoUuid)        -> { slug, full_name }
+//   deps.getRepo(workspaceId, repoUuid)        -> { slug, full_name, is_private }
 //   deps.getDiff(workspaceId, repoUuid, prId)  -> unified diff text
 //   deps.backend(path, body)                   -> parsed JSON from the SpecWeft backend (throws on non-2xx)
 
@@ -19,7 +19,13 @@ async function buildRequest(workspaceId, repoUuid, prId, deps) {
   if (diff.length > MAX_DIFF_CHARS) {
     throw new UserError('This pull request diff is too large for SpecWeft to analyze.');
   }
-  return { repo_slug: repo.slug, repo_full_name: repo.full_name, pr_id: Number(prId), diff };
+  return {
+    repo_slug: repo.slug,
+    repo_full_name: repo.full_name,
+    is_private: Boolean(repo.is_private),
+    pr_id: Number(prId),
+    diff,
+  };
 }
 
 /** PR panel: fetch repo + diff from Bitbucket, ask the backend for ranked, evidence-backed recommendations. */

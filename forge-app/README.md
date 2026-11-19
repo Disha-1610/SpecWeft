@@ -31,6 +31,8 @@ Merge (on-code-pushed) ──► merge-check function ────────�
 * Backend tests pass: `pytest tests/test_forge.py`. Real RS256 tokens are checked for audience, issuer, expiry and
   app id; also covered are unknown repos, the repo mapping, merge-check blocking only on high confidence, and failing
   closed when misconfigured.
+* On-demand indexing is tested end to end through a real `git clone` of a local mirror. Also tested: failed and private
+  repos are reported and never block merges, and unsafe repo names are rejected.
 * **Not yet verified:** `forge lint`/`deploy` and the app running inside Bitbucket. Both need your Atlassian login.
   The SectionMessage `success` appearance is an Atlassian Design System value that is not in the bundled types; check
   it during the first deploy.
@@ -60,19 +62,35 @@ forge register
 `forge register` writes your app id into `manifest.yml`. Copy that id into the backend's `SPECWEFT_FORGE_APP_ID` and
 restart the backend. Then set `remotes[0].baseUrl` in `manifest.yml` to your backend URL.
 
-## 3. Index the repositories the judges will use
+## 3. Repositories are indexed on demand
 
-The backend must have scanned each Bitbucket repo that PRs will be opened in. The scanned name must equal the Bitbucket
-repo slug, or be mapped with `SPECWEFT_REPO_MAP`. On the backend host:
+When a PR panel opens in a repository SpecWeft hasn't seen, the backend clones it (public HTTPS, no credentials) and
+builds its index in the background. The panel shows "Indexing this repository" and refreshes every 5 s until the
+results appear. On the demo repo this takes about 4 s. Indexes older than `SPECWEFT_INDEX_TTL_HOURS` (default 24) are
+refreshed in the background, and the current results stay visible meanwhile.
+
+Limits, all configurable in `.env.example`:
+
+* **Size:** repos over `SPECWEFT_MAX_REPO_MB` (300) are skipped.
+* **Time:** clones time out after `SPECWEFT_CLONE_TIMEOUT` (180 s).
+* **History:** `SPECWEFT_CLONE_DEPTH` (500 commits) is kept.
+* **Concurrency:** `SPECWEFT_INDEX_WORKERS` (2) jobs run in parallel.
+
+**Private repositories cannot be indexed on demand** because the backend holds no Bitbucket credentials. The panel says
+so. An operator can index one manually:
 
 ```powershell
-git clone https://bitbucket.org/<workspace>/<repo>.git /data/repos/<repo>
-python -m specweft.cli --db /data/specweft.db scan /data/repos/<repo> --name <repo> --group <workspace>
+python -m specweft.cli --db /data/specweft.db scan /data/repos/<repo> --name <workspace>/<repo> --group <workspace>
+```
+
+Navigation evidence (agent trajectories) is optional:
+
+```powershell
 python -m specweft.cli --db /data/specweft.db ingest claude_code <dir-with-transcripts>
 ```
 
-The ingest step is optional but enables the navigation signal and "high" confidence. Re-scan after merges to keep the
-index current.
+Without trajectories for a repo, every finding comes from agreements alone, so confidence stays medium or low and the
+merge check never fails.
 
 ## 4. Deploy, install, share
 
@@ -89,15 +107,43 @@ invalidates the old one.
 Merge check: a workspace admin enables *Custom merge checks* in workspace settings, then adds
 "SpecWeft contract check" at workspace, project or repo level. Mark it **Required** if a failure should block merges.
 
-## Recommended demo setup for judges
+## Demo repository (publish once)
 
-1. Create a Bitbucket workspace. Import `fastapi/full-stack-fastapi-template` (and `fastapi/sqlmodel`) at the
-   commit **before** PR #2184 (`32ab6dd^`).
-2. Index both repos on the backend (step 3) with one `--group`.
-3. Open a PR that reproduces PR #2184's `backend/app/core/config.py` change only.
-   SpecWeft's panel should list `compose.yml`, `.env`, `deployment.md`, `backend/app/core/db.py` and
-   `backend/app/alembic/env.py`, each with "removes `postgres_password` / `sqlalchemy_database_uri` which is still
-   held here" evidence. These are the 5 files the real PR had to change.
+`demo/specweft-demo` (in the SpecWeft folder, not tracked by SpecWeft's git) is fastapi/full-stack-fastapi-template
+(MIT) at the commit **before** upstream PR #2184, with full history. Branch `specweft-demo/database-url` applies
+**only** that PR's `backend/app/core/config.py` change. The PR removed the `POSTGRES_*` settings, so the other files
+the real PR changed now hold a broken contract.
+
+Create an **empty, public** repository `specweft-demo` in your Bitbucket workspace, then:
+
+```powershell
+cd demo/specweft-demo
+git remote add origin https://bitbucket.org/<your-workspace>/specweft-demo.git
+git push -u origin main specweft-demo/database-url
+```
+
+Open a pull request from `specweft-demo/database-url` into `main`, and leave it open for the judges.
+
+## Instructions for judges (paste into the submission)
+
+1. Open the **installation link** and install SpecWeft into a Bitbucket workspace you administer.
+2. Fastest path: open the prepared pull request at
+   `https://bitbucket.org/<your-workspace>/specweft-demo/pull-requests/1`. The **SpecWeft** panel on the PR overview
+   lists the files the change breaks, with evidence.
+   To try it in your own workspace instead:
+   - Import the public repo: *Create → Repository → Import repository* with
+     `https://bitbucket.org/<your-workspace>/specweft-demo.git`.
+   - Create a PR from `specweft-demo/database-url` into `main`.
+   - The first time, the panel shows "Indexing this repository" for a few seconds.
+3. Expected result: the change only edits `backend/app/core/config.py`. SpecWeft lists `.env`, `compose.yml`,
+   `deployment.md`, `backend/app/alembic/env.py` and `backend/app/core/db.py`, which are exactly the files upstream
+   PR #2184 had to change, plus README/deploy workflows that still reference the removed `POSTGRES_PASSWORD`. Each
+   finding shows the removed token, where it was removed, and the line that still holds it.
+4. Also works on any **public** repository: open any PR there.
+5. Optional merge check: *Workspace settings → Custom merge checks* → enable "SpecWeft contract check".
+
+Verified locally with the backend's real code path: the demo repo was cloned and indexed in 4.2 s (209 files), the
+analysis took 1.8 s, and all 5 upstream-PR files appeared in the top 8.
 
 ## Explanation for the submission (technology requirement)
 

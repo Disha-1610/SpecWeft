@@ -31,16 +31,28 @@ function Evidence({ rec }) {
   );
 }
 
+const POLL_MS = 5000;
+const MAX_POLLS = 60; // ~5 minutes
+
 function App() {
   const [state, setState] = useState({ loading: true });
+  const [polls, setPolls] = useState(0);
 
-  const load = () => {
-    setState({ loading: true });
+  const load = (quiet = false) => {
+    if (!quiet) setState({ loading: true });
     invoke('analyze')
       .then((r) => setState({ loading: false, ...r }))
       .catch((e) => setState({ loading: false, ok: false, error: e.message }));
   };
-  useEffect(load, []);
+  useEffect(() => load(), []);
+
+  // first PR in a repo: the backend clones + indexes it in the background; poll until it is ready
+  const indexing = state.ok && state.result?.status === 'indexing';
+  useEffect(() => {
+    if (!indexing || polls >= MAX_POLLS) return undefined;
+    const t = setTimeout(() => { setPolls((n) => n + 1); load(true); }, POLL_MS);
+    return () => clearTimeout(t);
+  }, [indexing, polls]);
 
   if (state.loading) {
     return <Inline space="space.100" alignBlock="center"><Spinner /><Text>Analyzing this pull request…</Text></Inline>;
@@ -49,12 +61,30 @@ function App() {
     return (
       <SectionMessage appearance="error" title="SpecWeft could not analyze this pull request">
         <Text>{state.error}</Text>
-        <Button onClick={load}>Retry</Button>
+        <Button onClick={() => load()}>Retry</Button>
       </SectionMessage>
     );
   }
 
   const { result } = state;
+  if (result.status === 'indexing') {
+    return (
+      <SectionMessage appearance="information" title="Indexing this repository">
+        <Inline space="space.100" alignBlock="center">
+          <Spinner />
+          <Text>{polls >= MAX_POLLS ? 'Still indexing: this repository is large.' : result.message}</Text>
+        </Inline>
+        {polls >= MAX_POLLS ? <Button onClick={() => { setPolls(0); load(); }}>Check again</Button> : null}
+      </SectionMessage>
+    );
+  }
+  if (result.status === 'failed') {
+    return (
+      <SectionMessage appearance="warning" title="SpecWeft cannot analyze this repository yet">
+        <Text>{result.error}</Text>
+      </SectionMessage>
+    );
+  }
   const recs = result.recommendations;
   const s = result.summary;
   if (!recs.length) {
