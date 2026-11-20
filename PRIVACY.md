@@ -51,4 +51,4 @@ If this policy changes, the updated version will be published at this URL with a
 
 ## Contact
 
-Questions about this policy: <https://github.com/Disha-1610/SpecWeft/issues>
+Questions about this policy: <cd for>

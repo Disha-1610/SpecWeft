@@ -7,6 +7,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY specweft ./specweft
 COPY scripts ./scripts
 ENV SPECWEFT_DB=/data/specweft.db
+# Hugging Face Spaces runs the container as a non-root user (uid 1000): keep /data writable for it
+RUN mkdir -p /data && chmod 777 /data
 VOLUME ["/data"]
 EXPOSE 8765
 # SPECWEFT_FORGE_APP_ID must be set at runtime (ari:cloud:ecosystem::app/<uuid> from `forge register`)

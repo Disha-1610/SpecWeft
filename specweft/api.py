@@ -53,7 +53,7 @@ def index() -> FileResponse:
     return FileResponse(WEB)
 
 
-@app.get("/api/health")
+@app.api_route("/api/health", methods=["GET", "HEAD"])  # HEAD: uptime monitors (UptimeRobot) probe with it
 def health(conn: sqlite3.Connection = Depends(get_conn)) -> dict:
     c = lambda t: conn.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0]  # table names are constants
     m = conn.execute("SELECT name, n_samples, trained_at FROM models WHERE name='fusion_lr'").fetchone()
