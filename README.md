@@ -1,4 +1,4 @@
-﻿# SpecWeft
+# SpecWeft
 
 **When you change a file, which other files must change too — and why?**
 
@@ -20,6 +20,39 @@ Stop hook all return it.
 Docs: [PROJECT_REQUIREMENTS.md](PROJECT_REQUIREMENTS.md) · [SYSTEM_ARCHITECTURE.md](SYSTEM_ARCHITECTURE.md) (formulas,
 schema) · [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) · [FEATURE_TRACKER.md](FEATURE_TRACKER.md) (status of every
 requirement).
+
+## Try it (no setup needed)
+
+SpecWeft runs as a **Bitbucket app**. On any pull request it shows a panel called
+**"SpecWeft — files this PR may break"**: the files you probably forgot to update, and why.
+
+Everything is already online. You don't need to install Python or run anything.
+
+### Option A: see it on the demo repo (easiest)
+
+The demo repo is public, so you don't need an invite.
+
+1. Open the demo repo: https://bitbucket.org/specweft/specweft-demo
+2. Click **Pull requests** and open the ready-made demo PR.
+3. Look at the **SpecWeft** panel on the PR's overview page.
+
+### Option B: install it on your own Bitbucket workspace
+
+1. Open the **[SpecWeft install link](https://developer.atlassian.com/console/install/b1604e45-5a67-42e7-978f-ac64eb1edba9?signature=AYABeJ5MnOwrmw3tPvXQNHyukNgAAAADAAdhd3Mta21zAEthcm46YXdzOmttczp1cy13ZXN0LTI6NzA5NTg3ODM1MjQzOmtleS83MDVlZDY3MC1mNTdjLTQxYjUtOWY5Yi1lM2YyZGNjMTQ2ZTcAuAECAQB4CxqLTo9l4lqXuFjNim1xJM%2Bp%2F3TVP9xHS2BrU5DRRucB3IRbHYCugUXrJrT%2B3qZRfwAAAH4wfAYJKoZIhvcNAQcGoG8wbQIBADBoBgkqhkiG9w0BBwEwHgYJYIZIAWUDBAEuMBEEDLwSiW1oRQUP7NZshAIBEIA7XICglS%2BoVEwMrLjoUVsgMgF4U5dMn6c8jEbAwj%2BwEKfulJ0v%2Frz%2FvkLJMaedKu%2FE%2B0HmKBQ9LFiczA0AB2F3cy1rbXMAS2Fybjphd3M6a21zOmV1LXdlc3QtMTo3MDk1ODc4MzUyNDM6a2V5LzQ2MzBjZTZiLTAwYzMtNGRlMi04NzdiLTYyN2UyMDYwZTVjYwC4AQICAHi9bVMAkme4qVQX1fQHo6ePw3H40A7cGfz7yrmSfBWMXgGx1s%2FbJa9p1OYmxHefjQyWAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMasJ8HuRtdj33ChyCAgEQgDuKlLnDahUrzxNtd3QHq9h1oawh2EO2IeiH7K60hup4dLFQGz1DcWZ2kWZiYBcyjvFPF3wBacT%2F8XfFNQAHYXdzLWttcwBLYXJuOmF3czprbXM6dXMtZWFzdC0xOjcwOTU4NzgzNTI0MzprZXkvNmMxMjBiYTAtNGNkNS00OTg1LWI4MmUtNDBhMDQ5NTJjYzU3ALgBAgIAeDYASx0XCjkny4iLV6vz%2BKtEGSGT6kdt0QRpkn6D%2FlVEATjuS4HsiPRVF5%2FWjRHs6E0AAAB%2BMHwGCSqGSIb3DQEHBqBvMG0CAQAwaAYJKoZIhvcNAQcBMB4GCWCGSAFlAwQBLjARBAyYlOz80QTFCAljtRQCARCAO3BbtwjzWy4x0mNH4UxeUxkPgrhttRE0P1Zp9EwnPqCY3b%2FQvv4L9OdNtKUXtzbyjmjRIkkYwMlL9q7EAgAAAAAMAAAQAAAAAAAAAAAAAAAAAHULvHwSYYI9Dz6KHxfR3aD%2F%2F%2F%2F%2FAAAAAQAAAAAAAAAAAAAAAQAAADIODZUjBnpDxocCbyPyJ0kUx0zrJFsrHm6daOdja%2F7AAVtaa9QmntB79nylWxv%2Bicosk7dgiUXM0i%2F0jBhjuKcHokg%3D&product=bitbucket)** (sign in to Bitbucket if asked).
+2. Pick your Bitbucket workspace and click **Install**. Approve the read-only permissions
+   (it can only read repositories and pull requests; it never changes code).
+3. Open any pull request in that workspace. The **SpecWeft** panel appears on the overview page.
+
+### Good to know
+
+* **The first time is slower.** The first time a repo is opened, SpecWeft reads and indexes it, which can take
+  a minute. Refresh the PR page if the panel says it's still working. After that it's fast.
+* **Merge check (optional).** A workspace admin can turn on **"SpecWeft contract check"** under
+  *Repository settings → Merge checks*. It only fails a PR when both signals agree a file must be updated.
+* **Privacy.** See [PRIVACY.md](PRIVACY.md).
+* **Server status.** Backend health check: https://specweft.onrender.com/api/health
+
+The sections below are for developers who want to run SpecWeft locally.
 
 ## Setup
 
