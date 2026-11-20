@@ -32,9 +32,9 @@ Everything is already online. You don't need to install Python or run anything.
 
 The demo repo is public, so you don't need an invite.
 
-1. Open the demo repo: https://bitbucket.org/specweft/specweft-demo
-2. Click **Pull requests** and open the ready-made demo PR.
-3. Look at the **SpecWeft** panel on the PR's overview page.
+1. Open the demo pull request: https://bitbucket.org/specweft/specweft-demo/pull-requests/2
+   (it changes only `config.py`, switching to `DATABASE_URL`).
+2. Look at the **SpecWeft** panel on the PR's overview page.
 
 ### Option B: install it on your own Bitbucket workspace
 
