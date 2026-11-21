@@ -110,3 +110,31 @@ test('pre-index queues only public repositories', async () => {
     async backend(p, b) { sent.push(b.repo_full_name); } });
   assert.deepEqual([r.queued, sent], [1, ['w/a']]);
 });
+
+test('private repo: uploads missing files in batches, then re-analyzes', async () => {
+  const { analyzePullRequest, isUploadCandidate } = await import('../src/specweft.js');
+  assert.equal(isUploadCandidate({ path: 'node_modules/x/a.js', size: 1 }), false);
+  assert.equal(isUploadCandidate({ path: 'logo.png', size: 1 }), false);
+  assert.equal(isUploadCandidate({ path: 'app/a.py', size: 1 }), true);
+  const stored = new Set();
+  let indexed = false;
+  const calls = [];
+  const deps = {
+    async getRepo() { return { slug: 's', full_name: 'w/s', is_private: true, mainbranch: { name: 'main' } }; },
+    async getDiff() { return 'diff --git a/a b/a\n'; },
+    async listFiles() { return { commit: 'c'.repeat(40), files: [{ path: 'a.py', size: 3 }, { path: 'b.yaml', size: 3 }, { path: 'big.bin', size: 1e7 }] }; },
+    async getFile(_w, _r, _c, p) { return Buffer.from(p).toString('base64'); },
+    async backend(path, body) {
+      calls.push(path);
+      if (path === '/forge/analyze-pr') return indexed ? { status: 'ready', repo: 'w/s', recommendations: [] } : { status: 'needs_upload' };
+      assert.deepEqual(body.manifest, ['a.py', 'b.yaml']);
+      body.files.forEach((f) => stored.add(f.path));
+      const missing = body.manifest.filter((p) => !stored.has(p));
+      if (!missing.length) indexed = true;
+      return { missing, received: stored.size, total: 2, job: missing.length ? null : { status: 'done' } };
+    },
+  };
+  const r = await analyzePullRequest({ workspaceId: 'w', repoUuid: '{r}', prId: 1 }, deps);
+  assert.equal(r.status, 'ready');
+  assert.deepEqual(calls, ['/forge/analyze-pr', '/forge/upload', '/forge/upload', '/forge/analyze-pr']);
+});

@@ -83,7 +83,9 @@ function App() {
           const r = await run('saveSettings', { settings: { ...s, ignoredPaths: s.ignoredText } }, () => 'Settings saved.');
           if (r.ok) setS({ ...r.settings, ignoredText: r.settings.ignoredPaths.join('\n') });
         }}>Save</Button>
-        <Button isDisabled={busy} onClick={() => run('indexNow', {}, (r) => (r.job?.status === 'done' ? 'Repository is already indexed.' : 'Indexing started.'))}>
+        <Button isDisabled={busy} onClick={() => run('indexNow', {}, (r) => (r.uploaded && r.uploaded.received < r.uploaded.total
+          ? `Private repository: read ${r.uploaded.received} of ${r.uploaded.total} files. Press again to continue.`
+          : r.job?.status === 'done' ? 'Repository is indexed.' : 'Indexing started.'))}>
           Index repository now
         </Button>
       </Inline>

@@ -4,6 +4,8 @@
 //   deps.getDiff(workspaceId, repoUuid, prId)    -> unified diff text
 //   deps.getPullRequest(workspaceId, repoUuid, prId) -> Bitbucket PR JSON (optional; used for file links)
 //   deps.backend(path, body)                     -> parsed JSON from the SpecWeft backend (throws on non-2xx)
+//   deps.listFiles(workspaceId, repoUuid, branch) -> { commit, files: [{ path, size }] }   (private repos only)
+//   deps.getFile(workspaceId, repoUuid, commit, path) -> base64 file content               (private repos only)
 //   deps.getSettings(repoUuid) / deps.getFeedback(repoUuid) -> stored objects (optional; defaults used if absent)
 
 export const MAX_DIFF_CHARS = 4_500_000; // backend accepts 5 MB; keep a margin
@@ -231,6 +233,7 @@ async function buildRequest(workspaceId, repoUuid, prId, deps) {
     destinationCommit: pr?.destination?.commit?.hash || pr?.destination?.branch?.name || null,
   };
   return {
+    repo,
     body: {
       repo_slug: repo.slug,
       repo_full_name: repo.full_name,
@@ -250,10 +253,80 @@ async function loadPrefs(repoUuid, deps) {
   return { settings: normalizeSettings(settings), feedback: normalizeFeedback(feedback) };
 }
 
+// ---------- private repositories ----------
+// The backend never clones a private repo. The app reads it with its own `read:repository` scope and uploads the
+// files in batches; each call works for at most `budgetMs` and the next panel refresh resumes where it stopped.
+
+export const UPLOAD_BUDGET_MS = 15_000;
+export const MAX_UPLOAD_FILES = 5000;
+const MAX_FILE_BYTES = 512 * 1024;      // backend scanner skips larger files
+const MAX_BATCH_CHARS = 1_500_000;      // base64 chars per /forge/upload call
+const FETCH_CONCURRENCY = 8;
+const SKIP_DIRS = new Set(['.git', 'node_modules', 'vendor', 'dist', 'build', '__pycache__', '.venv', 'venv', '.tox',
+  '.mypy_cache', '.pytest_cache', 'site-packages', '.next', 'coverage', 'third_party']);
+const BINARY_EXT = /\.(png|jpe?g|gif|webp|ico|svg|pdf|zip|gz|tgz|jar|war|class|exe|dll|so|dylib|bin|woff2?|ttf|eot|mp[34]|mov|lock)$/i;
+
+export function isUploadCandidate(f) {
+  if (!f?.path || (f.size ?? 0) > MAX_FILE_BYTES || BINARY_EXT.test(f.path)) return false;
+  return !f.path.split('/').slice(0, -1).some((d) => SKIP_DIRS.has(d));
+}
+
+/** Upload a private repository's main branch to the backend. Returns { done, received, total, job }. */
+export async function syncPrivateRepo({ workspaceId, repoUuid }, repo, deps, { budgetMs = UPLOAD_BUDGET_MS, now = Date.now } = {}) {
+  const t0 = now();
+  const branch = repo?.mainbranch?.name;
+  if (!branch) throw new UserError('This repository has no main branch to index yet.');
+  const { commit, files } = await deps.listFiles(workspaceId, repoUuid, branch);
+  const manifest = files.filter(isUploadCandidate).map((f) => f.path);
+  if (manifest.length > MAX_UPLOAD_FILES) {
+    throw new UserError(`This repository has more than ${MAX_UPLOAD_FILES} indexable files; ask the SpecWeft operator to index it with the CLI.`);
+  }
+  const send = (batch) => deps.backend('/forge/upload', { repo_full_name: repo.full_name, commit, manifest, files: batch });
+  let st = await send([]);
+  const queue = [...(st.missing || [])];
+  let batch = [];
+  let chars = 0;
+  while (queue.length && now() - t0 < budgetMs) {
+    const paths = queue.splice(0, FETCH_CONCURRENCY);
+    const got = await Promise.all(paths.map((p) => deps.getFile(workspaceId, repoUuid, commit, p)
+      .then((b64) => ({ path: p, content_b64: b64 }))
+      .catch(() => ({ path: p, content_b64: '' }))));  // unreadable file: send empty so the manifest completes
+    for (const f of got) {
+      if (chars + f.content_b64.length > MAX_BATCH_CHARS && batch.length) { st = await send(batch); batch = []; chars = 0; }
+      batch.push(f); chars += f.content_b64.length;
+    }
+  }
+  if (batch.length) st = await send(batch);
+  return { done: !(st.missing || []).length, received: st.received, total: st.total, job: st.job };
+}
+
+function uploadStatus(repo, sync) {
+  if (sync.job?.status === 'failed') return { status: 'failed', repo: repo.full_name, error: sync.job.error };
+  const pct = sync.total ? Math.round((100 * sync.received) / sync.total) : 0;
+  return {
+    status: 'indexing', repo: repo.full_name, job: sync.job,
+    progress: sync.done ? { phase: 'Indexing uploaded files', elapsed_seconds: 0 }
+      : { phase: `Reading private repository (${sync.received} of ${sync.total} files, ${pct}%)`, elapsed_seconds: 0 },
+    message: 'SpecWeft is reading this private repository through the app and indexing it.',
+  };
+}
+
+/** Backend analysis; for a private repo that is not indexed yet, uploads part of it and reports progress. */
+async function analyzeWithUpload(ctx, body, repo, deps) {
+  const result = await deps.backend('/forge/analyze-pr', body);
+  if (result.status !== 'needs_upload') return result;
+  let sync;
+  try { sync = await syncPrivateRepo(ctx, repo, deps); } catch (e) {
+    return { status: 'failed', repo: repo.full_name, error: e.message };
+  }
+  if (sync.done && sync.job?.status === 'done') return deps.backend('/forge/analyze-pr', body);
+  return uploadStatus(repo, sync);
+}
+
 /** PR panel: fetch repo + diff from Bitbucket, ask the backend for ranked recommendations, apply settings + feedback. */
 export async function analyzePullRequest({ workspaceId, repoUuid, prId }, deps) {
-  const { body, links } = await buildRequest(workspaceId, repoUuid, prId, deps);
-  const [result, prefs] = await Promise.all([deps.backend('/forge/analyze-pr', body), loadPrefs(repoUuid, deps)]);
+  const { body, links, repo } = await buildRequest(workspaceId, repoUuid, prId, deps);
+  const [result, prefs] = await Promise.all([analyzeWithUpload({ workspaceId, repoUuid }, body, repo, deps), loadPrefs(repoUuid, deps)]);
   if (result.status !== 'ready') return result;
   const p = prepare(result, prefs.settings, prefs.feedback, links);
   return { ...result, groups: p.groups, hidden: p.hidden, handledCards: p.handledCards,
@@ -262,8 +335,8 @@ export async function analyzePullRequest({ workspaceId, repoUuid, prId }, deps) 
 
 /** Markdown summary for a PR comment, built from the same filtered view the panel shows. */
 export async function buildPrComment({ workspaceId, repoUuid, prId }, deps) {
-  const { body, links } = await buildRequest(workspaceId, repoUuid, prId, deps);
-  const [result, prefs] = await Promise.all([deps.backend('/forge/analyze-pr', body), loadPrefs(repoUuid, deps)]);
+  const { body, links, repo } = await buildRequest(workspaceId, repoUuid, prId, deps);
+  const [result, prefs] = await Promise.all([analyzeWithUpload({ workspaceId, repoUuid }, body, repo, deps), loadPrefs(repoUuid, deps)]);
   if (result.status !== 'ready') throw new UserError('SpecWeft is still indexing this repository; try again shortly.');
   return commentMarkdown(prepare(result, prefs.settings, prefs.feedback, links), result);
 }
@@ -288,7 +361,8 @@ export async function runMergeCheck(event, deps) {
   }
 }
 
-/** Install trigger: ask the backend to index every public repository in the workspace so the first PR is instant. */
+/** Install trigger: ask the backend to index every public repository in the workspace so the first PR is instant.
+ * Private repositories are read through the app when their first PR panel (or "Index now") opens. */
 export async function preIndexWorkspace(workspaceId, deps, max = 25) {
   if (!workspaceId) return { queued: 0 };
   const repos = (await deps.listRepos(workspaceId)).filter((r) => !r.is_private).slice(0, max);

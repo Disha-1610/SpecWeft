@@ -143,12 +143,41 @@ def test_failed_clone_is_reported_not_retried_forever(client, mirror):
     assert m["success"] is True and "skipped" in m["message"]
 
 
-def test_private_repo_not_cloned(client, mirror):
+def test_private_repo_is_uploaded_not_cloned(client, mirror, tmp_path):
+    import base64
+    from pathlib import Path
     h = {"Authorization": f"Bearer {token()}"}
-    r = client.post("/forge/analyze-pr", json=ORDERS | {"is_private": True}, headers=h).json()
-    assert r["status"] == "failed" and "private" in r["error"]
-    st = client.get("/forge/index-status", params={"repo_full_name": "acme/orders"}, headers=h).json()
-    assert st["job"] is None
+    body = ORDERS | {"is_private": True, "repo_full_name": "acme/secret", "repo_slug": "secret"}
+    r = client.post("/forge/analyze-pr", json=body, headers=h).json()
+    assert r["status"] == "needs_upload"
+    assert client.get("/forge/index-status", params={"repo_full_name": "acme/secret"}, headers=h).json()["job"] is None
+    files = {"app/settings.py": b"POSTGRES_PASSWORD = 'y'\n", "deploy/k8s.yaml": b"env:\n  - name: POSTGRES_PASSWORD\n"}
+    up = {"repo_full_name": "acme/secret", "commit": "a" * 40, "manifest": sorted(files)}
+    st = client.post("/forge/upload", json=up | {"files": []}, headers=h).json()
+    assert st["missing"] == sorted(files) and st["job"] is None
+    first = {"path": "app/settings.py", "content_b64": base64.b64encode(files["app/settings.py"]).decode()}
+    st = client.post("/forge/upload", json=up | {"files": [first]}, headers=h).json()
+    assert st["missing"] == ["deploy/k8s.yaml"] and st["received"] == 1
+    rest = {"path": "deploy/k8s.yaml", "content_b64": base64.b64encode(files["deploy/k8s.yaml"]).decode()}
+    st = client.post("/forge/upload", json=up | {"files": [rest]}, headers=h).json()
+    assert st["missing"] == [] and st["job"]["status"] == "done", st
+    r = client.post("/forge/analyze-pr", json=body, headers=h).json()
+    assert r["status"] == "ready" and r["repo"] == "acme/secret"
+
+
+@pytest.mark.parametrize("path", ["../x", "/etc/passwd", "a/../../b", "C:/x", "a//b"])
+def test_upload_rejects_unsafe_paths(client, mirror, path):
+    h = {"Authorization": f"Bearer {token()}"}
+    r = client.post("/forge/upload", json={"repo_full_name": "acme/secret", "commit": "b" * 40, "manifest": [path],
+                                           "files": []}, headers=h)
+    assert r.status_code == 422
+
+
+def test_upload_rejects_bad_commit(client, mirror):
+    h = {"Authorization": f"Bearer {token()}"}
+    r = client.post("/forge/upload", json={"repo_full_name": "acme/secret", "commit": "../../zzzz", "manifest": [],
+                                           "files": []}, headers=h)
+    assert r.status_code == 422
 
 
 @pytest.mark.parametrize("name", ["../etc", "acme/../../x", "acme", "a b/c", "acme/orders;rm -rf"])

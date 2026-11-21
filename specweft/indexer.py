@@ -3,7 +3,8 @@
 The first time a pull request in an unknown repo is analyzed, a background job clones the repo and builds its
 agreement index; callers get status "indexing" and poll. Safety rules:
   * the clone URL is built server-side from a validated `workspace/slug` (never taken from the request)
-  * only public HTTPS clones (no credentials); private repos fail with a clear message
+  * only public HTTPS clones (no credentials); private repos are not cloned — the Forge app uploads their files
+    (see `receive_files`), so the backend never holds Bitbucket credentials
   * one job per repo at a time; bounded concurrency; clone time and checkout size are capped
   * an index older than SPECWEFT_INDEX_TTL_HOURS is refreshed in the background (old results stay served meanwhile)
 """
@@ -122,6 +123,94 @@ def run_index_job(full_name: str, db_path: str | None = None) -> None:
         log.info("indexed %s: %d files", full_name, stats.files_extracted)
     except Exception as e:  # recorded for the panel; never crashes the server
         log.warning("index job for %s failed: %s", full_name, e)
+        msg = str(e) if isinstance(e, IndexError_) else f"{type(e).__name__}: {e}"
+        with conn:
+            conn.execute("UPDATE index_jobs SET status='failed', finished_at=?, error=? WHERE repo_name=?",
+                         (_now(), msg[:500], full_name))
+    finally:
+        conn.close()
+
+
+# ---------- private repositories: files pushed by the Forge app ----------
+# Forge reads a private repo with its own `read:repository` scope and uploads the files in batches; nothing here
+# ever holds Bitbucket credentials. Files are staged under <repos_dir>/<name>.upload/<commit>/ and scanned once
+# every path in the manifest has arrived.
+
+COMMIT = re.compile(r"^[0-9a-fA-F]{7,64}$")
+MAX_UPLOAD_FILES = int(os.environ.get("SPECWEFT_MAX_UPLOAD_FILES", "5000"))
+
+
+def _safe_relpath(path: str) -> str:
+    p = path.replace("\\", "/")
+    parts = p.split("/")
+    if (not p or len(p) > 1000 or p.startswith("/") or ":" in parts[0]
+            or any(x in ("", ".", "..") for x in parts) or "\0" in p):
+        raise IndexError_(f"invalid file path {path!r}")
+    return p
+
+
+def staging_dir(full_name: str, commit: str) -> Path:
+    clone_url(full_name)  # validates the name
+    if not COMMIT.match(commit):
+        raise IndexError_(f"invalid commit {commit!r}")
+    return repos_dir() / (full_name.replace("/", "__") + ".upload") / commit
+
+
+def receive_files(conn, full_name: str, commit: str, manifest: list[str], files: dict[str, bytes],
+                  db_path: str | None = None, runner: Callable[..., None] | None = None) -> dict:
+    """Store a batch of uploaded files. Returns {missing, received, total, job}; queues the scan when complete."""
+    if len(manifest) > MAX_UPLOAD_FILES:
+        raise IndexError_(f"repository has more than {MAX_UPLOAD_FILES} indexable files; index it with the CLI")
+    from .scanner import MAX_FILE_BYTES
+    wanted = {_safe_relpath(p) for p in manifest}
+    stage = staging_dir(full_name, commit)
+    stage.mkdir(parents=True, exist_ok=True)
+    for old in stage.parent.iterdir():  # an older commit's partial upload is obsolete
+        if old.name != commit:
+            shutil.rmtree(old, ignore_errors=True)
+    for path, data in files.items():
+        rel = _safe_relpath(path)
+        if rel not in wanted or len(data) > MAX_FILE_BYTES:
+            continue
+        fp = stage / rel
+        fp.parent.mkdir(parents=True, exist_ok=True)
+        fp.write_bytes(data)
+    if _dir_mb(stage) > MAX_REPO_MB:
+        shutil.rmtree(stage, ignore_errors=True)
+        raise IndexError_(f"repository larger than {MAX_REPO_MB} MB; index it manually with the CLI")
+    have = {p.relative_to(stage).as_posix() for p in stage.rglob("*") if p.is_file()}
+    missing = sorted(wanted - have)
+    job = job_status(conn, full_name)
+    if not missing and not (job and job["status"] in ("queued", "running")):
+        with _lock, conn:
+            conn.execute("INSERT OR REPLACE INTO index_jobs(repo_name, status, requested_at, head_sha) VALUES (?,?,?,?)",
+                         (full_name, "queued", _now(), commit))
+        (_pool.submit if runner is None else (lambda f, *a: f(*a)))(runner or run_upload_job, full_name, commit, db_path)
+        job = job_status(conn, full_name)
+    return {"missing": missing, "received": len(wanted & have), "total": len(wanted), "job": job}
+
+
+def run_upload_job(full_name: str, commit: str, db_path: str | None = None) -> None:
+    conn = db.connect(db_path)
+    try:
+        with conn:
+            conn.execute("UPDATE index_jobs SET status='running', started_at=?, error=NULL WHERE repo_name=?",
+                         (_now(), full_name))
+        stage = staging_dir(full_name, commit)
+        target = repos_dir() / full_name.replace("/", "__")
+        shutil.rmtree(target, ignore_errors=True)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        stage.rename(target)
+        shutil.rmtree(stage.parent, ignore_errors=True)
+        stats = scan_repo(conn, target, full_name, group=full_name.split("/")[0])
+        build_index(conn)
+        with conn:
+            conn.execute("UPDATE repos SET head_sha=? WHERE name=?", (commit, full_name))
+            conn.execute("UPDATE index_jobs SET status='done', finished_at=?, files=?, head_sha=? WHERE repo_name=?",
+                         (_now(), stats.files_extracted, commit, full_name))
+        log.info("indexed uploaded %s@%s: %d files", full_name, commit[:12], stats.files_extracted)
+    except Exception as e:
+        log.warning("upload index job for %s failed: %s", full_name, e)
         msg = str(e) if isinstance(e, IndexError_) else f"{type(e).__name__}: {e}"
         with conn:
             conn.execute("UPDATE index_jobs SET status='failed', finished_at=?, error=? WHERE repo_name=?",

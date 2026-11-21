@@ -101,7 +101,7 @@ def _ensure_indexed(conn: sqlite3.Connection, ref: PullRequestRef) -> tuple[str 
     repo = resolve_scanned_repo(conn, ref)
     full = ref.repo_full_name
     if repo is not None:
-        if full and repo == full and indexer.is_stale(conn, repo):
+        if full and repo == full and indexer.is_stale(conn, repo) and not ref.is_private:
             job = indexer.job_status(conn, repo)
             if not job or job["status"] not in ("queued", "running"):
                 indexer.request_index(conn, full, _db_path())  # refresh in background; serve current index now
@@ -109,9 +109,15 @@ def _ensure_indexed(conn: sqlite3.Connection, ref: PullRequestRef) -> tuple[str 
     if not full:
         raise HTTPException(422, "repo_full_name is required to index an unknown repository")
     if ref.is_private:
-        return None, {"status": "failed", "repo": full,
-                      "error": "This repository is private. SpecWeft indexes public repositories automatically; "
-                               "a private one must be indexed by the SpecWeft operator with the CLI."}
+        # never cloned: the Forge app reads the repo with its own scope and pushes the files to /forge/upload
+        job = indexer.job_status(conn, full)
+        if job and job["status"] in ("queued", "running"):
+            return None, {"status": "indexing", "repo": full, "job": job, "progress": _progress(job),
+                          "message": "SpecWeft is indexing this private repository."}
+        if job and job["status"] == "failed":
+            return None, {"status": "failed", "repo": full, "error": job["error"]}
+        return None, {"status": "needs_upload", "repo": full, "job": job,
+                      "message": "Private repository: the SpecWeft app is uploading its files for indexing."}
     try:
         job = indexer.job_status(conn, full)
         if job is None or job["status"] == "done":  # done but missing (e.g. DB reset): index again
@@ -134,7 +140,8 @@ def _progress(job: dict) -> dict:
             elapsed = max(0, int((datetime.now(timezone.utc) - datetime.fromisoformat(started)).total_seconds()))
         except ValueError:
             elapsed = 0
-    phase = {"queued": "Waiting for a free indexer", "running": "Cloning and indexing"}.get(job.get("status"), "Indexing")
+    phase = {"queued": "Waiting for a free indexer", "running": "Cloning and indexing",
+             "uploading": "Uploading files"}.get(job.get("status"), "Indexing")
     return {"phase": phase, "elapsed_seconds": elapsed}
 
 
@@ -180,6 +187,40 @@ def prewarm(ref: PrewarmRef, _claims: dict = Depends(verify_fit), conn=Depends(g
         if ref.repo_full_name in {r[0] for r in conn.execute("SELECT name FROM repos")} and                 not indexer.is_stale(conn, ref.repo_full_name):
             return {"repo": ref.repo_full_name, "job": indexer.job_status(conn, ref.repo_full_name), "already_indexed": True}
         return {"repo": ref.repo_full_name, "job": indexer.request_index(conn, ref.repo_full_name, _db_path())}
+    except indexer.IndexError_ as e:
+        raise HTTPException(422, str(e)) from e
+
+
+class UploadedFile(BaseModel):
+    path: str = Field(min_length=1, max_length=1000)
+    content_b64: str = Field(max_length=800_000)
+
+
+class UploadBatch(BaseModel):
+    repo_full_name: str = Field(min_length=3, max_length=400)
+    commit: str = Field(min_length=7, max_length=64)
+    manifest: list[str] = Field(max_length=indexer.MAX_UPLOAD_FILES + 1)
+    files: list[UploadedFile] = Field(default_factory=list, max_length=500)
+
+
+@router.post("/upload")
+def upload(batch: UploadBatch, _claims: dict = Depends(verify_fit), conn=Depends(get_conn)) -> dict:
+    """Private repositories: the Forge app sends the file manifest of a commit plus a batch of file contents.
+
+    Call with `files=[]` first to learn which paths are missing; once every manifest path has arrived, the scan is
+    queued and `job` reports its progress. Resumable: a partial upload for the same commit is kept between calls.
+    """
+    import base64
+    import binascii
+    try:
+        files = {f.path: base64.b64decode(f.content_b64, validate=True) for f in batch.files}
+    except binascii.Error as e:
+        raise HTTPException(422, f"invalid base64 file content: {e}") from e
+    if sum(len(v) for v in files.values()) > 4_000_000:
+        raise HTTPException(413, "upload batch too large (max 4 MB of file content)")
+    try:
+        return {"repo": batch.repo_full_name, "commit": batch.commit,
+                **indexer.receive_files(conn, batch.repo_full_name, batch.commit, batch.manifest, files, _db_path())}
     except indexer.IndexError_ as e:
         raise HTTPException(422, str(e)) from e
 

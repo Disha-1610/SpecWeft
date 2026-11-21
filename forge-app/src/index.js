@@ -1,9 +1,9 @@
 import Resolver from '@forge/resolver';
-import api, { invokeRemote, route } from '@forge/api';
+import api, { assumeTrustedRoute, invokeRemote, route } from '@forge/api';
 import { kvs } from '@forge/kvs';
 import {
   analyzePullRequest, applyFeedbackEvent, buildPrComment, normalizeFeedback, normalizeSettings, preIndexWorkspace,
-  runMergeCheck, storageKey, UserError,
+  runMergeCheck, storageKey, syncPrivateRepo, UserError,
 } from './specweft';
 
 const REMOTE = 'specweft-backend';
@@ -30,6 +30,30 @@ const deps = {
   async listRepos(ws) {
     const res = await api.asApp().requestBitbucket(route`/2.0/repositories/${ws}?pagelen=50&sort=-updated_on`);
     return ((await ensureOk(res, 'repository list')).json()).then((j) => j.values || []);
+  },
+  // Private repos: read with the app's own read:repository scope; the backend never gets credentials.
+  async listFiles(ws, repo, branch) {
+    const ref = await ensureOk(await api.asApp().requestBitbucket(route`/2.0/repositories/${ws}/${repo}/refs/branches/${branch}`), 'branch');
+    const commit = (await ref.json())?.target?.hash;
+    if (!commit) throw new UserError('Could not resolve the main branch commit.');
+    const files = [];
+    let page = null;
+    for (let i = 0; i < 100; i += 1) {
+      const res = await api.asApp().requestBitbucket(page
+        ? route`/2.0/repositories/${ws}/${repo}/src/${commit}/?max_depth=50&pagelen=100&page=${page}`
+        : route`/2.0/repositories/${ws}/${repo}/src/${commit}/?max_depth=50&pagelen=100`);
+      const j = await (await ensureOk(res, 'repository file list')).json();
+      for (const v of j.values || []) if (v.type === 'commit_file') files.push({ path: v.path, size: v.size });
+      page = j.next ? new URL(j.next).searchParams.get('page') : null;
+      if (!page) break;
+    }
+    return { commit, files };
+  },
+  async getFile(ws, repo, commit, path) {
+    const enc = (x) => encodeURIComponent(String(x));
+    const p = path.split('/').map(enc).join('/');
+    const res = await api.asApp().requestBitbucket(assumeTrustedRoute(`/2.0/repositories/${enc(ws)}/${enc(repo)}/src/${enc(commit)}/${p}`));
+    return Buffer.from(await (await ensureOk(res, `file ${path}`)).arrayBuffer()).toString('base64');
   },
   async getSettings(repoUuid) { return (await kvs.get(storageKey('settings', repoUuid))) || null; },
   async getFeedback(repoUuid) { return (await kvs.get(storageKey('feedback', repoUuid))) || null; },
@@ -116,8 +140,12 @@ resolver.define('clearFeedback', safe('clearFeedback', async ({ context }) => {
 }));
 
 resolver.define('indexNow', safe('indexNow', async ({ context }) => {
-  const repo = await deps.getRepo(context?.workspaceId, settingsRepo(context));
-  if (repo.is_private) throw new UserError('Private repositories are indexed by the SpecWeft operator with the CLI.');
+  const repoUuid = settingsRepo(context);
+  const repo = await deps.getRepo(context?.workspaceId, repoUuid);
+  if (repo.is_private) {
+    const s = await syncPrivateRepo({ workspaceId: context?.workspaceId, repoUuid }, repo, deps);
+    return { job: s.done ? s.job : { status: 'running' }, uploaded: { received: s.received, total: s.total } };
+  }
   const r = await deps.backend('/forge/prewarm', { repo_full_name: repo.full_name });
   return { job: r.job };
 }));
