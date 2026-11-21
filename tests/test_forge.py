@@ -156,3 +156,16 @@ def test_clone_url_rejects_unsafe_names(name):
     from specweft import indexer
     with pytest.raises(indexer.IndexError_):
         indexer.clone_url(name)
+
+
+def test_prewarm_queues_public_repo(client, monkeypatch):
+    calls = []
+    monkeypatch.setattr(forge.indexer, "request_index", lambda conn, full, db=None: calls.append(full) or {"status": "queued"})
+    r = client.post("/forge/prewarm", json={"repo_full_name": "ws/newrepo"}, headers={"Authorization": f"Bearer {token()}"})
+    assert r.status_code == 200, r.text
+    assert calls == ["ws/newrepo"] and r.json()["job"]["status"] == "queued"
+
+
+def test_progress_reports_phase_and_elapsed():
+    p = forge._progress({"status": "running", "started_at": "2000-01-01T00:00:00+00:00"})
+    assert p["phase"] == "Cloning and indexing" and p["elapsed_seconds"] > 0

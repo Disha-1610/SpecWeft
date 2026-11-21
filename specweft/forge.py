@@ -120,8 +120,22 @@ def _ensure_indexed(conn: sqlite3.Connection, ref: PullRequestRef) -> tuple[str 
         raise HTTPException(422, str(e)) from e
     if job["status"] == "failed":
         return None, {"status": "failed", "repo": full, "error": job["error"]}
-    return None, {"status": "indexing", "repo": full, "job": job,
+    return None, {"status": "indexing", "repo": full, "job": job, "progress": _progress(job),
                   "message": "SpecWeft is indexing this repository for the first time. This usually takes under a minute."}
+
+
+def _progress(job: dict) -> dict:
+    """Phase + elapsed seconds for the panel's self-refreshing progress state."""
+    from datetime import datetime, timezone
+    started = job.get("started_at") or job.get("requested_at")
+    elapsed = 0
+    if started:
+        try:
+            elapsed = max(0, int((datetime.now(timezone.utc) - datetime.fromisoformat(started)).total_seconds()))
+        except ValueError:
+            elapsed = 0
+    phase = {"queued": "Waiting for a free indexer", "running": "Cloning and indexing"}.get(job.get("status"), "Indexing")
+    return {"phase": phase, "elapsed_seconds": elapsed}
 
 
 def _analyze(conn: sqlite3.Connection, ref: PullRequestRef) -> dict:
@@ -152,6 +166,21 @@ def analyze_pr(ref: PullRequestRef, _claims: dict = Depends(verify_fit), conn=De
     try:
         return _analyze(conn, ref)
     except service.ServiceError as e:
+        raise HTTPException(422, str(e)) from e
+
+
+class PrewarmRef(BaseModel):
+    repo_full_name: str = Field(min_length=3, max_length=400)
+
+
+@router.post("/prewarm")
+def prewarm(ref: PrewarmRef, _claims: dict = Depends(verify_fit), conn=Depends(get_conn)) -> dict:
+    """Install trigger / settings page: index a public repository before its first PR is opened."""
+    try:
+        if ref.repo_full_name in {r[0] for r in conn.execute("SELECT name FROM repos")} and                 not indexer.is_stale(conn, ref.repo_full_name):
+            return {"repo": ref.repo_full_name, "job": indexer.job_status(conn, ref.repo_full_name), "already_indexed": True}
+        return {"repo": ref.repo_full_name, "job": indexer.request_index(conn, ref.repo_full_name, _db_path())}
+    except indexer.IndexError_ as e:
         raise HTTPException(422, str(e)) from e
 
 

@@ -16,14 +16,30 @@ modules:
       function: merge-check
       triggers:
         - on-code-pushed
+  bitbucket:repoSettingsMenuPage:
+    - key: specweft-settings
+      title: SpecWeft
+      resource: settings
+      render: native
+      resolver:
+        function: resolver
+  trigger:
+    - key: specweft-installed
+      function: installed
+      events:
+        - avi:forge:installed:app
   function:
     - key: resolver
       handler: index.handler
     - key: merge-check
       handler: index.mergeCheck
+    - key: installed
+      handler: index.onInstalled
 resources:
   - key: main
     path: src/frontend/index.jsx
+  - key: settings
+    path: src/frontend/settings.jsx
 remotes:
   - key: specweft-backend
     # Public HTTPS URL of the SpecWeft Python server (python -m specweft.cli serve, behind TLS).
@@ -34,6 +50,8 @@ permissions:
   scopes:
     - read:repository:bitbucket
     - read:pullrequest:bitbucket
+    - write:pullrequest:bitbucket
+    - storage:app
 app:
   id: ari:cloud:ecosystem::app/b1604e45-5a67-42e7-978f-ac64eb1edba9
   runtime:
