@@ -55,6 +55,35 @@ const deps = {
     const res = await api.asApp().requestBitbucket(assumeTrustedRoute(`/2.0/repositories/${enc(ws)}/${enc(repo)}/src/${enc(commit)}/${p}`));
     return Buffer.from(await (await ensureOk(res, `file ${path}`)).arrayBuffer()).toString('base64');
   },
+  // PR history (read:pullrequest scope). Only paths, timestamps and user ids are sent on to the backend.
+  async listPullRequests(ws, repo, max) {
+    const out = [];
+    let req = route`/2.0/repositories/${ws}/${repo}/pullrequests?state=MERGED&state=OPEN&pagelen=50&sort=-updated_on`;
+    for (let i = 0; i < 4 && out.length < max; i += 1) {
+      const j = await (await ensureOk(await api.asApp().requestBitbucket(req), 'pull request list')).json();
+      out.push(...(j.values || []));
+      if (!j.next) break;
+      const n = new URL(j.next);
+      req = assumeTrustedRoute(`${n.pathname}${n.search}`);
+    }
+    return out.slice(0, max);
+  },
+  async getPrCommits(ws, repo, pr) {
+    const res = await api.asApp().requestBitbucket(route`/2.0/repositories/${ws}/${repo}/pullrequests/${pr}/commits?pagelen=100`);
+    return ((await (await ensureOk(res, 'pull request commits')).json()).values || [])
+      .map((c) => ({ hash: c.hash, date: c.date, message: c.message, parents: c.parents || [] }));
+  },
+  async getCommitFiles(ws, repo, hash) {
+    const res = await api.asApp().requestBitbucket(route`/2.0/repositories/${ws}/${repo}/diffstat/${hash}?pagelen=500`);
+    const j = await (await ensureOk(res, 'commit diffstat')).json();
+    return (j.values || []).map((v) => v.new?.path || v.old?.path).filter(Boolean);
+  },
+  async getPrComments(ws, repo, pr) {
+    const res = await api.asApp().requestBitbucket(route`/2.0/repositories/${ws}/${repo}/pullrequests/${pr}/comments?pagelen=100`);
+    return (await (await ensureOk(res, 'pull request comments')).json()).values || [];
+  },
+  async getHistoryState(repoUuid) { return (await kvs.get(storageKey('history', repoUuid))) || null; },
+  async setHistoryState(repoUuid, state) { await kvs.set(storageKey('history', repoUuid), state); },
   async getSettings(repoUuid) { return (await kvs.get(storageKey('settings', repoUuid))) || null; },
   async getFeedback(repoUuid) { return (await kvs.get(storageKey('feedback', repoUuid))) || null; },
   async backendGet(path) {
@@ -217,7 +246,7 @@ export const onInstalled = async (event) => {
   const ws = m ? (m[1].startsWith('{') ? m[1] : `{${m[1]}}`) : null;
   try {
     const r = await preIndexWorkspace(ws, deps);
-    console.log(`specweft pre-index queued ${r.queued} repositories`);
+    console.log(`specweft pre-index queued ${r.queued} repositories, synced PR history for ${r.histories}`);
   } catch (e) {
     console.error('specweft pre-index failed', e);
   }

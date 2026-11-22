@@ -39,6 +39,7 @@ intended live environment. **BLOCKED** = cannot be completed without something o
 | 1 | Claude Code JSONL parsing | VERIFIED | `traces/claude_code.py` | 58 real local transcripts ingested; `test_claude_code_adapter` |
 | 2 | SWE-agent ingestion | VERIFIED | `traces/swe_agent.py` | 100 real rows (nebius/SWE-agent-trajectories); `test_real_swe_agent_rows_parse` |
 | 3 | OpenHands ingestion | VERIFIED | `traces/openhands.py` | 60 real rows (nebius/SWE-rebench-openhands-trajectories); `test_real_openhands_rows_parse` |
+| 3b | Bitbucket PR history as navigation | VERIFIED | `traces/bitbucket_pr.py`, `navigation.analyze_pr_session`, `POST /forge/pr-history`, Forge `syncPrHistory` | commit order → edges, reviewer comments → detours; `tests/test_pr_history.py` (reaches `high` with agreement), JS sync tests |
 | 4 | Normalized event schema | VERIFIED | `models.NormalizedEvent`, `events` table | rejects unknown kinds |
 | 5 | search/read/edit/test-run/test-fail/build-fail | VERIFIED | `traces/classify.py` | all kinds observed in real data (incl. 380+ test_fail) |
 | 6 | Repo-relative path mapping | VERIFIED | `traces/paths.to_repo_relative` | Windows, MSYS (`/c/...`), container (`/workspace/x`) paths; `test_path_mapping` |

@@ -225,6 +225,63 @@ def upload(batch: UploadBatch, _claims: dict = Depends(verify_fit), conn=Depends
         raise HTTPException(422, str(e)) from e
 
 
+class PrCommit(BaseModel):
+    hash: str = Field(default="", max_length=64)
+    date: str | None = Field(default=None, max_length=64)
+    message: str = Field(default="", max_length=2000)
+    files: list[str] = Field(default_factory=list, max_length=1000)
+
+
+class PrComment(BaseModel):
+    created_on: str | None = Field(default=None, max_length=64)
+    user: str | None = Field(default=None, max_length=100)
+    path: str | None = Field(default=None, max_length=1000)
+
+
+class PrHistoryItem(BaseModel):
+    id: int = Field(ge=1)
+    title: str = Field(default="", max_length=1000)
+    created_on: str | None = Field(default=None, max_length=64)
+    author: str | None = Field(default=None, max_length=100)
+    commits: list[PrCommit] = Field(default_factory=list, max_length=100)
+    comments: list[PrComment] = Field(default_factory=list, max_length=500)
+
+
+class PrHistoryBatch(BaseModel):
+    repo_full_name: str = Field(min_length=3, max_length=400)
+    pull_requests: list[PrHistoryItem] = Field(max_length=200)
+
+
+@router.post("/pr-history")
+def pr_history(batch: PrHistoryBatch, _claims: dict = Depends(verify_fit), conn=Depends(get_conn)) -> dict:
+    """The customer's own behavioural signal: past pull requests (commit order + review comments) become navigation
+    sessions for this repo. Idempotent per PR; navigation edges of this repo are rebuilt immediately."""
+    from .navigation import build_navigation
+    from .traces import bitbucket_pr
+    from .traces.ingest import store_session
+    try:
+        indexer.clone_url(batch.repo_full_name)  # validates `workspace/slug`
+    except indexer.IndexError_ as e:
+        raise HTTPException(422, str(e)) from e
+    stored = skipped = 0
+    for pr in batch.pull_requests:
+        try:
+            s = bitbucket_pr.parse_pr(batch.repo_full_name, pr.model_dump())
+        except ValueError:
+            skipped += 1
+            continue
+        if not any(e.kind == "edit" for e in s.events):
+            skipped += 1
+            continue
+        store_session(conn, s)
+        stored += 1
+    nav = build_navigation(conn, repo=batch.repo_full_name)
+    total = conn.execute("SELECT COUNT(*) FROM sessions WHERE source=? AND repo_name=?",
+                         (bitbucket_pr.SOURCE, batch.repo_full_name)).fetchone()[0]
+    return {"repo": batch.repo_full_name, "stored": stored, "skipped": skipped, "pr_sessions": total,
+            "edges": nav["edges"]}
+
+
 @router.get("/index-status")
 def index_status(repo_full_name: str, _claims: dict = Depends(verify_fit), conn=Depends(get_conn)) -> dict:
     job = indexer.job_status(conn, repo_full_name)

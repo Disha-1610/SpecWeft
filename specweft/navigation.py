@@ -10,6 +10,11 @@ Per repository:
   n_AB   = sessions with edge A→B                     P(B|A) = (n_AB + α·base_B) / (n_A + α), α = 1
   lift   = P(B|A) / base_B
   score  = (1 − e^(−n_AB/2)) · clip(log2(lift)/4, 0, 1) + 0.1·min(n_detour, 3), capped at 1
+
+Bitbucket PR sessions (source `bitbucket_pr`, see traces/bitbucket_pr.py) are analysed by `analyze_pr_session`:
+  * edge A→B when B is changed in a LATER commit of the PR than A (files of one commit are co-change, not navigation)
+  * detour  when B is changed after a reviewer comment and A was changed before it (the review sent them to B)
+They share the per-repo aggregation, so a repo's edges come from its agent sessions and its PRs together.
 """
 from __future__ import annotations
 
@@ -36,12 +41,12 @@ class SessionNav:
 
 
 def load_events(conn: sqlite3.Connection, session_ids: list[int] | None = None) -> dict[int, list[sqlite3.Row]]:
-    q = ("SELECT e.session_id, e.seq, e.kind, e.path, e.excerpt, e.ts, s.repo_name FROM events e"
+    q = ("SELECT e.session_id, e.seq, e.kind, e.path, e.excerpt, e.ts, s.repo_name, s.source FROM events e"
          " JOIN sessions s ON s.id=e.session_id")
     params: list = []
     if session_ids is not None:
         q += f" WHERE e.session_id IN ({','.join('?' * len(session_ids))})"
-        params = session_ids
+        params = list(session_ids)
     out: dict[int, list[sqlite3.Row]] = defaultdict(list)
     for r in conn.execute(q + " ORDER BY e.session_id, e.seq", params):
         out[r["session_id"]].append(r)
@@ -77,6 +82,52 @@ def analyze_session(session_id: int, events: list, window: int = WINDOW) -> Sess
                                 ed["detour"] = True
                                 ed["excerpt"] = f"after {e['kind']}: {f['excerpt']}"
     return nav
+
+
+def analyze_pr_session(session_id: int, events: list) -> SessionNav:
+    """Edges from the commit order of one pull request, detours from reviewer comments."""
+    repo = events[0]["repo_name"] if events else ""
+    edited_order = [e["path"] for e in events if e["path"] and e["kind"] == "edit"]
+    nav = SessionNav(session_id, repo, edited_order[0] if edited_order else None, set(edited_order), set(edited_order))
+    before: list[str] = []           # files changed in earlier commits, in first-change order
+    commit: list[str] = []           # files of the current commit
+    commit_excerpt = ""
+    reviewed_at: int | None = None   # len(before) when the latest review comment arrived
+    review_excerpt = ""
+
+    def close_commit() -> None:
+        for b in commit:
+            for i, a in enumerate(before):
+                if a == b:
+                    continue
+                ed = nav.edges.setdefault((a, b), {"detour": False, "excerpt": commit_excerpt, "ts": ts})
+                if reviewed_at is not None and i < reviewed_at and not ed["detour"]:
+                    ed["detour"] = True
+                    ed["excerpt"] = f"after {review_excerpt}: {commit_excerpt}"
+        for b in commit:
+            if b not in before:
+                before.append(b)
+        commit.clear()
+
+    ts = None
+    for e in events:
+        if e["kind"] == "commit":
+            close_commit()
+            commit_excerpt, ts = e["excerpt"] or "", e["ts"]
+        elif e["kind"] == "edit" and e["path"]:
+            if e["path"] not in commit:
+                commit.append(e["path"])
+        elif e["kind"] == "review":
+            close_commit()
+            reviewed_at, review_excerpt = len(before), e["excerpt"] or "review comment"
+    close_commit()
+    return nav
+
+
+def analyze_any(session_id: int, events: list, window: int = WINDOW) -> SessionNav:
+    if events and "source" in events[0].keys() and events[0]["source"] == "bitbucket_pr":
+        return analyze_pr_session(session_id, events)
+    return analyze_session(session_id, events, window)
 
 
 def nav_score(n_ab: int, n_a: int, base_b: float, n_detour: int) -> tuple[float, float, float]:
@@ -127,14 +178,22 @@ def compute_edges(navs: list[SessionNav]) -> tuple[dict, dict, dict]:
     return edges, baseline, sources
 
 
-def build_navigation(conn: sqlite3.Connection, window: int = WINDOW) -> dict[str, int]:
-    evs = load_events(conn)
-    navs = [analyze_session(sid, rows, window) for sid, rows in evs.items()]
+def build_navigation(conn: sqlite3.Connection, window: int = WINDOW, repo: str | None = None) -> dict[str, int]:
+    """Rebuild navigation edges for every repo, or only for sessions whose `repo_name` is exactly `repo`."""
+    ids = None
+    if repo is not None:
+        ids = [r[0] for r in conn.execute("SELECT id FROM sessions WHERE repo_name=?", (repo,))]
+    evs = load_events(conn, ids) if ids is None or ids else {}
+    navs = [analyze_any(sid, rows, window) for sid, rows in evs.items()]
+    if repo is not None:
+        for n in navs:
+            n.repo = repo
     edges, baseline, sources = compute_edges(navs)
     with transaction(conn):
-        conn.execute("DELETE FROM nav_edges")
-        conn.execute("DELETE FROM nav_baseline")
-        conn.execute("DELETE FROM nav_sources")
+        where, args = (" WHERE repo_name=?", (repo,)) if repo is not None else ("", ())
+        conn.execute("DELETE FROM nav_edges" + where, args)
+        conn.execute("DELETE FROM nav_baseline" + where, args)
+        conn.execute("DELETE FROM nav_sources" + where, args)
         conn.executemany("INSERT INTO nav_edges VALUES (?,?,?,?,?,?,?,?,?,?)",
                          [(r, a, b, e["n"], e["det"], e["p"], e["lift"], e["score"], e["last"], json.dumps(e["samples"]))
                           for (r, a, b), e in edges.items()])

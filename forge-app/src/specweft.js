@@ -7,6 +7,11 @@
 //   deps.listFiles(workspaceId, repoUuid, branch) -> { commit, files: [{ path, size }] }   (private repos only)
 //   deps.getFile(workspaceId, repoUuid, commit, path) -> base64 file content               (private repos only)
 //   deps.getSettings(repoUuid) / deps.getFeedback(repoUuid) -> stored objects (optional; defaults used if absent)
+//   deps.listPullRequests(workspaceId, repoUuid, max)    -> Bitbucket PR JSON list, newest first   (PR history)
+//   deps.getPrCommits(workspaceId, repoUuid, prId)        -> [{ hash, date, message, parents }]     (PR history)
+//   deps.getCommitFiles(workspaceId, repoUuid, hash)      -> [path]                                (PR history)
+//   deps.getPrComments(workspaceId, repoUuid, prId)       -> Bitbucket comment JSON list           (PR history)
+//   deps.getHistoryState(repoUuid) / deps.setHistoryState(repoUuid, state) -> { syncedAt, complete, prs } (optional)
 
 export const MAX_DIFF_CHARS = 4_500_000; // backend accepts 5 MB; keep a margin
 
@@ -15,7 +20,7 @@ export class UserError extends Error {}
 // ---------- settings ----------
 
 export const TIERS = [
-  { key: 'must', confidence: 'high', title: 'Must update', blurb: 'Both signals agree: a shared contract changed and agents editing these files go on to edit them too.' },
+  { key: 'must', confidence: 'high', title: 'Must update', blurb: 'Two signals agree: a shared contract changed, and past pull requests (or agents) that edited these files went on to edit this one too.' },
   { key: 'likely', confidence: 'medium', title: 'Likely', blurb: 'A contract this PR changed is still referenced here.' },
   { key: 'worth', confidence: 'low', title: 'Worth a look', blurb: 'Weaker links. Hidden by default.' },
 ];
@@ -116,7 +121,7 @@ export function sentence(rec) {
   const where = `\`${loc(e?.holder_site || rec.related_file)}\``;
   if (!e) {
     const nav = rec.navigation_evidence;
-    if (nav) return `${where} is usually edited next: ${nav.sessions_with_edge} of ${nav.sessions_editing_source} agent sessions that changed \`${rec.changed_file.path}\` went on to change it.`;
+    if (nav) return `${where} is usually edited next: ${nav.sessions_with_edge} of ${nav.sessions_editing_source} past pull requests or agent sessions that changed \`${rec.changed_file.path}\` went on to change it.`;
     return `${where} may need updating: ${rec.reason}`;
   }
   const tok = `\`${matchCase(e.holder_site?.text || '', e.token)}\``; // show it as written in the file (POSTGRES_PASSWORD)
@@ -170,7 +175,7 @@ export function buildCards(recs, { repoName, links, settings, prId }) {
       changedSite: { label: loc(changed), url: fileUrl(links.repoHtml, links.sourceCommit, changed.path, changed.line) },
       holderSite: { label: loc(holder), url: sameRepo ? fileUrl(links.repoHtml, links.destinationCommit, holder.path, holder.line) : null },
       extraEvidence: Math.max(0, (r.agreement_evidence?.length || 0) - 1),
-      navigation: r.navigation_evidence ? `${r.navigation_evidence.sessions_with_edge}/${r.navigation_evidence.sessions_editing_source} agent sessions edited it next (lift ${r.navigation_evidence.lift}×)` : null,
+      navigation: r.navigation_evidence ? `${r.navigation_evidence.sessions_with_edge}/${r.navigation_evidence.sessions_editing_source} past PRs or agent sessions edited it next (lift ${r.navigation_evidence.lift}×)` : null,
       jiraUrl: jiraUrl(settings, r, links.prHtml),
       feedback: r.feedback,
       prId,
@@ -326,6 +331,7 @@ async function analyzeWithUpload(ctx, body, repo, deps) {
 /** PR panel: fetch repo + diff from Bitbucket, ask the backend for ranked recommendations, apply settings + feedback. */
 export async function analyzePullRequest({ workspaceId, repoUuid, prId }, deps) {
   const { body, links, repo } = await buildRequest(workspaceId, repoUuid, prId, deps);
+  await ensurePrHistory({ workspaceId, repoUuid }, repo, deps);
   const [result, prefs] = await Promise.all([analyzeWithUpload({ workspaceId, repoUuid }, body, repo, deps), loadPrefs(repoUuid, deps)]);
   if (result.status !== 'ready') return result;
   const p = prepare(result, prefs.settings, prefs.feedback, links);
@@ -347,7 +353,8 @@ export async function runMergeCheck(event, deps) {
     const repoUuid = event?.repository?.uuid;
     const prefs = await loadPrefs(repoUuid, deps);
     if (!prefs.settings.mergeCheckEnabled) return { success: true, message: 'SpecWeft check is turned off in repository settings.' };
-    const { body } = await buildRequest(event?.workspace?.uuid, repoUuid, event?.pullrequest?.id, deps);
+    const { body, repo } = await buildRequest(event?.workspace?.uuid, repoUuid, event?.pullrequest?.id, deps);
+    await ensurePrHistory({ workspaceId: event?.workspace?.uuid, repoUuid }, repo, deps, { budgetMs: 8_000 });
     const res = await deps.backend('/forge/merge-check', body);
     if (res.success || !deps.getFeedback) return { success: Boolean(res.success), message: String(res.message ?? '') };
     // backend found high-confidence breaks: re-check them against this repo's settings + feedback
@@ -361,16 +368,98 @@ export async function runMergeCheck(event, deps) {
   }
 }
 
-/** Install trigger: ask the backend to index every public repository in the workspace so the first PR is instant.
- * Private repositories are read through the app when their first PR panel (or "Index now") opens. */
+// ---------- PR history: the repo's own "where developers went next" signal ----------
+// Agent trajectories only exist for public benchmark repos. Every installed repo has PR history: the order in which
+// files were changed across a PR's commits, and the files changed after a reviewer commented. The app reads it with
+// its read:pullrequest scope and sends paths + timestamps only (no code, no comment text) to /forge/pr-history.
+
+export const HISTORY_MAX_PRS = 40;
+export const HISTORY_MAX_COMMITS = 30;
+export const HISTORY_TTL_MS = 24 * 3600 * 1000;
+export const HISTORY_BUDGET_MS = 12_000;
+
+async function mapLimit(items, limit, fn) {
+  const out = new Array(items.length);
+  let next = 0;
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, async () => {
+    while (next < items.length) { const i = next; next += 1; out[i] = await fn(items[i], i); }
+  }));
+  return out;
+}
+
+/** One PR -> the backend's PrHistoryItem. Merge commits are skipped (their diff is the target branch's work). */
+export async function collectPr(ws, repoUuid, pr, deps) {
+  const [commits, comments] = await Promise.all([
+    deps.getPrCommits(ws, repoUuid, pr.id).catch(() => []),
+    deps.getPrComments(ws, repoUuid, pr.id).catch(() => []),
+  ]);
+  const own = commits.filter((c) => (c.parents?.length ?? 1) <= 1).slice(0, HISTORY_MAX_COMMITS);
+  const withFiles = await mapLimit(own, 4, async (c) => ({
+    hash: c.hash,
+    date: c.date,
+    message: String(c.message || '').split('\n')[0].slice(0, 200),
+    files: (await deps.getCommitFiles(ws, repoUuid, c.hash).catch(() => [])).slice(0, 1000),
+  }));
+  return {
+    id: pr.id,
+    title: String(pr.title || '').slice(0, 200),
+    created_on: pr.created_on || null,
+    commits: withFiles.filter((c) => c.files.length),
+    // reviewer comments only (the author's replies are not review requests); no account ids or text leave Bitbucket
+    comments: comments.filter((c) => !c.deleted && (!pr.author?.uuid || c.user?.uuid !== pr.author.uuid)).slice(0, 500)
+      .map((c) => ({ created_on: c.created_on || null, path: c.inline?.path || null })),
+  };
+}
+
+/** Read recent PRs and upload them. Stops reading after `budgetMs`; whatever was read is still sent. */
+export async function syncPrHistory({ workspaceId, repoUuid }, repo, deps,
+  { max = HISTORY_MAX_PRS, budgetMs = HISTORY_BUDGET_MS, now = Date.now } = {}) {
+  if (!deps.listPullRequests) return { skipped: true };
+  const t0 = now();
+  const prs = (await deps.listPullRequests(workspaceId, repoUuid, max)).slice(0, max);
+  const items = [];
+  for (let i = 0; i < prs.length && now() - t0 < budgetMs; i += 4) {
+    items.push(...await Promise.all(prs.slice(i, i + 4).map((p) => collectPr(workspaceId, repoUuid, p, deps))));
+  }
+  const useful = items.filter((p) => p.commits.length >= 2); // a single commit has no "next" to learn from
+  const res = useful.length
+    ? await deps.backend('/forge/pr-history', { repo_full_name: repo.full_name, pull_requests: useful })
+    : { stored: 0, edges: 0 };
+  return { read: items.length, of: prs.length, complete: items.length === prs.length, ...res };
+}
+
+/** Sync PR history when never synced, incomplete, or older than a day. Never throws: it only improves results. */
+export async function ensurePrHistory(ctx, repo, deps, { budgetMs = HISTORY_BUDGET_MS, now = Date.now } = {}) {
+  try {
+    if (!deps.listPullRequests || !repo?.full_name || !ctx?.repoUuid) return null;
+    const st = deps.getHistoryState ? await deps.getHistoryState(ctx.repoUuid) : null;
+    if (st?.syncedAt && st.complete !== false && now() - st.syncedAt < HISTORY_TTL_MS) return null;
+    const r = await syncPrHistory(ctx, repo, deps, { budgetMs, now });
+    if (deps.setHistoryState) {
+      await deps.setHistoryState(ctx.repoUuid, { syncedAt: now(), complete: r.complete !== false, prs: r.pr_sessions ?? 0 });
+    }
+    return r;
+  } catch (e) {
+    console.error('specweft PR history sync failed', e);
+    return null;
+  }
+}
+
+/** Install trigger: ask the backend to index every public repository in the workspace so the first PR is instant,
+ * and send every repository's PR history (public or private) so navigation has data on day one.
+ * Private repositories' files are read through the app when their first PR panel (or "Index now") opens. */
 export async function preIndexWorkspace(workspaceId, deps, max = 25) {
-  if (!workspaceId) return { queued: 0 };
-  const repos = (await deps.listRepos(workspaceId)).filter((r) => !r.is_private).slice(0, max);
+  if (!workspaceId) return { queued: 0, histories: 0 };
+  const all = (await deps.listRepos(workspaceId)).slice(0, max);
   let queued = 0;
-  for (const r of repos) {
+  for (const r of all.filter((x) => !x.is_private)) {
     try { await deps.backend('/forge/prewarm', { repo_full_name: r.full_name }); queued += 1; } catch (e) { /* keep going */ }
   }
-  return { queued };
+  let histories = 0;
+  for (const r of all) {
+    if (await ensurePrHistory({ workspaceId, repoUuid: r.uuid }, r, deps, { budgetMs: 4_000 })) histories += 1;
+  }
+  return { queued, histories };
 }
 
 /** KVS keys allow only [a-zA-Z0-9:._\s-#]; Bitbucket UUIDs have braces. */

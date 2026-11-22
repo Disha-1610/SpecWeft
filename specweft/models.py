@@ -4,8 +4,10 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass, field
 from typing import Any, Literal
 
-EventKind = Literal["search", "read", "edit", "test_run", "test_fail", "build_run", "build_fail"]
-EVENT_KINDS: tuple[str, ...] = ("search", "read", "edit", "test_run", "test_fail", "build_run", "build_fail")
+EventKind = Literal["search", "read", "edit", "test_run", "test_fail", "build_run", "build_fail", "commit", "review"]
+# `commit` / `review` only occur in Bitbucket PR sessions (traces/bitbucket_pr.py)
+EVENT_KINDS: tuple[str, ...] = ("search", "read", "edit", "test_run", "test_fail", "build_run", "build_fail",
+                                "commit", "review")
 
 
 @dataclass(frozen=True)
@@ -35,7 +37,7 @@ class NormalizedEvent:
 
 @dataclass
 class NormalizedSession:
-    source: str                   # claude_code | swe_agent | openhands
+    source: str                   # claude_code | swe_agent | openhands | bitbucket_pr
     external_id: str
     repo_name: str | None
     events: list[NormalizedEvent]

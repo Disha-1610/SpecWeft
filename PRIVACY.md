@@ -1,6 +1,6 @@
 # SpecWeft Privacy Policy
 
-_Last updated: 19 November 2026_
+_Last updated: 22 November 2026_
 
 SpecWeft is an Atlassian Forge app for Bitbucket. It shows which other files a pull request may also need to change,
 and offers an optional merge check. This policy explains what data the app accesses and what it does with it.
@@ -12,6 +12,11 @@ Bitbucket API, with read-only permissions (`read:repository:bitbucket`, `read:pu
 
 - repository metadata: workspace, repository name and identifier, and whether the repository is public or private
 - the pull request's identifier and its diff (the list of changed files and the changed lines)
+- **pull request history** (up to the 40 most recently updated open or merged pull requests, refreshed at most once a
+  day): for each one, the order of its commits, the file paths each commit changed, and the time and file path of
+  each reviewer comment. Only paths, timestamps, commit hashes and first lines of commit messages are sent to the
+  backend: comment text and account identifiers are not. The backend uses this to learn which files developers on
+  this repository usually change next, and after review.
 
 The app does **not** request or store personal information such as names, email addresses, account IDs, passwords
 or payment details. It cannot write to your repositories.

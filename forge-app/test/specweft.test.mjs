@@ -138,3 +138,43 @@ test('private repo: uploads missing files in batches, then re-analyzes', async (
   assert.equal(r.status, 'ready');
   assert.deepEqual(calls, ['/forge/analyze-pr', '/forge/upload', '/forge/upload', '/forge/analyze-pr']);
 });
+
+test('PR history: collects commit files + reviewer comments, uploads, then respects the TTL', async () => {
+  const { ensurePrHistory } = await import('../src/specweft.js');
+  const sent = [];
+  let state = null;
+  const deps = {
+    async listPullRequests() { return [{ id: 1, author: { uuid: '{dev}' } }, { id: 2, author: { uuid: '{dev}' } }]; },
+    async getPrCommits(_w, _r, id) {
+      return id === 1
+        ? [{ hash: 'h2', date: '2026-01-02', message: 'fix\nbody', parents: [{}] }, { hash: 'h1', date: '2026-01-01', parents: [{}] },
+          { hash: 'm', date: '2026-01-03', parents: [{}, {}] }]
+        : [{ hash: 'h3', date: '2026-01-01', parents: [{}] }];
+    },
+    async getCommitFiles(_w, _r, h) { if (h === 'm') throw new Error('merge commits are skipped'); return [`${h}.py`]; },
+    async getPrComments() {
+      return [{ created_on: 't', user: { uuid: '{rev}' }, inline: { path: 'h1.py' }, content: { raw: 'secret text' } },
+        { created_on: 'u', user: { uuid: '{dev}' } }, { deleted: true }];
+    },
+    async backend(path, body) { sent.push([path, body]); return { stored: body.pull_requests.length, pr_sessions: 1, edges: 1 }; },
+    async getHistoryState() { return state; },
+    async setHistoryState(_r, s) { state = s; },
+  };
+  const r = await ensurePrHistory({ workspaceId: 'w', repoUuid: '{r}' }, { full_name: 'w/s' }, deps, { now: () => 1000 });
+  assert.equal(r.stored, 1);
+  const [path, body] = sent[0];
+  assert.equal(path, '/forge/pr-history');
+  assert.deepEqual(body.pull_requests.map((p) => p.id), [1]); // PR 2 has one commit: nothing to learn
+  const p1 = body.pull_requests[0];
+  assert.deepEqual(p1.commits.map((c) => [c.hash, c.files, c.message]), [['h2', ['h2.py'], 'fix'], ['h1', ['h1.py'], '']]);
+  assert.deepEqual(p1.comments, [{ created_on: 't', path: 'h1.py' }]); // author reply dropped; no text or account ids sent
+  assert.equal('author' in p1, false);
+  assert.equal(await ensurePrHistory({ workspaceId: 'w', repoUuid: '{r}' }, { full_name: 'w/s' }, deps, { now: () => 2000 }), null);
+  assert.equal(sent.length, 1);
+});
+
+test('PR history failure never breaks analysis', async () => {
+  const d = fake({ async listPullRequests() { throw new Error('403'); } });
+  await analyzePullRequest({ workspaceId: '{ws}', repoUuid: '{r}', prId: 7 }, d);
+  assert.equal(d.calls.at(-1)[0], '/forge/analyze-pr');
+});

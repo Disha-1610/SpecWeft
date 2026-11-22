@@ -43,3 +43,6 @@ Thumbs.db
 
 # Demo repository (pushed separately to Bitbucket)
 demo/specweft-demo/
+
+# Forge tunnel build output
+forge-app/.forge/tunnel-output/

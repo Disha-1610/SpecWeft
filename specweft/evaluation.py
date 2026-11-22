@@ -19,7 +19,7 @@ from . import db, gitutil
 from .agreements import build_index
 from .cochange import CoChange, from_history
 from .extract.registry import classify
-from .navigation import analyze_session, compute_edges, load_events, repo_matches
+from .navigation import analyze_any, compute_edges, load_events, repo_matches
 from .ranker import FEATURES, file_level_candidates, rank, weighted_score
 from .scanner import scan_repo
 
@@ -243,7 +243,7 @@ def gold_eval(conn: sqlite3.Connection, nav_repo: str, scanned_repo: str | None 
     all_ids = [r[0] for r in conn.execute("SELECT id, repo_name FROM sessions").fetchall()
                if repo_matches(r[1], nav_repo)]
     events = load_events(conn, all_ids) if all_ids else {}
-    navs = {sid: analyze_session(sid, events.get(sid, [])) for sid in all_ids}
+    navs = {sid: analyze_any(sid, events.get(sid, [])) for sid in all_ids}
     inst = {r[0]: r[1] for r in conn.execute("SELECT id, instance_id FROM sessions")}
     files_in_repo: set[str] | None = None
     if scanned_repo:

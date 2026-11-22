@@ -11,6 +11,10 @@ SpecWeft answers this with two independent signals fused into one ranked, eviden
 * **Waze for Code** (behavioural). Agent trajectories (Claude Code, SWE-agent, OpenHands) show where agents went next
   after editing a file, and where they detoured after a failing test or build. Navigation edges are scored by lift over
   each file's baseline visit rate.
+  On an installed Bitbucket repo, the app also sends the repo's own **pull-request history** (`/forge/pr-history`,
+  `specweft/traces/bitbucket_pr.py`). Files changed in a later commit of a PR are where the developer went next, and
+  files changed after a reviewer comment count as detours. So every repo has a second signal from the day it is
+  installed, and the merge check (which needs two signals) can fire without any agent trajectories.
 
 Every recommendation uses one shared evidence schema (`specweft/models.py: Recommendation`): changed file, related
 file, reason, agreement evidence with **both** source locations, navigation evidence with session counts and excerpts,
