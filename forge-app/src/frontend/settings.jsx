@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ForgeReconciler, {
-  Button, Heading, Inline, Label, SectionMessage, Select, Spinner, Stack, Text, TextArea, Textfield, Toggle,
+  Button, Heading, Inline, Label, Link, Lozenge, SectionMessage, Select, Spinner, Stack, Text, TextArea, Textfield, Toggle,
 } from '@forge/react';
 import { invoke } from '@forge/bridge';
 
@@ -9,6 +9,42 @@ const THRESHOLDS = [
   { label: 'Must update + Likely', value: 'medium' },
   { label: 'Everything (Worth a look is still collapsed)', value: 'low' },
 ];
+
+const STATUS_LOZENGE = { done: 'success', queued: 'inprogress', running: 'inprogress', uploading: 'inprogress', failed: 'removed' };
+
+function Intro() {
+  const [st, setSt] = useState(null);
+  useEffect(() => { invoke('repoStatus').then(setSt).catch(() => setSt({ ok: false })); }, []);
+  return (
+    <SectionMessage appearance="discovery" title="What is SpecWeft?">
+      <Stack space="space.100">
+        <Text>
+          On every pull request, SpecWeft lists the files the PR did not change but probably should have, for example code still
+          using a renamed config key. Open any pull request in this repository and look for the
+          “SpecWeft — files this PR may break” panel on its Overview tab.
+        </Text>
+        {!st ? <Inline space="space.100"><Spinner size="small" /><Text>Checking status…</Text></Inline> : st.ok ? (
+          <Inline space="space.200" alignBlock="center" shouldWrap>
+            <Inline space="space.050" alignBlock="center">
+              <Text>Server:</Text>
+              {st.backendOnline ? <Lozenge appearance="success">Online</Lozenge> : <Lozenge appearance="removed">Waking up</Lozenge>}
+            </Inline>
+            {st.index ? (
+              <Inline space="space.050" alignBlock="center">
+                <Text>This repository:</Text>
+                <Lozenge appearance={STATUS_LOZENGE[st.index.status] || 'default'}>{st.index.label}</Lozenge>
+              </Inline>
+            ) : null}
+            {st.prsUrl ? <Link href={st.prsUrl}>Go to pull requests</Link> : null}
+          </Inline>
+        ) : null}
+        {st?.index?.status === 'none' ? (
+          <Text size="small">Not indexed yet: it happens automatically on the first PR, or press “Index repository now” below.</Text>
+        ) : null}
+      </Stack>
+    </SectionMessage>
+  );
+}
 
 function App() {
   const [s, setS] = useState(null);
@@ -40,6 +76,8 @@ function App() {
   return (
     <Stack space="space.300">
       <Heading size="medium">SpecWeft</Heading>
+      <Intro />
+      <Heading size="small">Settings</Heading>
       {msg ? <SectionMessage appearance={msg.appearance}><Text>{msg.text}</Text></SectionMessage> : null}
 
       <Stack space="space.100">

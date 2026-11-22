@@ -57,6 +57,11 @@ const deps = {
   },
   async getSettings(repoUuid) { return (await kvs.get(storageKey('settings', repoUuid))) || null; },
   async getFeedback(repoUuid) { return (await kvs.get(storageKey('feedback', repoUuid))) || null; },
+  async backendGet(path) {
+    const res = await invokeRemote(REMOTE, { path, method: 'GET' });
+    if (!res.ok) throw new UserError(`SpecWeft backend returned ${res.status}.`);
+    return res.json();
+  },
   async backend(path, body) {
     const res = await invokeRemote(REMOTE, {
       path,
@@ -148,6 +153,58 @@ resolver.define('indexNow', safe('indexNow', async ({ context }) => {
   }
   const r = await deps.backend('/forge/prewarm', { repo_full_name: repo.full_name });
   return { job: r.job };
+}));
+
+// ----- "Start here" page (workspace Apps menu) and status on the repo settings page -----
+const STATUS_TEXT = {
+  done: 'Ready', queued: 'Indexing', running: 'Indexing', uploading: 'Indexing', failed: 'Failed', none: 'Not indexed yet',
+};
+
+async function repoIndexStatus(fullName) {
+  try {
+    const r = await deps.backendGet(`/forge/index-status?repo_full_name=${encodeURIComponent(fullName)}`);
+    const st = r?.job?.status || 'none';
+    return { status: STATUS_TEXT[st] ? st : 'none', label: STATUS_TEXT[st] || STATUS_TEXT.none, error: r?.job?.error || null };
+  } catch {
+    return { status: 'unknown', label: 'Unknown', error: null };
+  }
+}
+
+async function backendHealth() {
+  try {
+    const h = await deps.backendGet('/api/health');
+    return { online: h?.status === 'ok' };
+  } catch {
+    return { online: false };
+  }
+}
+
+resolver.define('overview', safe('overview', async ({ context }) => {
+  const ws = context?.workspaceId;
+  const [health, repos] = await Promise.all([backendHealth(), ws ? deps.listRepos(ws).catch(() => []) : []]);
+  const top = repos.slice(0, 15);
+  const statuses = health.online ? await Promise.all(top.map((r) => repoIndexStatus(r.full_name))) : top.map(() => null);
+  return {
+    backendOnline: health.online,
+    repos: top.map((r, i) => ({
+      name: r.name,
+      fullName: r.full_name,
+      isPrivate: Boolean(r.is_private),
+      url: r.links?.html?.href || null,
+      index: statuses[i],
+    })),
+  };
+}));
+
+resolver.define('repoStatus', safe('repoStatus', async ({ context }) => {
+  const repo = await deps.getRepo(context?.workspaceId, settingsRepo(context));
+  const health = await backendHealth();
+  return {
+    backendOnline: health.online,
+    repoName: repo.full_name,
+    prsUrl: repo.links?.html?.href ? `${repo.links.html.href}/pull-requests/` : null,
+    index: health.online ? await repoIndexStatus(repo.full_name) : null,
+  };
 }));
 
 export const handler = resolver.getDefinitions();

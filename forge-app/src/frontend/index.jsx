@@ -79,12 +79,23 @@ function Indexing({ result, tries }) {
   return (
     <SectionMessage appearance="information" title="Indexing this repository">
       <Stack space="space.100">
-        <Text>{p.phase || 'Indexing'}… {secs ? `${secs}s elapsed.` : ''} Results appear here automatically.</Text>
+        <Text>First time on this repository: SpecWeft is reading the code so it knows which files depend on each other.
+          This happens once and usually takes under a minute. You can keep this page open; results appear here automatically.</Text>
+        <Text size="small">{p.phase || 'Indexing'}… {secs ? `${secs}s elapsed.` : ''}</Text>
         {secs ? <ProgressBar value={est} ariaLabel="Indexing progress" /> : <ProgressBar isIndeterminate ariaLabel="Indexing" />}
         {tries > 24 ? <Text size="small">Large repository: still working, checking every 15 seconds.</Text> : null}
       </Stack>
     </SectionMessage>
   );
+}
+
+function summaryLine(groups) {
+  const n = (k) => groups.find((g) => g.key === k)?.cards.length || 0;
+  const total = groups.reduce((t, g) => t + g.cards.length, 0);
+  const must = n('must');
+  return must
+    ? `${must} file(s) must be updated with this change (${total} to review in total)`
+    : `${total} file(s) may need updating with this change`;
 }
 
 function App() {
@@ -133,13 +144,16 @@ function App() {
   };
 
   if (state.loading) {
-    return <Inline space="space.100" alignBlock="center"><Spinner /><Text>Analyzing this pull request…</Text></Inline>;
+    return <Inline space="space.100" alignBlock="center"><Spinner /><Text>SpecWeft is checking which other files depend on this change… (the first run can take up to a minute)</Text></Inline>;
   }
   if (!state.ok) {
     return (
       <SectionMessage appearance="error" title="SpecWeft could not analyze this pull request">
-        <Text>{state.error}</Text>
-        <Button onClick={() => load()}>Retry</Button>
+        <Stack space="space.100">
+          <Text>{state.error}</Text>
+          <Text size="small">Most often the free server is waking up after being idle. Wait about 30 seconds and press Retry.</Text>
+          <Button onClick={() => load()}>Retry</Button>
+        </Stack>
       </SectionMessage>
     );
   }
@@ -176,12 +190,18 @@ function App() {
         </SectionMessage>
       ) : null}
       {!groups.length ? (
-        <SectionMessage appearance="success" title="No broken agreements found">
-          <Text>None of the {result.changed_files.length} changed file(s) leave a contract dangling in unchanged files.</Text>
+        <SectionMessage appearance="success" title="Nothing else needs updating">
+          <Text>SpecWeft checked the {result.changed_files.length} changed file(s) and found no other file that still depends on what was changed.</Text>
         </SectionMessage>
       ) : (
         <Inline spread="space-between" alignBlock="center" shouldWrap>
-          <Heading size="small">{groups.reduce((n, g) => n + g.cards.length, 0)} unchanged file(s) linked to this change</Heading>
+          <Stack space="space.050">
+            <Heading size="small">{summaryLine(groups)}</Heading>
+            <Text size="small" color="color.text.subtle">
+              These files were not changed in this PR but still depend on something it changed. Check each one, then mark it
+              “Already handled” or “Not relevant” (SpecWeft learns from this).
+            </Text>
+          </Stack>
           <Button spacing="compact" isDisabled={busy} onClick={postComment}>Post summary as PR comment</Button>
         </Inline>
       )}

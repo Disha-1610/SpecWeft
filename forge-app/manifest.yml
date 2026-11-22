@@ -23,6 +23,13 @@ modules:
       render: native
       resolver:
         function: resolver
+  bitbucket:workspaceGlobalPage:
+    - key: specweft-home
+      title: SpecWeft
+      resource: home
+      render: native
+      resolver:
+        function: resolver
   trigger:
     - key: specweft-installed
       function: installed
@@ -40,6 +47,8 @@ resources:
     path: src/frontend/index.jsx
   - key: settings
     path: src/frontend/settings.jsx
+  - key: home
+    path: src/frontend/home.jsx
 remotes:
   - key: specweft-backend
     # Public HTTPS URL of the SpecWeft Python server (python -m specweft.cli serve, behind TLS).
