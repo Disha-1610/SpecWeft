@@ -5,53 +5,135 @@
     "files": 196,
     "tokens": 579
   },
-  "commits_replayed": 120,
+  "commits_replayed": 150,
   "methods": {
     "agreement": {
-      "n": 105,
-      "P@5": 0.2419,
-      "R@10": 0.4749,
+      "n": 138,
+      "P@5": 0.2232,
+      "R@10": 0.4271,
       "cross_repo_share": 0.0,
-      "coverage": 0.9905
+      "coverage": 0.9928
     },
     "agreement_in_repo_only": {
-      "n": 105,
-      "P@5": 0.2419,
-      "R@10": 0.4749,
+      "n": 138,
+      "P@5": 0.2232,
+      "R@10": 0.4271,
       "cross_repo_share": 0.0,
-      "coverage": 0.9905
+      "coverage": 0.9928
     },
     "fused_weighted": {
-      "n": 105,
-      "P@5": 0.2438,
-      "R@10": 0.473,
+      "n": 138,
+      "P@5": 0.4246,
+      "R@10": 0.8335,
       "cross_repo_share": 0.0,
-      "coverage": 0.9905
+      "coverage": 1.0
     },
     "cochange_baseline": {
-      "n": 105,
-      "P@5": 0.4076,
-      "R@10": 0.826,
+      "n": 138,
+      "P@5": 0.4116,
+      "R@10": 0.8269,
       "cross_repo_share": 0.0,
-      "coverage": 0.9905
+      "coverage": 0.9928
     }
   },
-  "labels_written": 1138,
+  "labels_written": 3977,
+  "fusion_holdout": {
+    "evaluated": true,
+    "train_seeds": 70,
+    "test_seeds": 68,
+    "methods": {
+      "cochange_baseline": {
+        "n": 68,
+        "P@5": 0.3941,
+        "R@10": 0.8599,
+        "cross_repo_share": 0.0,
+        "coverage": 1.0
+      },
+      "fused_weighted": {
+        "n": 68,
+        "P@5": 0.3882,
+        "R@10": 0.8146,
+        "cross_repo_share": 0.0,
+        "coverage": 1.0
+      },
+      "lr_agreement+cochange+navigation": {
+        "n": 68,
+        "P@5": 0.3882,
+        "R@10": 0.8308,
+        "cross_repo_share": 0.0,
+        "coverage": 1.0
+      },
+      "lr_agreement+navigation (no cochange)": {
+        "n": 68,
+        "P@5": 0.2,
+        "R@10": 0.607,
+        "cross_repo_share": 0.0,
+        "coverage": 1.0
+      },
+      "lr_cochange+recency (no agreement)": {
+        "n": 68,
+        "P@5": 0.3824,
+        "R@10": 0.819,
+        "cross_repo_share": 0.0,
+        "coverage": 1.0
+      },
+      "lr_agreement_x_cochange_interaction": {
+        "n": 68,
+        "P@5": 0.3912,
+        "R@10": 0.8234,
+        "cross_repo_share": 0.0,
+        "coverage": 1.0
+      }
+    },
+    "coef": {
+      "lr_agreement+cochange+navigation": {
+        "agreement": 5.519,
+        "navigation": 0.0,
+        "cochange": 6.714,
+        "cross_repo": 0.0,
+        "detours": 0.0,
+        "recency": 3.735
+      },
+      "lr_agreement+navigation (no cochange)": {
+        "agreement": 5.218,
+        "navigation": 0.0,
+        "cross_repo": 0.0,
+        "detours": 0.0,
+        "recency": 5.174
+      },
+      "lr_cochange+recency (no agreement)": {
+        "cochange": 6.977,
+        "recency": 3.764
+      },
+      "lr_agreement_x_cochange_interaction": {
+        "agreement": 3.565,
+        "navigation": 0.0,
+        "cochange": 6.296,
+        "agreement_x_cochange": -1.313,
+        "both_agree_cochange": 1.215,
+        "cross_repo": 0.0,
+        "detours": 0.0,
+        "recency": 3.306
+      }
+    },
+    "note": "navigation is 0 throughout commit replay (no agent sessions exist for these commits), so its LR weight is not learned here; it is fused at inference time via the weighted rule"
+  },
   "note": "truth = other files changed in the same commit that existed at the cutoff; index snapshot at cutoff",
   "lr_holdout": {
     "evaluated": true,
-    "train_labels": 577,
-    "test_labels": 561,
-    "auc_lr": 0.7933,
-    "auc_weighted": 0.7757,
-    "P@5_lr_rerank": 0.2196,
-    "P@5_weighted_rerank": 0.2471,
+    "train_labels": 2042,
+    "test_labels": 1982,
+    "auc_lr": 0.9344,
+    "auc_weighted": 0.9293,
+    "P@5_lr_rerank": 0.4147,
+    "P@5_weighted_rerank": 0.4265,
     "coef": {
-      "agreement": 2.012,
+      "agreement": 2.917,
       "navigation": 0.0,
+      "cochange": 5.717,
       "cross_repo": 0.0,
       "detours": 0.0,
-      "recency": 5.357
+      "recency": 2.8
     },
     "note": "P@5 here re-ranks only the candidates the ranker produced (labels table), not all files"
   }

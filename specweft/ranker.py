@@ -3,16 +3,17 @@
 Features (all in [0,1]):
   agreement   noisy-or of weighted token scores linking changed -> related file (diffs.analyze_diff)
   navigation  navigation edge score changed -> related (navigation.nav_score)
+  cochange    git co-change confidence n(changed ∧ related) / n(changed) (cochange.CoChange); home repo only
   cross_repo  1 if related file lives in another repository
   detours     min(n_detour, 3) / 3
   recency     exp(-age_days / 180) of the most recent evidence (nav edge timestamp or holder's last commit)
 Fusion:
-  weighted (default):  s = 0.55·agreement + 0.35·navigation + 0.05·recency + 0.05·detours   (cross_repo: 0)
-                       ×1.25 (capped at 1) when both agreement > 0 and navigation > 0
+  weighted (default):  s = 0.55·agreement + 0.35·navigation + 0.40·cochange + 0.05·recency + 0.05·detours
+                       (cross_repo: 0), ×1.25 (capped at 1) when at least two of agreement / navigation / cochange > 0
   logistic regression: used when a model trained on replay labels exists (`train_logistic`) AND every non-zero
                        feature of the candidate varied in the training data (otherwise the model never learned
                        a weight for it, e.g. navigation in commit replay) — then the weighted rule is used.
-Confidence: high = both signals; medium = one signal ≥ 0.5, or the file still holds a token this change removed,
+Confidence: high = at least two of the three signals; medium = one signal ≥ 0.5, or the file still holds a token this change removed,
 renamed or changed the value of (a definite break); low otherwise. `confidence_score` is the LR
 probability when a model is used, else the weighted score (marked `uncalibrated_weighted`).
 """
@@ -27,23 +28,31 @@ from functools import lru_cache
 
 from . import gitutil
 from .agreements import repo_group, token_scores
+from .cochange import CoChange, predict_db
 from .diffs import CHANGE_WEIGHTS, AgreementCandidate, analyze_diff
 from .models import AgreementEvidence, Location, NavigationEvidence, Recommendation
 from .navigation import neighbors
 
-FEATURES = ("agreement", "navigation", "cross_repo", "detours", "recency")
+FEATURES = ("agreement", "navigation", "cochange", "cross_repo", "detours", "recency")
+SIGNALS = ("agreement", "navigation", "cochange")
+COCHANGE_K = 50
 # cross_repo is neutral in the weighted rule: replay gave no evidence that it helps (the trained LR learns a negative
 # weight). It remains a feature for the LR and a flag shown to users.
-WEIGHTS = {"agreement": 0.55, "navigation": 0.35, "cross_repo": 0.0, "recency": 0.05, "detours": 0.05}
+WEIGHTS = {"agreement": 0.55, "navigation": 0.35, "cochange": 0.40, "cross_repo": 0.0, "recency": 0.05,
+           "detours": 0.05}
 DUAL_BOOST = 1.25
 MIN_LR_SAMPLES = 40
 
 
 def weighted_score(f: dict[str, float]) -> float:
     s = sum(WEIGHTS[k] * f.get(k, 0.0) for k in WEIGHTS)
-    if f.get("agreement", 0) > 0 and f.get("navigation", 0) > 0:
+    if n_signals(f) >= 2:
         s *= DUAL_BOOST
     return min(1.0, s)
+
+
+def n_signals(f: dict[str, float]) -> int:
+    return sum(1 for k in SIGNALS if f.get(k, 0) > 0)
 
 
 def load_model(conn: sqlite3.Connection, name: str = "fusion_lr", require_active: bool = True) -> dict | None:
@@ -59,7 +68,7 @@ def load_model(conn: sqlite3.Connection, name: str = "fusion_lr", require_active
 
 def lr_prob(model: dict, f: dict[str, float]) -> float:
     p = model["params"]
-    z = p["intercept"] + sum(p["coef"][k] * f.get(k, 0.0) for k in FEATURES)
+    z = p["intercept"] + sum(p["coef"].get(k, 0.0) * f.get(k, 0.0) for k in FEATURES)
     return 1 / (1 + math.exp(-z))
 
 
@@ -165,8 +174,11 @@ def file_level_candidates(conn: sqlite3.Connection, repo: str, path: str, top_to
 
 def rank(conn: sqlite3.Connection, repo: str, changed_files: list[str], diff_text: str | None = None,
          limit: int = 20, now: int | None = None, nav_conn: sqlite3.Connection | None = None,
-         use_model: bool = True) -> list[Recommendation]:
-    """Rank files likely affected by changes to `changed_files` (repo-relative) in `repo`."""
+         use_model: bool = True, cochange: CoChange | None = None) -> list[Recommendation]:
+    """Rank files likely affected by changes to `changed_files` (repo-relative) in `repo`.
+
+    Co-change comes from `cochange` when given (replay passes its leakage-free online counts), else from the
+    `cochange` table (empty unless `cochange.store` was run for this repo)."""
     now = now or int(datetime.now(timezone.utc).timestamp())
     nav_conn = nav_conn or conn
     changed = set(changed_files)
@@ -187,16 +199,23 @@ def rank(conn: sqlite3.Connection, repo: str, changed_files: list[str], diff_tex
         for e in neighbors(nav_conn, repo, f):
             nav[(f, repo, e["dst"])] = e
 
+    co: dict[tuple[str, str, str], float] = {}
+    for f in changed_files:
+        preds = cochange.predict(f, COCHANGE_K) if cochange is not None else predict_db(conn, repo, f, COCHANGE_K)
+        for b, conf in preds:
+            co[(f, repo, b)] = conf
+
     root_row = conn.execute("SELECT root FROM repos WHERE name=?", (repo,)).fetchone()
     model = load_model(conn) if use_model else None
     best: dict[tuple[str, str], tuple[float, Recommendation]] = {}
-    for key in set(agree) | set(nav):
+    for key in set(agree) | set(nav) | set(co):
         cf, rr, rp = key
         if rr == repo and rp in changed:
             continue
         a = agree.get(key)
         e = nav.get(key)
         f = {"agreement": a.score if a else 0.0, "navigation": e["score"] if e else 0.0,
+             "cochange": co.get(key, 0.0),
              "cross_repo": 1.0 if rr != repo else 0.0, "detours": min(e["n_detour"], 3) / 3 if e else 0.0}
         ts = _iso_to_epoch(e["last_ts"]) if e else None
         if ts is None:
@@ -210,9 +229,9 @@ def rank(conn: sqlite3.Connection, repo: str, changed_files: list[str], diff_tex
         else:
             score, conf_score, basis = w, w, "uncalibrated_weighted"
         hard_break = bool(a and any(ev.change_type in ("removed", "renamed", "value_changed") for ev in a.evidence))
-        if f["agreement"] > 0 and f["navigation"] > 0:
+        if n_signals(f) >= 2:
             level = "high"
-        elif max(f["agreement"], f["navigation"]) >= 0.5 or hard_break:
+        elif max(f[k] for k in SIGNALS) >= 0.5 or hard_break:
             level = "medium"
         else:
             level = "low"
@@ -223,7 +242,7 @@ def rank(conn: sqlite3.Connection, repo: str, changed_files: list[str], diff_tex
         rec = Recommendation(
             changed_file=Location(repo, cf), related_file=Location(rr, rp,
                                                                    a.evidence[0].holder_site.line if a and a.evidence else None),
-            reason=_reason(a, e), agreement_evidence=a.evidence if a else [], navigation_evidence=nev,
+            reason=_reason(a, e, f["cochange"]), agreement_evidence=a.evidence if a else [], navigation_evidence=nev,
             cross_repo=rr != repo, features={k: round(v, 4) for k, v in f.items()}, ranking_score=round(score, 4),
             confidence=level, confidence_score=round(conf_score, 4), confidence_basis=basis,
             explanation=_explain(cf, rp, rr, repo, a, e, f, level, basis))
@@ -234,7 +253,7 @@ def rank(conn: sqlite3.Connection, repo: str, changed_files: list[str], diff_tex
     return recs[:limit]
 
 
-def _reason(a: AgreementCandidate | None, e: dict | None) -> str:
+def _reason(a: AgreementCandidate | None, e: dict | None, co: float = 0.0) -> str:
     parts = []
     if a and a.evidence:
         ev = a.evidence[0]
@@ -244,6 +263,8 @@ def _reason(a: AgreementCandidate | None, e: dict | None) -> str:
     if e:
         parts.append(f"{e['n_sessions']}/{e['n_src']} sessions navigated here after editing the changed file"
                      + (f" ({e['n_detour']} after a failing test/build)" if e["n_detour"] else ""))
+    if co > 0:
+        parts.append(f"changed together with the changed file in {co:.0%} of its past commits")
     return "; ".join(parts) or "no evidence"
 
 
@@ -254,7 +275,9 @@ def _explain(cf: str, rp: str, rr: str, repo: str, a, e, f, level, basis) -> str
         s.append(f"Agreement {f['agreement']:.2f}: shared tokens {toks}.")
     if e:
         s.append(f"Navigation {f['navigation']:.2f}: lift {e['lift']:.1f}× over the {e['baseline']:.0%} baseline visit rate.")
-    s.append({"high": "Both systems agree (dual-signal).", "medium": "Single system: strong signal or a definite contract break.",
+    if f.get("cochange", 0) > 0:
+        s.append(f"Co-change {f['cochange']:.2f}: share of past commits to {cf} that also changed this file.")
+    s.append({"high": "At least two independent signals agree.", "medium": "Single system: strong signal or a definite contract break.",
               "low": "Single weak signal."}[level])
     if basis == "uncalibrated_weighted":
         s.append("Score is an uncalibrated weighted sum (no trained model).")

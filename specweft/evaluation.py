@@ -82,7 +82,8 @@ def replay(db_path: str, target_root: str, target_name: str | None = None, other
     later = gitutil.commits(target_root, f"{cutoff}..HEAD")[:max_commits]
     rows: dict[str, list] = defaultdict(list)
     n_labels = 0
-    for c in later:
+    evals: list[dict] = []  # per-seed candidate pools for the fused-LR holdout (fusion_holdout)
+    for ci, c in enumerate(later):
         old_names = {v: k for k, v in c["renames"].items()}
         present = sorted({old_names.get(f, f) for f in c["files"]} & tree)
         if len(present) >= 2 and len(present) <= 30:
@@ -91,10 +92,13 @@ def replay(db_path: str, target_root: str, target_name: str | None = None, other
                 truth = {(target_name, f) for f in present if f != seed}
                 diff = gitutil.git(target_root, "show", "-U3", "-M", "--format=", c["sha"], "--", seed,
                                    *([c["renames"][seed]] if seed in c["renames"] else [])).decode("utf-8", "replace")
-                recs = rank(conn, target_name, [seed], diff, limit=30, now=c["ts"], use_model=False)
+                pool = rank(conn, target_name, [seed], diff, limit=200, now=c["ts"], use_model=False, cochange=cc)
+                recs = pool[:30]
                 fused = [(r.related_file.repo, r.related_file.path) for r in recs]
+                # agreement-only ordering must not depend on co-change (ties broken by the co-change-free rule)
                 agree_only = [(r.related_file.repo, r.related_file.path) for r in
-                              sorted([r for r in recs if r.features["agreement"] > 0], key=lambda r: -r.features["agreement"])]
+                              sorted([r for r in pool if r.features["agreement"] > 0], key=lambda r: (-r.features["agreement"], -weighted_score(
+                                  {k: v for k, v in r.features.items() if k != "cochange"}), r.related_file.path))]
                 co = [(target_name, b) for b, _ in cc.predict(seed, 10)]
                 rows["agreement"].append(metrics(agree_only, truth, target_name))
                 # same ranking restricted to the home repo: cross-repo predictions are unverifiable against
@@ -102,6 +106,8 @@ def replay(db_path: str, target_root: str, target_name: str | None = None, other
                 rows["agreement_in_repo_only"].append(metrics([p for p in agree_only if p[0] == target_name], truth, target_name))
                 rows["fused_weighted"].append(metrics(fused, truth, target_name))
                 rows["cochange_baseline"].append(metrics(co, truth, target_name))
+                evals.append({"commit": ci, "truth": truth, "cochange": co,
+                              "cands": [((r.related_file.repo, r.related_file.path), r.features) for r in pool]})
                 if label_conn is not None:
                     with label_conn:
                         for r in recs:
@@ -116,7 +122,78 @@ def replay(db_path: str, target_root: str, target_name: str | None = None, other
     conn.close()
     return {"repo": target_name, "cutoff": cutoff, "index": idx, "commits_replayed": len(later),
             "methods": {k: _summ(v) for k, v in rows.items()}, "labels_written": n_labels,
+            "fusion_holdout": _cache_and_holdout(db_path, evals, target_name),
             "note": "truth = other files changed in the same commit that existed at the cutoff; index snapshot at cutoff"}
+
+
+ABLATIONS = {"lr_agreement+cochange+navigation": ("agreement", "navigation", "cochange", "cross_repo", "detours", "recency"),
+             "lr_agreement+navigation (no cochange)": ("agreement", "navigation", "cross_repo", "detours", "recency"),
+             "lr_cochange+recency (no agreement)": ("cochange", "recency"),
+             "lr_agreement_x_cochange_interaction": ("agreement", "navigation", "cochange", "agreement_x_cochange",
+                                                    "both_agree_cochange", "cross_repo", "detours", "recency")}
+
+
+def _feat(f: dict, k: str) -> float:
+    """Raw feature, or a derived combined-candidate feature (agreement and co-change both point at the file)."""
+    if k == "agreement_x_cochange":
+        return f.get("agreement", 0.0) * f.get("cochange", 0.0)
+    if k == "both_agree_cochange":
+        return 1.0 if f.get("agreement", 0.0) > 0 and f.get("cochange", 0.0) > 0 else 0.0
+    return f.get(k, 0.0)
+
+
+def _cache_and_holdout(db_path: str, evals: list[dict], home: str) -> dict:
+    """Save the per-seed candidate pools next to the replay DB so ablations re-run in seconds (`holdout_from_cache`)."""
+    Path(db_path).with_suffix(".pools.json").write_text(json.dumps(
+        [{"commit": e["commit"], "truth": sorted(e["truth"]), "cochange": e["cochange"], "cands": e["cands"]}
+         for e in evals]), encoding="utf-8")
+    return fusion_holdout(evals, home)
+
+
+def holdout_from_cache(pools_path: str, home: str) -> dict:
+    evals = json.loads(Path(pools_path).read_text(encoding="utf-8"))
+    for e in evals:
+        e["truth"] = {tuple(t) for t in e["truth"]}
+        e["cochange"] = [tuple(x) for x in e["cochange"]]
+        e["cands"] = [(tuple(k), f) for k, f in e["cands"]]
+    return fusion_holdout(evals, home)
+
+
+def fusion_holdout(evals: list[dict], home: str) -> dict:
+    """Temporal split over replayed commits: fit LR on the earlier half's candidate pools, then re-rank the whole
+    pool of every later-half seed and score R@10 / P@5 against the full truth set (same metric as `methods`),
+    side by side with the co-change baseline on exactly the same seeds."""
+    from sklearn.linear_model import LogisticRegression
+    commits = sorted({e["commit"] for e in evals})
+    if len(commits) < 4:
+        return {"evaluated": False, "reason": "too few commits"}
+    split = commits[len(commits) // 2]
+    tr = [e for e in evals if e["commit"] < split]
+    te = [e for e in evals if e["commit"] >= split]
+    out: dict = {"evaluated": True, "train_seeds": len(tr), "test_seeds": len(te), "methods": {}, "coef": {}}
+    rows: dict[str, list] = defaultdict(list)
+    for e in te:
+        rows["cochange_baseline"].append(metrics(e["cochange"], e["truth"], home))
+        rows["fused_weighted"].append(metrics([k for k, _ in e["cands"]], e["truth"], home))
+    for name, feats in ABLATIONS.items():
+        X = [[_feat(f, k) for k in feats] for e in tr for _, f in e["cands"]]
+        y = [int(key in e["truth"]) for e in tr for key, _ in e["cands"]]
+        if len(set(y)) < 2:
+            out["methods"][name] = {"n": 0, "reason": "single class in training half"}
+            continue
+        clf = LogisticRegression(class_weight="balanced", max_iter=2000).fit(X, y)
+        out["coef"][name] = {k: round(float(c), 3) for k, c in zip(feats, clf.coef_[0])}
+        for e in te:
+            if not e["cands"]:
+                rows[name].append(metrics([], e["truth"], home))
+                continue
+            p = clf.predict_proba([[_feat(f, k) for k in feats] for _, f in e["cands"]])[:, 1]
+            order = sorted(zip(p, (k for k, _ in e["cands"])), key=lambda x: (-x[0], x[1]))
+            rows[name].append(metrics([k for _, k in order], e["truth"], home))
+    out["methods"] |= {k: _summ(v) for k, v in rows.items()}
+    out["note"] = ("navigation is 0 throughout commit replay (no agent sessions exist for these commits), so its "
+                   "LR weight is not learned here; it is fused at inference time via the weighted rule")
+    return out
 
 
 def lr_holdout(label_conn: sqlite3.Connection, run: str) -> dict:
@@ -206,9 +283,11 @@ def gold_eval(conn: sqlite3.Connection, nav_repo: str, scanned_repo: str | None 
             rows["agreement"].append(metrics(agree_list, truth, nav_repo))
             fused_scores: dict[tuple[str, str], float] = defaultdict(float)
             nav_map = dict(nav_preds)
+            co_map = {(nav_repo, b): v for b, v in cc.predict(seed, 50)} if cc is not None else {}
             agr_map = {(nav_repo if c.repo == scanned_repo else c.repo, c.path): c.score for c in ac}
-            for key in set(agr_map) | {(nav_repo, b) for b in nav_map}:
+            for key in set(agr_map) | {(nav_repo, b) for b in nav_map} | set(co_map):
                 f = {"agreement": agr_map.get(key, 0.0), "navigation": nav_map.get(key[1], 0.0) if key[0] == nav_repo else 0.0,
+                     "cochange": co_map.get(key, 0.0),
                      "cross_repo": 0.0 if key[0] == nav_repo else 1.0,
                      "detours": min(det_map.get(key[1], 0), 3) / 3, "recency": 0.0}
                 fused_scores[key] = weighted_score(f)
@@ -217,6 +296,7 @@ def gold_eval(conn: sqlite3.Connection, nav_repo: str, scanned_repo: str | None 
                 with label_conn:
                     for key in fused[:30]:
                         f = {"agreement": agr_map.get(key, 0.0), "navigation": nav_map.get(key[1], 0.0),
+                             "cochange": co_map.get(key, 0.0),
                              "cross_repo": 0.0, "detours": min(det_map.get(key[1], 0), 3) / 3, "recency": 0.0}
                         label_conn.execute(
                             "INSERT OR REPLACE INTO replay_labels(run, repo_name, commit_sha, seed, candidate, features, label)"
