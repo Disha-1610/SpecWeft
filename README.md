@@ -25,6 +25,26 @@ Docs: [PROJECT_REQUIREMENTS.md](PROJECT_REQUIREMENTS.md) · [SYSTEM_ARCHITECTURE
 schema) · [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) · [FEATURE_TRACKER.md](FEATURE_TRACKER.md) (status of every
 requirement).
 
+## Who it's for
+
+Teams whose services, infrastructure-as-code (Kubernetes, Helm, Kustomize, Terraform, Compose) and docs live in
+separate files, often in separate repos, so a single setting is written down in five places. Those teams lose deploys
+to config drift: one copy of the value gets updated and another doesn't. Review doesn't catch it, because the file
+that needed changing was never in the diff.
+
+That failure is well documented:
+
+* **Knight Capital, 2012.** A new feature reused an old flag. A technician didn't copy the new code to one of the
+  eight servers, and the dormant logic on that server sent the unintended orders. The loss was over $460M in about
+  45 minutes ([SEC press release 2013-222](https://www.sec.gov/news/press-release/2013-222)).
+* **GitLab.com.** In a site-wide outage, the production environment had drifted for weeks out of sync with the
+  Terraform configuration ([incident review](https://gitlab.com/gitlab-com/gl-infra/production/-/work_items/15999)).
+* **Transloadit, 2018.** Environment variables differed between production and dev/staging, so the problem passed
+  testing and broke production
+  ([postmortem](https://transloadit.com/blog/2018/12/december-6-outage-post-mortem/)).
+
+SpecWeft catches the step that was left out: the PR that changed a token in one holder but left the others alone.
+
 ## Try it (no setup needed)
 
 SpecWeft runs as a **Bitbucket app**. On any pull request it shows a panel called
