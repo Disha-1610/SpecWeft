@@ -82,6 +82,7 @@ def replay(db_path: str, target_root: str, target_name: str | None = None, other
     later = gitutil.commits(target_root, f"{cutoff}..HEAD")[:max_commits]
     rows: dict[str, list] = defaultdict(list)
     n_labels = 0
+    tiers: dict[str, list[int]] = defaultdict(lambda: [0, 0])  # confidence tier -> [hits, flagged]
     evals: list[dict] = []  # per-seed candidate pools for the fused-LR holdout (fusion_holdout)
     for ci, c in enumerate(later):
         old_names = {v: k for k, v in c["renames"].items()}
@@ -94,6 +95,10 @@ def replay(db_path: str, target_root: str, target_name: str | None = None, other
                                    *([c["renames"][seed]] if seed in c["renames"] else [])).decode("utf-8", "replace")
                 pool = rank(conn, target_name, [seed], diff, limit=200, now=c["ts"], use_model=False, cochange=cc)
                 recs = pool[:30]
+                for r in pool:
+                    if r.related_file.repo == target_name:  # cross-repo flags are unverifiable against this history
+                        t = tiers[r.confidence]
+                        t[0] += int((r.related_file.repo, r.related_file.path) in truth); t[1] += 1
                 fused = [(r.related_file.repo, r.related_file.path) for r in recs]
                 # agreement-only ordering must not depend on co-change (ties broken by the co-change-free rule)
                 agree_only = [(r.related_file.repo, r.related_file.path) for r in
@@ -121,9 +126,20 @@ def replay(db_path: str, target_root: str, target_name: str | None = None, other
         cc.add_commit(c["files"])  # online update: the baseline only ever sees the past
     conn.close()
     return {"repo": target_name, "cutoff": cutoff, "index": idx, "commits_replayed": len(later),
-            "methods": {k: _summ(v) for k, v in rows.items()}, "labels_written": n_labels,
+            "methods": {k: _summ(v) for k, v in rows.items()}, "tier_precision": tier_precision(tiers),
+            "labels_written": n_labels,
             "fusion_holdout": _cache_and_holdout(db_path, evals, target_name),
             "note": "truth = other files changed in the same commit that existed at the cutoff; index snapshot at cutoff"}
+
+
+def tier_precision(tiers: dict[str, list[int]]) -> dict:
+    """Micro precision of each confidence tier over every flag the ranker raised (not just the top 10).
+    `high` is the "must update" tier: what the merge check and the hook block on."""
+    out = {}
+    for t in ("high", "medium", "low"):
+        h, n = tiers.get(t, (0, 0))
+        out[t] = {"flagged": n, "correct": h, "precision": round(h / n, 4) if n else None}
+    return out
 
 
 ABLATIONS = {"lr_agreement+cochange+navigation": ("agreement", "navigation", "cochange", "cross_repo", "detours", "recency"),

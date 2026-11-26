@@ -147,3 +147,45 @@ def test_lr_inactive_when_holdout_shows_no_gain(indexed):
     assert ranker.load_model(indexed) is None and ranker.load_model(indexed, require_active=False) is not None
     recs = ranker.rank(indexed, "backend", ["app/settings.py"], DIFF_RENAME)
     assert all(r.confidence_basis == "uncalibrated_weighted" for r in recs)
+
+
+def test_replay_reports_tier_precision(tmp_path, repos, conn):
+    root = repos["backend"]
+    for i in range(12):
+        (root / f"notes_{i}.md").write_text(f"note `token_{i}_value`\n", encoding="utf-8")
+        git(root, "add", "-A"); git(root, "commit", "-q", "-m", f"n{i}")
+    s = (root / "app/settings.py").read_text().replace('"PAYMENT_GATEWAY_URL"', '"PAYMENTS_API_BASE_URL"')
+    (root / "app/settings.py").write_text(s, encoding="utf-8")
+    k = (root / "deploy/k8s.yaml").read_text().replace("PAYMENT_GATEWAY_URL", "PAYMENTS_API_BASE_URL")
+    (root / "deploy/k8s.yaml").write_text(k, encoding="utf-8")
+    git(root, "add", "-A"); git(root, "commit", "-q", "-m", "rename env var")
+    res = evaluation.replay(str(tmp_path / "r.db"), str(root), "backend", cutoff=git(root, "rev-parse", "HEAD~1").strip())
+    tp = res["tier_precision"]
+    assert set(tp) == {"high", "medium", "low"}
+    for t in tp.values():
+        assert t["correct"] <= t["flagged"] and (t["precision"] is None) == (t["flagged"] == 0)
+
+
+def test_incident_mined_and_caught_by_agreement(tmp_path, repos):
+    from specweft import incidents
+    root = repos["backend"]
+    for i in range(3):
+        (root / f"notes_{i}.md").write_text(f"note {i}\n", encoding="utf-8")
+        git(root, "add", "-A"); git(root, "commit", "-q", "-m", f"n{i}")
+    # original: renames the env var in settings + k8s but forgets docker-compose.yml
+    for f in ("app/settings.py", "deploy/k8s.yaml"):
+        p = root / f
+        p.write_text(p.read_text().replace("PAYMENT_GATEWAY_URL", "PAYMENTS_API_BASE_URL"), encoding="utf-8")
+    git(root, "add", "-A"); git(root, "commit", "-q", "-m", "Rename payments env var")
+    p = root / "docker-compose.yml"
+    p.write_text(p.read_text().replace("PAYMENT_GATEWAY_URL", "PAYMENTS_API_BASE_URL"), encoding="utf-8")
+    git(root, "add", "-A"); git(root, "commit", "-q", "-m", "Fix missing env var in compose")
+    found = incidents.mine(root, "backend")
+    inc = next(i for i in found if i["followup_subject"] == "Fix missing env var in compose")
+    assert inc["original_subject"] == "Rename payments env var" and inc["pairing"] == "token"
+    assert inc["missed"] == ["docker-compose.yml"]
+    r = incidents.evaluate(root, inc, tmp_path)
+    assert r["agreement_top10_hits"] == ["docker-compose.yml"] and r["specweft_top10_hits"]
+    s = incidents.summarize([r])
+    assert s["incidents"] == 1 and s["caught_specweft_top10"] == 1
+    assert s["caught_by_specweft_missed_by_cochange"] == (0 if r["cochange_top10_hits"] else 1)

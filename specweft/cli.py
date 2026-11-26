@@ -78,6 +78,13 @@ def cmd_replay(a, conn) -> None:
     _print(res)
 
 
+def cmd_incidents(a, conn) -> None:
+    from . import incidents
+    res = incidents.run([(r, Path(r).name) for r in a.roots], a.curated, a.max_incidents)
+    service.save_report("incidents", res)
+    _print(res["summary"])
+
+
 def cmd_train(a, conn) -> None:
     _print(train_logistic(conn, a.run))
 
@@ -146,7 +153,7 @@ def cmd_pipeline(a, conn) -> None:
         if r["lr_holdout"].get("evaluated"):
             holdouts.append(r["lr_holdout"])
         service.save_report(f"replay_{name}", r)
-        rep[name] = r["methods"] | {"lr_holdout": r["lr_holdout"]}
+        rep[name] = r["methods"] | {"tier_precision": r["tier_precision"], "lr_holdout": r["lr_holdout"]}
     report["replay"] = rep
     g = evaluation.gold_eval(conn, "Melevir/cognitive_complexity", "cognitive_complexity", str(cc_root), pr["base"],
                              label_conn=conn)
@@ -235,6 +242,9 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("root"); s.add_argument("--name"); s.add_argument("--others", nargs="*")
     s.add_argument("--cutoff"); s.add_argument("--max-commits", type=int, default=150); s.add_argument("--run")
     s.set_defaults(fn=cmd_replay)
+    s = sp.add_parser("incidents", help="'forgot to update' incident evaluation vs co-change")
+    s.add_argument("roots", nargs="+"); s.add_argument("--curated", help="JSON list of {repo, original, followup}")
+    s.add_argument("--max-incidents", type=int, default=50); s.set_defaults(fn=cmd_incidents)
     s = sp.add_parser("train", help="train logistic fusion on replay labels (activated unconditionally)"); s.add_argument("--run")
     s.set_defaults(fn=cmd_train)
     s = sp.add_parser("eval-gold", help="gold-patch evaluation of navigation")
