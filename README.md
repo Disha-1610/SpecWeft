@@ -12,25 +12,48 @@ a workspace group, so a rename in one repo finds the files in the others that st
 python -m specweft.cli cross-repo-demo
 ```
 
+A contract is one token and every file that holds it. Here is one from the demo below:
+
+![DATABASE_URL is held by 6 files in 3 repos; the PR updates the 4 in orders-service and breaks the 2 in checkout-web and platform-infra](docs/img/contract-graph.svg)
+
+The PR renamed `DATABASE_URL` in every file it could see, which means every file in its own repo. The two files that
+still read the old name live in repos the author never opened. Regenerate the picture with
+`python -m specweft.cli cross-repo-demo --svg docs/img/contract-graph.svg`.
+
 That command builds a three-repo demo workspace (`orders-service`, `checkout-web`, `platform-infra`, all demo
-fixtures). It opens a PR in `orders-service` that renames an OpenAPI field and an env var, and then asks all three tools:
+fixtures). It opens a PR in `orders-service` that renames an OpenAPI field and two env vars, and then asks all three tools:
 
 ```text
-PR  orders-service@rename-shipping-field  changes: api/openapi.yaml, app/settings.py
-    renamed: orders_payment_webhook_secret -> PAYMENTS_WEBHOOK_SECRET; shipping_address_line -> shipping_address
+PR  orders-service@rename-shipping-field  changes: .env.example, README.md, api/openapi.yaml, app/settings.py, docker-compose.yml
+    renamed: database_url -> ORDERS_DATABASE_URL; orders_payment_webhook_secret -> PAYMENTS_WEBHOOK_SECRET; shipping_address_line -> shipping_address
 
-git co-change       -> CODEOWNERS, README.md, app/models.py, app/routes.py   [orders-service only]
+git co-change       -> CODEOWNERS, app/models.py, app/routes.py   [orders-service only]
 CODEOWNERS          -> @acme/api-guild, @acme/orders-team   [orders-service only]
-SpecWeft            -> 4 file(s) in OTHER repos of workspace 'acme-shop':
+SpecWeft            -> 5 file(s) in OTHER repos of workspace 'acme-shop':
   X platform-infra:k8s/orders-deployment.yaml  [medium]
       orders_payment_webhook_secret -> PAYMENTS_WEBHOOK_SECRET (renamed) at orders-service:app/settings.py:3; still at line 12: - name: ORDERS_PAYMENT_WEBHOOK_SECRET
+      database_url -> ORDERS_DATABASE_URL (renamed) at orders-service:app/settings.py:4; still at line 17: - name: DATABASE_URL
   X platform-infra:terraform/orders.tf  [medium]
       orders_payment_webhook_secret -> PAYMENTS_WEBHOOK_SECRET (renamed) at orders-service:app/settings.py:3; still at line 1: variable "orders_payment_webhook_secret" {
   X checkout-web:src/api/orders.ts  [medium]
       shipping_address_line -> shipping_address (renamed) at orders-service:api/openapi.yaml:21; still at line 3: shipping_address_line: string;
   X checkout-web:src/components/OrderSummary.tsx  [medium]
       shipping_address_line -> shipping_address (renamed) at orders-service:api/openapi.yaml:21; still at line 4: return <p>Ships to {order.shipping_address_line}</p>;
+  X checkout-web:e2e/docker-compose.e2e.yml  [medium]
+      database_url -> ORDERS_DATABASE_URL (renamed) at orders-service:.env.example:1; still at line 5: - DATABASE_URL=postgresql://orders@e2e-db/orders
+      orders (touched) at orders-service:.env.example:1; still at line 2: orders:
 Owners who would never have been asked: @acme/checkout-team, @acme/platform-team
+
+DATABASE_URL is held by 6 files in 3 repos. This PR breaks 2.
+  orders-service
+    updated  .env.example:1
+    updated  README.md:4
+    updated  app/settings.py:4
+    updated  docker-compose.yml:5
+  checkout-web
+    BROKEN   e2e/docker-compose.e2e.yml:5
+  platform-infra
+    BROKEN   k8s/orders-deployment.yaml:17
 ```
 
 Every flag shows both ends of the contract: where the token changed, and the line in the other repo that still holds

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 516" width="900" height="516" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13">
+<rect width="900" height="516" fill="#ffffff"/>
+<text x="24" y="34" font-size="17" font-weight="600" fill="#1d2228"><tspan font-family="Consolas, monospace">DATABASE_URL</tspan> is held by 6 files in 3 repos. This PR breaks 2.</text>
+<text x="360" y="90" font-weight="600" fill="#1d2228">orders-service</text>
+<text x="360" y="310" font-weight="600" fill="#1d2228">checkout-web</text>
+<text x="360" y="398" font-weight="600" fill="#1d2228">platform-infra</text>
+<path d="M220,262.0 C300,262.0 280,125 360,125" fill="none" stroke="#1f7a4d" stroke-width="2"/>
+<path d="M220,262.0 C300,262.0 280,169 360,169" fill="none" stroke="#1f7a4d" stroke-width="2"/>
+<path d="M220,262.0 C300,262.0 280,213 360,213" fill="none" stroke="#1f7a4d" stroke-width="2"/>
+<path d="M220,262.0 C300,262.0 280,257 360,257" fill="none" stroke="#1f7a4d" stroke-width="2"/>
+<path d="M220,262.0 C300,262.0 280,345 360,345" fill="none" stroke="#c0392b" stroke-width="2" stroke-dasharray="6 4"/>
+<path d="M220,262.0 C300,262.0 280,433 360,433" fill="none" stroke="#c0392b" stroke-width="2" stroke-dasharray="6 4"/>
+<rect x="40" y="240.0" width="180" height="44" rx="22" fill="#1d2228"/>
+<text x="130" y="267.0" text-anchor="middle" fill="#ffffff" font-family="Consolas, monospace" font-weight="600">DATABASE_URL</text>
+<rect x="360" y="108" width="516" height="34" rx="6" fill="#e6f4ec" stroke="#1f7a4d" stroke-width="1.5"/>
+<text x="374" y="130" fill="#1d2228" font-family="Consolas, monospace">.env.example:1</text>
+<text x="862" y="130" text-anchor="end" fill="#1f7a4d" font-weight="700">updated</text>
+<rect x="360" y="152" width="516" height="34" rx="6" fill="#e6f4ec" stroke="#1f7a4d" stroke-width="1.5"/>
+<text x="374" y="174" fill="#1d2228" font-family="Consolas, monospace">README.md:4</text>
+<text x="862" y="174" text-anchor="end" fill="#1f7a4d" font-weight="700">updated</text>
+<rect x="360" y="196" width="516" height="34" rx="6" fill="#e6f4ec" stroke="#1f7a4d" stroke-width="1.5"/>
+<text x="374" y="218" fill="#1d2228" font-family="Consolas, monospace">app/settings.py:4</text>
+<text x="862" y="218" text-anchor="end" fill="#1f7a4d" font-weight="700">updated</text>
+<rect x="360" y="240" width="516" height="34" rx="6" fill="#e6f4ec" stroke="#1f7a4d" stroke-width="1.5"/>
+<text x="374" y="262" fill="#1d2228" font-family="Consolas, monospace">docker-compose.yml:5</text>
+<text x="862" y="262" text-anchor="end" fill="#1f7a4d" font-weight="700">updated</text>
+<rect x="360" y="328" width="516" height="34" rx="6" fill="#fdecea" stroke="#c0392b" stroke-width="1.5"/>
+<text x="374" y="350" fill="#1d2228" font-family="Consolas, monospace">e2e/docker-compose.e2e.yml:5</text>
+<text x="862" y="350" text-anchor="end" fill="#c0392b" font-weight="700">BROKEN</text>
+<rect x="360" y="416" width="516" height="34" rx="6" fill="#fdecea" stroke="#c0392b" stroke-width="1.5"/>
+<text x="374" y="438" fill="#1d2228" font-family="Consolas, monospace">k8s/orders-deployment.yaml:17</text>
+<text x="862" y="438" text-anchor="end" fill="#c0392b" font-weight="700">BROKEN</text>
+<rect x="24" y="482" width="14" height="14" rx="3" fill="#e6f4ec" stroke="#1f7a4d"/>
+<text x="44" y="494" fill="#5b6470"><tspan font-weight="700" fill="#1f7a4d">updated</tspan> updated in this PR</text>
+<rect x="304" y="482" width="14" height="14" rx="3" fill="#fdecea" stroke="#c0392b"/>
+<text x="324" y="494" fill="#5b6470"><tspan font-weight="700" fill="#c0392b">BROKEN</tspan> still holds the old name</text>
+</svg>

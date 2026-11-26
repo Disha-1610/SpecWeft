@@ -213,6 +213,9 @@ def demo_pr(root: str, commit: str, seed: str, related_root: str | None = None) 
 def cmd_cross_repo_demo(a, conn) -> None:
     from . import crossrepo_demo
     rep = crossrepo_demo.run(Path(a.workspace), DATA / "demo_cross_repo.db")
+    if a.svg:
+        Path(a.svg).parent.mkdir(parents=True, exist_ok=True)
+        Path(a.svg).write_text(crossrepo_demo.graph_svg(rep["contract_graph"]), encoding="utf-8")
     print(json.dumps(rep, indent=2) if a.json else crossrepo_demo.render(rep))
 
 
@@ -258,6 +261,7 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--rev"); s.add_argument("--pr", type=int); s.set_defaults(fn=cmd_eval_gold)
     s = sp.add_parser("cross-repo-demo", help="PR in one repo flags files in other repos of the workspace")
     s.add_argument("--workspace", default=str(DATA / "demo_workspace")); s.add_argument("--json", action="store_true")
+    s.add_argument("--svg", help="also write the token-holder graph as SVG to this path")
     s.set_defaults(fn=cmd_cross_repo_demo)
     s = sp.add_parser("serve", help="run the API + web UI")
     s.add_argument("--host", default="127.0.0.1"); s.add_argument("--port", type=int, default=8765)
