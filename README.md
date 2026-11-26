@@ -2,6 +2,44 @@
 
 **When you change a file, which other files must change too — and why?**
 
+## Headline: contracts that cross repositories
+
+A PR in one repo can break a file in **another** repo. Git co-change can't see that, because history is per-repo.
+CODEOWNERS can't either, because it only lists owners for the changed repo's own paths. SpecWeft indexes every repo in
+a workspace group, so a rename in one repo finds the files in the others that still use the old name.
+
+```powershell
+python -m specweft.cli cross-repo-demo
+```
+
+That command builds a three-repo demo workspace (`orders-service`, `checkout-web`, `platform-infra`, all demo
+fixtures). It opens a PR in `orders-service` that renames an OpenAPI field and an env var, and then asks all three tools:
+
+```text
+PR  orders-service@rename-shipping-field  changes: api/openapi.yaml, app/settings.py
+    renamed: orders_payment_webhook_secret -> PAYMENTS_WEBHOOK_SECRET; shipping_address_line -> shipping_address
+
+git co-change       -> CODEOWNERS, README.md, app/models.py, app/routes.py   [orders-service only]
+CODEOWNERS          -> @acme/api-guild, @acme/orders-team   [orders-service only]
+SpecWeft            -> 4 file(s) in OTHER repos of workspace 'acme-shop':
+  X platform-infra:k8s/orders-deployment.yaml  [medium]
+      orders_payment_webhook_secret -> PAYMENTS_WEBHOOK_SECRET (renamed) at orders-service:app/settings.py:3; still at line 12: - name: ORDERS_PAYMENT_WEBHOOK_SECRET
+  X platform-infra:terraform/orders.tf  [medium]
+      orders_payment_webhook_secret -> PAYMENTS_WEBHOOK_SECRET (renamed) at orders-service:app/settings.py:3; still at line 1: variable "orders_payment_webhook_secret" {
+  X checkout-web:src/api/orders.ts  [medium]
+      shipping_address_line -> shipping_address (renamed) at orders-service:api/openapi.yaml:21; still at line 3: shipping_address_line: string;
+  X checkout-web:src/components/OrderSummary.tsx  [medium]
+      shipping_address_line -> shipping_address (renamed) at orders-service:api/openapi.yaml:21; still at line 4: return <p>Ships to {order.shipping_address_line}</p>;
+Owners who would never have been asked: @acme/checkout-team, @acme/platform-team
+```
+
+Every flag shows both ends of the contract: where the token changed, and the line in the other repo that still holds
+the old name. The full report goes to `data/reports/demo_cross_repo.json`, and `tests/test_cross_repo_demo.py` checks
+it. In the Bitbucket app, every repo in a workspace joins that workspace's group automatically
+(`specweft/indexer.py`), so the PR panel can flag files in sibling repos.
+
+## How it works
+
 SpecWeft answers this with two independent signals fused into one ranked, evidence-backed list:
 
 * **Broken Agreements** (static). Files *agree* when they hold the same rare, specific token: an env var, route,
