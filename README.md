@@ -61,6 +61,59 @@ the old name. The full report goes to `data/reports/demo_cross_repo.json`, and `
 it. In the Bitbucket app, every repo in a workspace joins that workspace's group automatically
 (`specweft/indexer.py`), so the PR panel can flag files in sibling repos.
 
+## Agents forget the other files too
+
+Coding agents make this mistake faster than people do. An agent renames an env var in every file it opened, its tests
+pass, and it reports "done". The Kubernetes manifest in another repo still reads the old name, and the agent never had
+a reason to open it. Code-review bots read the diff the agent made, and they have the same blind spot: the broken file
+isn't in it.
+
+SpecWeft is a **finish-line guardrail**. Human PRs and coding agents run the same check before a change counts as
+finished:
+
+| Who finishes | Where SpecWeft runs | What happens on a stale holder |
+|---|---|---|
+| Claude Code | Stop hook (`scripts/specweft_hook.py`) | The agent gets sent back once with the files and evidence |
+| Any other agent (Codex, Cursor, Aider, OpenHands, your own loop) | `specweft check` as the last step / in `AGENTS.md` | Exit code 1 and a message the agent can act on |
+| A person | `specweft check` in pre-push, or the Bitbucket PR panel and merge check | The push or merge check fails, listing the files |
+
+```powershell
+python -m specweft.cli agent-demo
+```
+
+The agent in the demo does the `orders-service` rename and edits all 5 files in that repo. Then it stops:
+
+```text
+AGENT  edited 5 files in orders-service: .env.example, README.md, api/openapi.yaml, app/settings.py, docker-compose.yml
+AGENT  "Done. All references renamed."
+
+Stop hook (1st stop) ->
+  decision: block
+  SpecWeft: files likely affected by this session's edits but not updated:
+  - [high] app/models.py:5 — change renames `shipping_address_line` which is still held here; ...
+  - [medium] platform-infra:k8s/orders-deployment.yaml:12 — change renames `orders_payment_webhook_secret` ...
+  - [medium] platform-infra:terraform/orders.tf:1 — change renames `orders_payment_webhook_secret` ...
+  (+5 more; run `specweft check --json` for all)
+  Check these files (or explain why no change is needed) before finishing.
+
+Stop hook (2nd stop, stop_hook_active) -> warn only; never blocks twice
+
+specweft check --fail-on medium -> FAIL (8 stale file(s) outside what the agent touched)
+```
+
+`specweft check` needs no transcript. It diffs the working tree against `--base` (default `HEAD`) and gives the same
+verdict the hook would, so it works for any agent and for people. To make an agent run it, add a line like this to its
+instructions (`AGENTS.md`, `CLAUDE.md`, a system prompt):
+
+```text
+Before you say a task is done, run `python -m specweft.cli check`. If it fails, update each file it lists or explain why it needs no change.
+```
+
+`--fail-on high|medium|never` (or `$SPECWEFT_FAIL_ON`, shared with the hook) sets the threshold. The default is `high`,
+where both signals agree. Use `medium` to also fail on cross-repo agreement breaks, which only have the static signal
+until the other repos build up history. Code: `specweft/guardrail.py`, `specweft/agent_demo.py`;
+tests: `tests/test_guardrail.py`.
+
 ## How it works
 
 SpecWeft answers this with two independent signals fused into one ranked, evidence-backed list:
@@ -239,7 +292,8 @@ Add to the target project's `.claude/settings.json` (adjust paths):
 On Stop, the hook reads the session transcript, finds the files the session edited, and diffs them against `HEAD`
 (precise removed/renamed/value-changed tokens). It queries the ranker and reports files the session did not update:
 
-* blocks (`{"decision":"block","reason":…}`) **only** when there is a high-confidence (dual-signal) recommendation,
+* blocks (`{"decision":"block","reason":…}`) **only** when there is a recommendation at or above `$SPECWEFT_FAIL_ON`
+  (default `high`, i.e. dual-signal; the same threshold as `specweft check`),
   **only once** (`stop_hook_active` is respected), and never when `SPECWEFT_HOOK_MODE=warn`;
 * otherwise it returns a non-blocking `systemMessage`; with nothing to report it prints nothing;
 * any internal failure exits 0 with a stderr note. SpecWeft never breaks a session. Every call is logged to

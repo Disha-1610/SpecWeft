@@ -9,7 +9,8 @@ Behaviour:
   * derive files edited in this session from the transcript (same adapter as ingestion)
   * diff them against HEAD when the repo is a git checkout (precise removed/renamed/value-changed tokens)
   * query the unified ranker; keep recommendations for files the session has NOT edited
-  * output JSON: `{"decision": "block", "reason": ...}` only when there is ≥1 HIGH-confidence recommendation,
+  * output JSON: `{"decision": "block", "reason": ...}` only when there is ≥1 recommendation at or above
+    SPECWEFT_FAIL_ON (default "high"; same threshold as `specweft check`),
     `stop_hook_active` is false and SPECWEFT_HOOK_MODE != "warn"; otherwise a non-blocking `systemMessage`.
   * any failure -> exit 0 with a note on stderr (never blocks completion because of SpecWeft itself).
 Every invocation is appended to data/hook_log.jsonl for auditing.
@@ -65,18 +66,13 @@ def run(payload: dict, db_path: str | None = None) -> dict:
         if not actionable:
             result["output"] = None
             return result
-        lines = []
-        for r in actionable[:5]:
-            seen = " (already viewed)" if r.related_file.path in touched else ""
-            where = f"{r.related_file.repo}:" if r.cross_repo else ""
-            loc = f":{r.related_file.line}" if r.related_file.line else ""
-            lines.append(f"- [{r.confidence}] {where}{r.related_file.path}{loc}{seen} — {r.reason}")
-        more = len(actionable) - len(lines)
-        msg = ("SpecWeft: files likely affected by this session's edits but not updated:\n" + "\n".join(lines)
-               + (f"\n(+{more} more; run `python -m specweft.cli rank` for the full list)" if more > 0 else ""))
-        high = [r for r in actionable if r.confidence == "high"]
+        from .guardrail import fails, format_findings
+        msg = format_findings([r.to_dict() for r in actionable], touched,
+                              header="SpecWeft: files likely affected by this session's edits but not updated:")
+        block_on = os.environ.get("SPECWEFT_FAIL_ON", "high")
+        blocking = [r for r in actionable if fails(r.confidence, block_on)]
         mode = os.environ.get("SPECWEFT_HOOK_MODE", "block")
-        if high and not payload.get("stop_hook_active") and mode != "warn":
+        if blocking and not payload.get("stop_hook_active") and mode != "warn":
             result["output"] = {"decision": "block",
                                 "reason": msg + "\nCheck these files (or explain why no change is needed) before finishing."}
         else:

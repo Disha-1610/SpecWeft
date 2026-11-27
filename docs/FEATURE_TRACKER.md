@@ -68,3 +68,4 @@ intended live environment. **BLOCKED** = cannot be completed without something o
 | REST API + web UI | VERIFIED | `test_api_hook.py` (TestClient); UI checked in browser |
 | Stop hook: input, edited files, ranker query, evidence, safe failure, block-once | VERIFIED | subprocess tests; run on this session's real transcript |
 | Stop hook inside a live Claude Code session | VERIFIED | `scripts/verify_hook_live.ps1` (Claude Code 2.1.193): Claude renamed `PROJECT_NAME` in config.py; Stop hook fired (status ok, 1.0 s) and returned a non-blocking message listing 13 files still holding `project_name` |
+| Finish-line guardrail: `specweft check` (working tree vs base, exit 1 on fail, shared `SPECWEFT_FAIL_ON` with the hook) and `specweft agent-demo` | VERIFIED | `tests/test_guardrail.py`: hook blocks the demo agent once for files in 2 other repos; check exit codes 1/0 |

@@ -219,6 +219,19 @@ def cmd_cross_repo_demo(a, conn) -> None:
     print(json.dumps(rep, indent=2) if a.json else crossrepo_demo.render(rep))
 
 
+def cmd_check(a, conn) -> int:
+    from . import guardrail
+    res = guardrail.check(conn, a.path, a.base, a.fail_on, a.limit)
+    print(json.dumps(res, indent=2) if a.json else res["message"] + f"\nverdict: {res['verdict'].upper()}")
+    return 1 if res["verdict"] == "fail" else 0
+
+
+def cmd_agent_demo(a, conn) -> None:
+    from . import agent_demo
+    rep = agent_demo.run(Path(a.workspace), DATA / "demo_agent.db")
+    print(json.dumps(rep, indent=2) if a.json else agent_demo.render(rep))
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="specweft", description=__doc__)
     p.add_argument("--db", default=None, help="SQLite path (default data/specweft.db or $SPECWEFT_DB)")
@@ -263,6 +276,14 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--workspace", default=str(DATA / "demo_workspace")); s.add_argument("--json", action="store_true")
     s.add_argument("--svg", help="also write the token-holder graph as SVG to this path")
     s.set_defaults(fn=cmd_cross_repo_demo)
+    s = sp.add_parser("check", help="guardrail: fail if the working tree leaves other holders of changed tokens stale")
+    s.add_argument("--path", default="."); s.add_argument("--base", default="HEAD", help="compare against (default HEAD)")
+    s.add_argument("--fail-on", choices=["high", "medium", "never"], help="default $SPECWEFT_FAIL_ON or high")
+    s.add_argument("--limit", type=int, default=20); s.add_argument("--json", action="store_true")
+    s.set_defaults(fn=cmd_check)
+    s = sp.add_parser("agent-demo", help="a coding agent finishes a rename; the Stop hook sends it back for 5 files")
+    s.add_argument("--workspace", default=str(DATA / "demo_agent_workspace")); s.add_argument("--json", action="store_true")
+    s.set_defaults(fn=cmd_agent_demo)
     s = sp.add_parser("serve", help="run the API + web UI")
     s.add_argument("--host", default="127.0.0.1"); s.add_argument("--port", type=int, default=8765)
     s.set_defaults(fn=cmd_serve)
@@ -278,7 +299,9 @@ def main(argv: list[str] | None = None) -> int:
                         format="%(levelname)s %(name)s: %(message)s")
     conn = db.connect(a.db)
     try:
-        a.fn(a, conn)
+        rc = a.fn(a, conn)
+        if isinstance(rc, int):
+            return rc
     except (service.ServiceError, FileNotFoundError, ValueError) as e:
         print(f"error: {e}", file=sys.stderr)
         return 2
